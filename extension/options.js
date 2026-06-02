@@ -22,6 +22,7 @@ const elements = {
   form: document.querySelector("#entry-form"),
   termInput: document.querySelector("#term-input"),
   definitionInput: document.querySelector("#definition-input"),
+  aliasInput: document.querySelector("#alias-input"),
   formMessage: document.querySelector("#form-message"),
   entryCount: document.querySelector("#entry-count"),
   searchInput: document.querySelector("#search-input"),
@@ -47,7 +48,53 @@ function normalizeTerm(value) {
   return collapseSpaces(value).toLowerCase();
 }
 
-function validateEntry(displayTerm, definition) {
+function normalizeAliasList(aliases = []) {
+  return aliases.map((alias) => ({
+    term: normalizeTerm(alias.term || alias.displayTerm || alias),
+    displayTerm: collapseSpaces(alias.displayTerm || alias.term || alias)
+  })).filter((alias) => alias.term && alias.displayTerm);
+}
+
+function normalizeEntry(entry) {
+  return {
+    ...entry,
+    aliases: normalizeAliasList(entry.aliases)
+  };
+}
+
+function parseAliases(value, normalizedTerm) {
+  const aliases = [];
+  const seen = new Set();
+
+  for (const rawAlias of String(value || "").split(",")) {
+    const displayTerm = collapseSpaces(rawAlias);
+
+    if (!displayTerm) {
+      continue;
+    }
+
+    if (displayTerm.length < 3) {
+      return { error: `Alias "${displayTerm}" must be at least 3 characters.` };
+    }
+
+    const term = normalizeTerm(displayTerm);
+
+    if (term === normalizedTerm || seen.has(term)) {
+      continue;
+    }
+
+    seen.add(term);
+    aliases.push({ term, displayTerm });
+  }
+
+  return { aliases };
+}
+
+function formatAliases(aliases = []) {
+  return normalizeAliasList(aliases).map((alias) => alias.displayTerm).join(", ");
+}
+
+function validateEntry(displayTerm, definition, aliasText = "") {
   const cleanTerm = collapseSpaces(displayTerm);
   const cleanDefinition = String(definition || "").trim();
 
@@ -63,15 +110,39 @@ function validateEntry(displayTerm, definition) {
     return { error: "Definition is required." };
   }
 
+  const normalizedTerm = normalizeTerm(cleanTerm);
+  const aliasResult = parseAliases(aliasText, normalizedTerm);
+
+  if (aliasResult.error) {
+    return aliasResult;
+  }
+
   return {
     cleanTerm,
     cleanDefinition,
-    normalizedTerm: normalizeTerm(cleanTerm)
+    normalizedTerm,
+    aliases: aliasResult.aliases
   };
 }
 
 function findEntry(term) {
   return entries.find((entry) => entry.term === term);
+}
+
+function findEntryByTermOrAlias(term) {
+  return entries.find((entry) => entry.term === term || normalizeAliasList(entry.aliases).some((alias) => alias.term === term));
+}
+
+function findEntryByAnyAliasText(value) {
+  for (const alias of parseAliases(value, "").aliases || []) {
+    const entry = findEntryByTermOrAlias(alias.term);
+
+    if (entry) {
+      return entry;
+    }
+  }
+
+  return null;
 }
 
 function setMessage(message, kind = "error") {
@@ -84,6 +155,7 @@ function showEditor(entry = null) {
   elements.editorTitle.textContent = entry ? "Edit word" : "Add word";
   elements.termInput.value = entry?.displayTerm || "";
   elements.definitionInput.value = entry?.definition || "";
+  elements.aliasInput.value = entry ? formatAliases(entry.aliases) : "";
   setMessage("");
   elements.editorPanel.hidden = false;
   elements.termInput.focus();
@@ -98,6 +170,7 @@ function hideEditor() {
 
 async function saveEntries(nextEntries) {
   entries = nextEntries
+    .map(normalizeEntry)
     .slice()
     .sort((a, b) => a.displayTerm.localeCompare(b.displayTerm));
   await storage.set({ [ENTRIES_KEY]: entries });
@@ -114,23 +187,24 @@ async function saveSettings(nextSettings) {
 }
 
 async function saveEntry() {
-  const validation = validateEntry(elements.termInput.value, elements.definitionInput.value);
+  const validation = validateEntry(elements.termInput.value, elements.definitionInput.value, elements.aliasInput.value);
 
   if (validation.error) {
     setMessage(validation.error);
     return;
   }
 
-  const existing = findEntry(validation.normalizedTerm);
+  const existing = findEntryByTermOrAlias(validation.normalizedTerm);
   const previous = editingTerm ? findEntry(editingTerm) : null;
   const nextEntry = {
     term: validation.normalizedTerm,
     displayTerm: validation.cleanTerm,
     definition: validation.cleanDefinition,
+    aliases: validation.aliases,
     createdAt: existing?.createdAt || previous?.createdAt || Date.now()
   };
   const nextEntries = entries
-    .filter((entry) => entry.term !== validation.normalizedTerm && entry.term !== editingTerm)
+    .filter((entry) => entry.term !== existing?.term && entry.term !== editingTerm)
     .concat(nextEntry);
 
   await saveEntries(nextEntries);
@@ -189,6 +263,14 @@ function renderEntries() {
     definition.className = "entry-definition";
     definition.textContent = entry.definition;
 
+    const aliases = document.createElement("div");
+    aliases.className = "entry-aliases";
+    const aliasText = formatAliases(entry.aliases);
+    aliases.innerHTML = aliasText ? "<strong>Aliases</strong>" : "";
+    if (aliasText) {
+      aliases.append(document.createTextNode(aliasText));
+    }
+
     const actions = document.createElement("div");
     actions.className = "entry-actions";
 
@@ -205,14 +287,14 @@ function renderEntries() {
     deleteButton.addEventListener("click", () => deleteEntry(entry.term));
 
     actions.append(editButton, deleteButton);
-    card.append(term, definition, actions);
+    card.append(term, definition, aliases, actions);
     elements.entryList.appendChild(card);
   }
 }
 
 function handleTermInput() {
   const normalized = normalizeTerm(elements.termInput.value);
-  const duplicate = normalized ? findEntry(normalized) : null;
+  const duplicate = normalized ? findEntryByTermOrAlias(normalized) : null;
 
   if (!duplicate || duplicate.term === editingTerm) {
     return;
@@ -220,7 +302,24 @@ function handleTermInput() {
 
   editingTerm = duplicate.term;
   elements.editorTitle.textContent = "Edit word";
+  elements.termInput.value = duplicate.displayTerm;
   elements.definitionInput.value = duplicate.definition;
+  elements.aliasInput.value = formatAliases(duplicate.aliases);
+  setMessage("Existing entry loaded for editing.", "info");
+}
+
+function handleAliasInput() {
+  const duplicate = findEntryByAnyAliasText(elements.aliasInput.value);
+
+  if (!duplicate || duplicate.term === editingTerm) {
+    return;
+  }
+
+  editingTerm = duplicate.term;
+  elements.editorTitle.textContent = "Edit word";
+  elements.termInput.value = duplicate.displayTerm;
+  elements.definitionInput.value = duplicate.definition;
+  elements.aliasInput.value = formatAliases(duplicate.aliases);
   setMessage("Existing entry loaded for editing.", "info");
 }
 
@@ -233,6 +332,7 @@ function bindEvents() {
     saveEntry();
   });
   elements.termInput.addEventListener("input", handleTermInput);
+  elements.aliasInput.addEventListener("input", handleAliasInput);
   elements.searchInput.addEventListener("input", () => {
     searchQuery = elements.searchInput.value;
     renderEntries();
@@ -269,7 +369,7 @@ function bindEvents() {
     }
 
     if (changes[ENTRIES_KEY]) {
-      entries = Array.isArray(changes[ENTRIES_KEY].newValue) ? changes[ENTRIES_KEY].newValue : [];
+      entries = Array.isArray(changes[ENTRIES_KEY].newValue) ? changes[ENTRIES_KEY].newValue.map(normalizeEntry) : [];
       renderEntries();
     }
 
@@ -290,7 +390,7 @@ async function loadState() {
     [SETTINGS_KEY]: DEFAULT_SETTINGS
   });
 
-  entries = Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY] : [];
+  entries = Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY].map(normalizeEntry) : [];
   settings = {
     ...DEFAULT_SETTINGS,
     ...(result[SETTINGS_KEY] || {})

@@ -331,7 +331,7 @@ button {
 
 .entry-card {
   display: grid;
-  grid-template-columns: minmax(160px, 220px) 1fr auto;
+  grid-template-columns: minmax(160px, 220px) 1fr minmax(140px, 200px) auto;
   gap: 14px;
   align-items: start;
   padding: 14px;
@@ -348,6 +348,19 @@ button {
   color: #334155;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+.entry-aliases {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.entry-aliases strong {
+  color: #334155;
+  font-size: 12px;
 }
 
 .entry-actions {

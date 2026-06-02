@@ -1,5 +1,6 @@
 ## 2026-06-02
 
+- Added aliases for saved entries, so alternate word forms can highlight with the same definition.
 - Moved the Chrome extension files into an `extension/` folder while keeping documentation at the project root.
 - Added search and sorting to the saved words management page.
 - Changed saved-word highlights from green to red.

@@ -49,6 +49,52 @@
     return collapseSpaces(value).toLowerCase();
   }
 
+  function normalizeAliasList(aliases = []) {
+    return aliases.map((alias) => ({
+      term: normalizeTerm(alias.term || alias.displayTerm || alias),
+      displayTerm: collapseSpaces(alias.displayTerm || alias.term || alias)
+    })).filter((alias) => alias.term && alias.displayTerm);
+  }
+
+  function normalizeEntry(entry) {
+    return {
+      ...entry,
+      aliases: normalizeAliasList(entry.aliases)
+    };
+  }
+
+  function parseAliases(value, normalizedTerm) {
+    const aliases = [];
+    const seen = new Set();
+
+    for (const rawAlias of String(value || "").split(",")) {
+      const displayTerm = collapseSpaces(rawAlias);
+
+      if (!displayTerm) {
+        continue;
+      }
+
+      if (displayTerm.length < 3) {
+        return { error: `Alias "${displayTerm}" must be at least 3 characters.` };
+      }
+
+      const term = normalizeTerm(displayTerm);
+
+      if (term === normalizedTerm || seen.has(term)) {
+        continue;
+      }
+
+      seen.add(term);
+      aliases.push({ term, displayTerm });
+    }
+
+    return { aliases };
+  }
+
+  function formatAliases(aliases = []) {
+    return normalizeAliasList(aliases).map((alias) => alias.displayTerm).join(", ");
+  }
+
   function escapeRegExp(value) {
     return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
@@ -109,6 +155,10 @@
     return entries.find((entry) => entry.term === term);
   }
 
+  function getStoredEntryByTermOrAlias(term) {
+    return entries.find((entry) => entry.term === term || normalizeAliasList(entry.aliases).some((alias) => alias.term === term));
+  }
+
   function buildPattern(term) {
     return term
       .split(" ")
@@ -121,33 +171,38 @@
     const candidates = [];
 
     for (const entry of entries) {
-      if (!entry.term) {
-        continue;
-      }
+      const sources = [
+        { term: entry.term, displayTerm: entry.displayTerm, isAlias: false },
+        ...normalizeAliasList(entry.aliases).map((alias) => ({ ...alias, isAlias: true }))
+      ].filter((source) => source.term);
 
-      const regex = new RegExp(buildPattern(entry.term), "gi");
-      let match;
+      for (const source of sources) {
+        const regex = new RegExp(buildPattern(source.term), "gi");
+        let match;
 
-      while ((match = regex.exec(text)) !== null) {
-        const start = match.index;
-        const end = start + match[0].length;
+        while ((match = regex.exec(text)) !== null) {
+          const start = match.index;
+          const end = start + match[0].length;
 
-        if (isWholeWordMatch(text, start, end)) {
-          candidates.push({
-            start,
-            end,
-            length: end - start,
-            entry
-          });
-        }
+          if (isWholeWordMatch(text, start, end)) {
+            candidates.push({
+              start,
+              end,
+              length: end - start,
+              priority: source.isAlias ? 0 : 1,
+              entry,
+              source
+            });
+          }
 
-        if (regex.lastIndex === start) {
-          regex.lastIndex += 1;
+          if (regex.lastIndex === start) {
+            regex.lastIndex += 1;
+          }
         }
       }
     }
 
-    candidates.sort((a, b) => b.length - a.length || a.start - b.start);
+    candidates.sort((a, b) => b.length - a.length || b.priority - a.priority || a.start - b.start);
     const selected = [];
 
     for (const candidate of candidates) {
@@ -184,7 +239,8 @@
       span.className = HIGHLIGHT_CLASS;
       span.dataset.glowsaryTerm = match.entry.term;
       span.dataset.glowsaryDefinition = match.entry.definition;
-      span.dataset.glowsaryDisplayTerm = match.entry.displayTerm;
+      span.dataset.glowsaryDisplayTerm = match.source.isAlias ? "" : match.entry.displayTerm;
+      span.dataset.glowsaryMatchType = match.source.isAlias ? "alias" : "term";
       span.textContent = text.slice(match.start, match.end);
       attachHighlightEvents(span);
       fragment.appendChild(span);
@@ -283,7 +339,9 @@
     const popup = document.createElement("div");
     popup.className = POPUP_CLASS;
     popup.innerHTML = `<strong></strong><div></div>`;
-    popup.querySelector("strong").textContent = anchor.dataset.glowsaryDisplayTerm || anchor.textContent || "";
+    const title = popup.querySelector("strong");
+    title.textContent = anchor.dataset.glowsaryDisplayTerm || anchor.textContent || "";
+    title.hidden = anchor.dataset.glowsaryMatchType === "alias";
     popup.querySelector("div").textContent = anchor.dataset.glowsaryDefinition || "";
     document.documentElement.appendChild(popup);
 
@@ -311,7 +369,7 @@
     activePopup = null;
   }
 
-  function validateEntry(displayTerm, definition) {
+  function validateEntry(displayTerm, definition, aliasText = "") {
     const cleanTerm = collapseSpaces(displayTerm);
     const cleanDefinition = String(definition || "").trim();
 
@@ -327,31 +385,42 @@
       return { error: "Definition is required." };
     }
 
+    const normalizedTerm = normalizeTerm(cleanTerm);
+    const aliasResult = parseAliases(aliasText, normalizedTerm);
+
+    if (aliasResult.error) {
+      return aliasResult;
+    }
+
     return {
       cleanTerm,
       cleanDefinition,
-      normalizedTerm: normalizeTerm(cleanTerm)
+      normalizedTerm,
+      aliases: aliasResult.aliases
     };
   }
 
-  async function saveEntry(displayTerm, definition, editingTerm = "") {
-    const validation = validateEntry(displayTerm, definition);
+  async function saveEntry(displayTerm, definition, aliasText = "", editingTerm = "") {
+    const validation = validateEntry(displayTerm, definition, aliasText);
 
     if (validation.error) {
       throw new Error(validation.error);
     }
 
     const currentEntries = await getEntries();
-    const existing = currentEntries.find((entry) => entry.term === validation.normalizedTerm);
+    const existing = currentEntries.find(
+      (entry) => entry.term === validation.normalizedTerm || entry.aliases.some((alias) => alias.term === validation.normalizedTerm)
+    );
     const previous = editingTerm ? currentEntries.find((entry) => entry.term === editingTerm) : null;
     const nextEntry = {
       term: validation.normalizedTerm,
       displayTerm: validation.cleanTerm,
       definition: validation.cleanDefinition,
+      aliases: validation.aliases,
       createdAt: existing?.createdAt || previous?.createdAt || Date.now()
     };
     const nextEntries = currentEntries
-      .filter((entry) => entry.term !== validation.normalizedTerm && entry.term !== editingTerm)
+      .filter((entry) => entry.term !== existing?.term && entry.term !== editingTerm)
       .concat(nextEntry)
       .sort((a, b) => a.displayTerm.localeCompare(b.displayTerm));
 
@@ -362,7 +431,7 @@
 
   async function getEntries() {
     const result = await storage.get({ [ENTRIES_KEY]: [] });
-    return Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY] : [];
+    return Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY].map(normalizeEntry) : [];
   }
 
   function closeDialog() {
@@ -374,7 +443,7 @@
     closeDialog();
 
     const normalizedTerm = normalizeTerm(rawTerm);
-    const existing = normalizedTerm ? getStoredEntry(normalizedTerm) : null;
+    const existing = normalizedTerm ? getStoredEntryByTermOrAlias(normalizedTerm) : null;
     const backdrop = document.createElement("div");
     backdrop.className = "glowsary-dialog-backdrop";
     backdrop.innerHTML = `
@@ -392,6 +461,10 @@
             <label for="glowsary-definition">Definition</label>
             <textarea class="glowsary-textarea" id="glowsary-definition" name="definition"></textarea>
           </div>
+          <div class="glowsary-field">
+            <label for="glowsary-aliases">Alias</label>
+            <input class="glowsary-input" id="glowsary-aliases" name="aliases" autocomplete="off" placeholder="versions, versioned" />
+          </div>
           <div class="glowsary-error" role="alert"></div>
           <div class="glowsary-actions">
             <button class="glowsary-button glowsary-button-secondary" type="button" data-action="cancel">Cancel</button>
@@ -405,21 +478,25 @@
     const title = backdrop.querySelector(".glowsary-dialog-title");
     const termInput = backdrop.querySelector("#glowsary-term");
     const definitionInput = backdrop.querySelector("#glowsary-definition");
+    const aliasInput = backdrop.querySelector("#glowsary-aliases");
     const error = backdrop.querySelector(".glowsary-error");
     let editingTerm = existing?.term || "";
 
     termInput.value = existing?.displayTerm || collapseSpaces(rawTerm);
     definitionInput.value = existing?.definition || "";
+    aliasInput.value = existing ? formatAliases(existing.aliases) : "";
 
     termInput.addEventListener("input", () => {
-      const duplicate = getStoredEntry(normalizeTerm(termInput.value));
+      const duplicate = getStoredEntryByTermOrAlias(normalizeTerm(termInput.value));
       if (!duplicate || duplicate.term === editingTerm) {
         return;
       }
 
       editingTerm = duplicate.term;
       title.textContent = "Edit note";
+      termInput.value = duplicate.displayTerm;
       definitionInput.value = duplicate.definition;
+      aliasInput.value = formatAliases(duplicate.aliases);
       error.textContent = "";
     });
 
@@ -430,7 +507,7 @@
       error.textContent = "";
 
       try {
-        await saveEntry(termInput.value, definitionInput.value, editingTerm);
+        await saveEntry(termInput.value, definitionInput.value, aliasInput.value, editingTerm);
         closeDialog();
       } catch (saveError) {
         error.textContent = saveError.message;
@@ -483,7 +560,7 @@
       [SETTINGS_KEY]: DEFAULT_SETTINGS
     });
 
-    entries = Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY] : [];
+    entries = Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY].map(normalizeEntry) : [];
     settings = {
       ...DEFAULT_SETTINGS,
       ...(result[SETTINGS_KEY] || {})
@@ -503,7 +580,7 @@
       }
 
       if (changes[ENTRIES_KEY]) {
-        entries = Array.isArray(changes[ENTRIES_KEY].newValue) ? changes[ENTRIES_KEY].newValue : [];
+        entries = Array.isArray(changes[ENTRIES_KEY].newValue) ? changes[ENTRIES_KEY].newValue.map(normalizeEntry) : [];
       }
 
       if (changes[SETTINGS_KEY]) {

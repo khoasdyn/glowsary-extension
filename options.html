@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Glowsary</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <h1>Glowsary</h1>
+          <p>Your saved vocabulary, ready wherever you read.</p>
+        </div>
+        <button class="primary-button" id="add-entry" type="button">Add new</button>
+      </header>
+
+      <section class="settings-panel" aria-label="Settings">
+        <label class="switch-row">
+          <input id="highlighting-enabled" type="checkbox" />
+          <span>
+            <strong>Highlighting</strong>
+            <small>Show saved words on webpages</small>
+          </span>
+        </label>
+
+        <fieldset class="trigger-group">
+          <legend>Reveal definition</legend>
+          <label>
+            <input type="radio" name="reveal-trigger" value="hover" />
+            Hover
+          </label>
+          <label>
+            <input type="radio" name="reveal-trigger" value="click" />
+            Click
+          </label>
+        </fieldset>
+      </section>
+
+      <section class="editor-panel" id="editor-panel" hidden>
+        <div class="panel-header">
+          <h2 id="editor-title">Add word</h2>
+          <button class="icon-button" id="close-editor" type="button" aria-label="Close form">&times;</button>
+        </div>
+        <form id="entry-form" class="entry-form">
+          <label>
+            Word
+            <input id="term-input" name="term" autocomplete="off" />
+          </label>
+          <label>
+            Definition
+            <textarea id="definition-input" name="definition"></textarea>
+          </label>
+          <div class="form-message" id="form-message" role="alert"></div>
+          <div class="form-actions">
+            <button class="secondary-button" id="cancel-editor" type="button">Cancel</button>
+            <button class="primary-button" type="submit">Save</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="list-section" aria-labelledby="list-heading">
+        <div class="list-heading-row">
+          <h2 id="list-heading">Saved words</h2>
+          <span id="entry-count">0 entries</span>
+        </div>
+        <div class="empty-state" id="empty-state">No words saved yet.</div>
+        <div class="entry-list" id="entry-list"></div>
+      </section>
+    </main>
+
+    <script src="options.js"></script>
+  </body>
+</html>

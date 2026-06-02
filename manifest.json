@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Glowsary",
+  "version": "1.0.0",
+  "description": "Highlight your saved vocabulary across the web and reveal your own definitions on demand.",
+  "permissions": ["contextMenus", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Open Glowsary"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

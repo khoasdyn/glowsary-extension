@@ -1,5 +1,6 @@
 ## 2026-06-02
 
+- Changed saved-word highlights from green to red.
 - Updated highlighting so saved words are skipped inside links, buttons, navigation areas, labels, and form fields.
 - Applied the same skip rule to both the first page scan and newly loaded page content.
 - Built the first version of the Glowsary Chrome extension.

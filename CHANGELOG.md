@@ -1,5 +1,6 @@
 ## 2026-06-02
 
+- Moved the Chrome extension files into an `extension/` folder while keeping documentation at the project root.
 - Added search and sorting to the saved words management page.
 - Changed saved-word highlights from green to red.
 - Updated highlighting so saved words are skipped inside links, buttons, navigation areas, labels, and form fields.

@@ -65,6 +65,19 @@
           <h2 id="list-heading">Saved words</h2>
           <span id="entry-count">0 entries</span>
         </div>
+        <div class="list-controls">
+          <label class="search-field">
+            Search
+            <input id="search-input" type="search" autocomplete="off" placeholder="Search terms" />
+          </label>
+          <label class="sort-field">
+            Sort
+            <select id="sort-select">
+              <option value="latest">Latest added</option>
+              <option value="az">A -> Z</option>
+            </select>
+          </label>
+        </div>
         <div class="empty-state" id="empty-state">No words saved yet.</div>
         <div class="entry-list" id="entry-list"></div>
       </section>

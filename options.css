@@ -59,6 +59,7 @@ h2 {
 
 button,
 input,
+select,
 textarea {
   font: inherit;
 }
@@ -271,6 +272,47 @@ button {
   font-weight: 700;
 }
 
+.list-controls {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(160px, 220px);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.search-field,
+.sort-field {
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.search-field input,
+.sort-field select {
+  width: 100%;
+  min-height: 40px;
+  color: var(--text);
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  outline: none;
+}
+
+.search-field input {
+  padding: 8px 10px;
+}
+
+.sort-field select {
+  padding: 8px 32px 8px 10px;
+}
+
+.search-field input:focus,
+.sort-field select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(36, 160, 111, 0.16);
+}
+
 .empty-state {
   margin-top: 16px;
   padding: 22px;
@@ -325,8 +367,13 @@ button {
 
   .topbar,
   .settings-panel,
+  .list-controls,
   .entry-card {
     display: grid;
+  }
+
+  .list-controls {
+    grid-template-columns: 1fr;
   }
 
   .entry-card {

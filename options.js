@@ -2,12 +2,14 @@ const ENTRIES_KEY = "glowsaryEntries";
 const SETTINGS_KEY = "glowsarySettings";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
-  revealTrigger: "hover"
+  revealTrigger: "hover",
+  managementSort: "latest"
 };
 
 let entries = [];
 let settings = { ...DEFAULT_SETTINGS };
 let editingTerm = "";
+let searchQuery = "";
 
 const elements = {
   addEntry: document.querySelector("#add-entry"),
@@ -22,6 +24,8 @@ const elements = {
   definitionInput: document.querySelector("#definition-input"),
   formMessage: document.querySelector("#form-message"),
   entryCount: document.querySelector("#entry-count"),
+  searchInput: document.querySelector("#search-input"),
+  sortSelect: document.querySelector("#sort-select"),
   emptyState: document.querySelector("#empty-state"),
   entryList: document.querySelector("#entry-list")
 };
@@ -143,18 +147,37 @@ async function deleteEntry(term) {
 
 function renderSettings() {
   elements.highlightingEnabled.checked = Boolean(settings.highlightingEnabled);
+  elements.sortSelect.value = settings.managementSort === "az" ? "az" : "latest";
 
   for (const input of elements.triggerInputs) {
     input.checked = input.value === settings.revealTrigger;
   }
 }
 
-function renderEntries() {
-  elements.entryList.replaceChildren();
-  elements.entryCount.textContent = `${entries.length} ${entries.length === 1 ? "entry" : "entries"}`;
-  elements.emptyState.hidden = entries.length > 0;
+function getVisibleEntries() {
+  const normalizedQuery = normalizeTerm(searchQuery);
+  const filteredEntries = normalizedQuery
+    ? entries.filter((entry) => normalizeTerm(entry.displayTerm || entry.term).includes(normalizedQuery) || entry.term.includes(normalizedQuery))
+    : entries.slice();
 
-  for (const entry of entries) {
+  return filteredEntries.sort((a, b) => {
+    if (settings.managementSort === "az") {
+      return (a.displayTerm || a.term).localeCompare(b.displayTerm || b.term, undefined, { sensitivity: "base" });
+    }
+
+    return (b.createdAt || 0) - (a.createdAt || 0);
+  });
+}
+
+function renderEntries() {
+  const visibleEntries = getVisibleEntries();
+
+  elements.entryList.replaceChildren();
+  elements.entryCount.textContent = `${visibleEntries.length} ${visibleEntries.length === 1 ? "entry" : "entries"}`;
+  elements.emptyState.hidden = visibleEntries.length > 0;
+  elements.emptyState.textContent = entries.length === 0 ? "No words saved yet." : "No matching words.";
+
+  for (const entry of visibleEntries) {
     const card = document.createElement("article");
     card.className = "entry-card";
 
@@ -210,6 +233,17 @@ function bindEvents() {
     saveEntry();
   });
   elements.termInput.addEventListener("input", handleTermInput);
+  elements.searchInput.addEventListener("input", () => {
+    searchQuery = elements.searchInput.value;
+    renderEntries();
+  });
+  elements.sortSelect.addEventListener("change", () => {
+    saveSettings({
+      ...settings,
+      managementSort: elements.sortSelect.value
+    });
+    renderEntries();
+  });
 
   elements.highlightingEnabled.addEventListener("change", () => {
     saveSettings({
@@ -245,6 +279,7 @@ function bindEvents() {
         ...(changes[SETTINGS_KEY].newValue || {})
       };
       renderSettings();
+      renderEntries();
     }
   });
 }

@@ -1,5 +1,8 @@
 ## 2026-06-03
 
+- Added a Markdown formatting rule to prevent awkward paragraph breaks in future documentation edits.
+- Cleaned up the agent instruction formatting so each numbered rule reads as one paragraph.
+- Tightened the agent instructions for PRD checks, planning, and bug clarification before implementation.
 - Renamed the right-click save action and in-page form from note language to Add word and Edit word.
 - Reorganized the PRD by adding a document version and moving roadmap and notes content into separate files.
 - Changed the management Add new and Edit form to open in a centered modal.

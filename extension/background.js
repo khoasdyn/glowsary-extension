@@ -3,7 +3,7 @@ const CONTEXT_MENU_ID = "glowsary-create-note";
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: CONTEXT_MENU_ID,
-    title: "Create note",
+    title: "Add word",
     contexts: ["selection"]
   });
 });

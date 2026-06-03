@@ -34,7 +34,7 @@ A self-directed English learner, often a non-native speaker, who reads English c
 
 ### Saving a word or phrase
 
-- FR-1: The user can select a single word or a multi-word phrase on any web page, right-click, and choose a “Create note” action from the context menu.
+- FR-1: The user can select a single word or a multi-word phrase on any web page, right-click, and choose an “Add word” action from the context menu.
 - FR-2: Choosing the action opens a small in-page UI with three fields: Word, Definition, and Alias. The Word field is pre-filled with the exact text the user selected, including phrases such as “get in”. The Alias field is empty.
 - FR-2a: If the selected text already matches a saved entry by its term or by any of its aliases (ignoring capitalization), the UI opens that existing entry with its saved definition and aliases loaded, so the user edits it instead of creating a duplicate.
 - FR-3: The user can edit the Word field, type the Definition by hand, and optionally type one or more aliases. The Word and Definition fields are required to save. The Alias field is optional.
@@ -92,13 +92,13 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Definition popup** — The small floating panel that appears next to a highlighted word when the user hovers or clicks it (depending on the reveal trigger setting). Shows the saved definition for that entry. Dismissed by moving away (hover mode) or clicking elsewhere (click mode).
 
-**Save form** — The in-page UI that appears after the user chooses “Create note” from the context menu. Contains three fields: Word (pre-filled with the selected text), Definition (empty), and Alias (empty, optional). Has a Save button. Opens as an edit form if the selected text matches an existing entry’s term or alias.
+**Save form** — The in-page UI that appears after the user chooses “Add word” from the context menu. Contains three fields: Word (pre-filled with the selected text), Definition (empty), and Alias (empty, optional). Has a Save button. Opens as an edit form if the selected text matches an existing entry’s term or alias.
 
 **Alias field** — The text input in the save form and management form where the user types optional aliases for the entry, separated by commas. Each alias is an alternate spelling or word form that is highlighted with the same definition as the term.
 
 **Management form modal** — The centered modal opened by Add new and Edit in the management view. Contains Word, Definition, and Alias fields. Closes with the X button, Cancel, or Escape, but not by clicking the backdrop.
 
-**Context menu item** — The “Create note” action injected into the browser’s native right-click context menu when the user has text selected on a page.
+**Context menu item** — The “Add word” action injected into the browser’s native right-click context menu when the user has text selected on a page.
 
 **Management view** — The full-page view (extension page or popup panel) that lists all saved entries. Contains the settings bar, the search box, the sort control, the entry list, and the Add new button.
 
@@ -125,8 +125,8 @@ This section names every distinct UI component in the extension. Future referenc
 1. The extension is installed and the global switch is on.
 2. The user is reading an article, for example a Substack post.
 3. The user meets a word or phrase they do not know and wants to save it.
-4. The user selects the word or phrase, right-clicks, and chooses “Create note”.
-5. The in-page UI appears with the Word field pre-filled with the selected text. The user types the definition and clicks Save. If the text was already saved, the UI instead opens the existing note for editing.
+4. The user selects the word or phrase, right-clicks, and chooses “Add word”.
+5. The in-page UI appears with the Word field pre-filled with the selected text. The user types the definition and clicks Save. If the text was already saved, the UI instead opens the existing entry for editing.
 6. Every instance of that word or phrase on the current page is highlighted right away.
 7. Later, on the same site or any other site, the user hovers or clicks a highlighted instance and sees the saved definition in a popup.
 8. The user opens the management view to edit or delete saved entries as needed.

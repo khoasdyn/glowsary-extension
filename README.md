@@ -1,6 +1,6 @@
 # Glowsary Chrome Extension
 
-Glowsary is a vanilla Manifest V3 Chrome extension for saving personal vocabulary notes and highlighting those saved words across the web.
+Glowsary is a vanilla Manifest V3 Chrome extension for saving personal vocabulary words and highlighting those saved words across the web.
 
 ## Load Locally
 
@@ -9,7 +9,7 @@ Glowsary is a vanilla Manifest V3 Chrome extension for saving personal vocabular
 3. Choose **Load unpacked**.
 4. Select the `extension/` folder inside this project.
 
-Click the extension icon to open the management page. Select text on a webpage, right-click, and choose **Create note** to save a word or phrase from the page.
+Click the extension icon to open the management page. Select text on a webpage, right-click, and choose **Add word** to save a word or phrase from the page.
 
 ## Manual Test
 

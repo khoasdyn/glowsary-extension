@@ -1,5 +1,6 @@
 ## 2026-06-03
 
+- Renamed the right-click save action and in-page form from note language to Add word and Edit word.
 - Reorganized the PRD by adding a document version and moving roadmap and notes content into separate files.
 - Changed the management Add new and Edit form to open in a centered modal.
 

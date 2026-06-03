@@ -449,7 +449,7 @@
     backdrop.innerHTML = `
       <section class="glowsary-dialog" role="dialog" aria-modal="true" aria-labelledby="glowsary-dialog-title">
         <div class="glowsary-dialog-header">
-          <h2 class="glowsary-dialog-title" id="glowsary-dialog-title">${existing ? "Edit note" : "Create note"}</h2>
+          <h2 class="glowsary-dialog-title" id="glowsary-dialog-title">${existing ? "Edit word" : "Add word"}</h2>
           <button class="glowsary-dialog-close" type="button" aria-label="Close">&times;</button>
         </div>
         <form class="glowsary-form">
@@ -493,7 +493,7 @@
       }
 
       editingTerm = duplicate.term;
-      title.textContent = "Edit note";
+      title.textContent = "Edit word";
       termInput.value = duplicate.displayTerm;
       definitionInput.value = duplicate.definition;
       aliasInput.value = formatAliases(duplicate.aliases);

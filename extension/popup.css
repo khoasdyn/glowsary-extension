@@ -107,6 +107,41 @@ h1 {
   accent-color: var(--accent);
 }
 
+.exclude-panel {
+  display: grid;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.secondary-button {
+  min-height: 38px;
+  color: #334155;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  font-weight: 700;
+}
+
+.secondary-button:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
+.secondary-button:disabled {
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.popup-message {
+  min-height: 18px;
+  color: #b42318;
+  font-size: 13px;
+}
+
+.popup-message.is-info {
+  color: var(--accent-dark);
+}
+
 .settings-button {
   min-height: 38px;
   color: #ffffff;

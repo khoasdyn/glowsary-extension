@@ -1,6 +1,7 @@
 (() => {
   const ENTRIES_KEY = "glowsaryEntries";
   const SETTINGS_KEY = "glowsarySettings";
+  const EXCLUDED_SITES_KEY = "glowsaryExcludedSites";
   const DEFAULT_SETTINGS = {
     highlightingEnabled: true,
     revealTrigger: "hover"
@@ -26,6 +27,8 @@
 
   let entries = [];
   let settings = { ...DEFAULT_SETTINGS };
+  let excludedSites = [];
+  let currentSiteDomain = null;
   let observer = null;
   let suppressMutations = false;
   let highlightTimer = 0;
@@ -62,6 +65,21 @@
       ...entry,
       aliases: normalizeAliasList(entry.aliases)
     };
+  }
+
+  function normalizeExcludedSites(sites = []) {
+    return window.GlowsaryDomains?.normalizeExcludedSites?.(sites) || [];
+  }
+
+  function isCurrentSiteExcluded() {
+    return Boolean(
+      currentSiteDomain &&
+        excludedSites.some((site) => site.enabled !== false && site.domain === currentSiteDomain)
+    );
+  }
+
+  function canShowHighlights() {
+    return Boolean(settings.highlightingEnabled && !isCurrentSiteExcluded());
   }
 
   function parseAliases(value, normalizedTerm) {
@@ -283,7 +301,7 @@
   }
 
   function highlightRoot(root) {
-    if (!settings.highlightingEnabled || !entries.length || !root || isEditableNode(root)) {
+    if (!canShowHighlights() || !entries.length || !root || isEditableNode(root)) {
       return;
     }
 
@@ -327,7 +345,7 @@
     window.clearTimeout(highlightTimer);
     removeHighlights(document);
 
-    if (settings.highlightingEnabled) {
+    if (canShowHighlights()) {
       scheduleHighlight(document.body);
     }
   }
@@ -602,7 +620,7 @@
     }
 
     observer = new MutationObserver((mutations) => {
-      if (suppressMutations || !settings.highlightingEnabled) {
+      if (suppressMutations || !canShowHighlights()) {
         return;
       }
 
@@ -633,7 +651,8 @@
   async function loadState() {
     const result = await storage.get({
       [ENTRIES_KEY]: [],
-      [SETTINGS_KEY]: DEFAULT_SETTINGS
+      [SETTINGS_KEY]: DEFAULT_SETTINGS,
+      [EXCLUDED_SITES_KEY]: []
     });
 
     entries = Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY].map(normalizeEntry) : [];
@@ -641,6 +660,8 @@
       ...DEFAULT_SETTINGS,
       ...(result[SETTINGS_KEY] || {})
     };
+    excludedSites = normalizeExcludedSites(result[EXCLUDED_SITES_KEY]);
+    currentSiteDomain = await window.GlowsaryDomains?.getWholeSiteDomainFromInput?.(window.location.hostname);
   }
 
   function bindChromeEvents() {
@@ -666,7 +687,11 @@
         };
       }
 
-      if (changes[ENTRIES_KEY] || changes[SETTINGS_KEY]) {
+      if (changes[EXCLUDED_SITES_KEY]) {
+        excludedSites = normalizeExcludedSites(changes[EXCLUDED_SITES_KEY].newValue);
+      }
+
+      if (changes[ENTRIES_KEY] || changes[SETTINGS_KEY] || changes[EXCLUDED_SITES_KEY]) {
         refreshHighlights();
       }
     });
@@ -692,7 +717,7 @@
     bindChromeEvents();
     startObserver();
 
-    if (settings.highlightingEnabled) {
+    if (canShowHighlights()) {
       scheduleHighlight(document.body);
     }
   }

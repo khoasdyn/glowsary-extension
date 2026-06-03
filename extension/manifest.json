@@ -13,10 +13,16 @@
     "default_title": "Glowsary"
   },
   "options_page": "options.html",
+  "web_accessible_resources": [
+    {
+      "resources": ["public_suffix_list.dat"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "js": ["domain-utils.js", "content.js"],
       "css": ["content.css"],
       "run_at": "document_idle"
     }

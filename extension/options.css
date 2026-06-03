@@ -132,6 +132,7 @@ button {
 }
 
 .settings-panel,
+.excluded-section,
 .list-section {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -145,6 +146,16 @@ button {
   gap: 24px;
   padding: 16px;
   margin-bottom: 14px;
+}
+
+.excluded-section {
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.excluded-section p {
+  margin-top: 4px;
+  color: var(--muted);
 }
 
 .switch-row {
@@ -303,7 +314,8 @@ button {
 }
 
 .search-field,
-.sort-field {
+.sort-field,
+.excluded-field {
   display: grid;
   gap: 6px;
   color: #334155;
@@ -312,7 +324,9 @@ button {
 }
 
 .search-field input,
-.sort-field select {
+.sort-field select,
+.excluded-field input,
+.excluded-domain-input {
   width: 100%;
   min-height: 40px;
   color: var(--text);
@@ -322,7 +336,9 @@ button {
   outline: none;
 }
 
-.search-field input {
+.search-field input,
+.excluded-field input,
+.excluded-domain-input {
   padding: 8px 10px;
 }
 
@@ -331,9 +347,45 @@ button {
 }
 
 .search-field input:focus,
-.sort-field select:focus {
+.sort-field select:focus,
+.excluded-field input:focus,
+.excluded-domain-input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(36, 160, 111, 0.16);
+}
+
+.excluded-form {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+  margin-top: 16px;
+}
+
+#excluded-count {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.excluded-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.excluded-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 180px) minmax(200px, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.excluded-toggle {
+  min-width: 0;
 }
 
 .empty-state {
@@ -403,15 +455,19 @@ button {
 
   .topbar,
   .settings-panel,
+  .excluded-form,
+  .excluded-row,
   .list-controls,
   .entry-card {
     display: grid;
   }
 
+  .excluded-form,
   .list-controls {
     grid-template-columns: 1fr;
   }
 
+  .excluded-row,
   .entry-card {
     grid-template-columns: 1fr;
   }

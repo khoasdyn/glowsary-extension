@@ -32,9 +32,15 @@
         </label>
       </fieldset>
 
+      <section class="exclude-panel" aria-label="Excluded site">
+        <button class="secondary-button" id="exclude-site" type="button">Exclude this site</button>
+        <div class="popup-message" id="exclude-message" role="status"></div>
+      </section>
+
       <button class="settings-button" id="open-settings" type="button">Settings</button>
     </main>
 
+    <script src="domain-utils.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>

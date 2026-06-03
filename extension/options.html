@@ -38,6 +38,26 @@
         </fieldset>
       </section>
 
+      <section class="excluded-section" aria-labelledby="excluded-heading">
+        <div class="list-heading-row">
+          <div>
+            <h2 id="excluded-heading">Excluded sites</h2>
+            <p>Pause highlighting on sites where saved words are noise.</p>
+          </div>
+          <span id="excluded-count">0 sites</span>
+        </div>
+        <form class="excluded-form" id="excluded-form">
+          <label class="excluded-field">
+            Domain
+            <input id="excluded-input" type="text" autocomplete="off" placeholder="spotify.com" />
+          </label>
+          <button class="secondary-button" type="submit">Exclude site</button>
+        </form>
+        <div class="form-message" id="excluded-message" role="status"></div>
+        <div class="empty-state" id="excluded-empty">No sites excluded.</div>
+        <div class="excluded-list" id="excluded-list"></div>
+      </section>
+
       <div class="modal-backdrop" id="editor-panel" hidden>
         <section class="editor-panel" role="dialog" aria-modal="true" aria-labelledby="editor-title">
           <div class="panel-header">
@@ -89,6 +109,7 @@
       </section>
     </main>
 
+    <script src="domain-utils.js"></script>
     <script src="options.js"></script>
   </body>
 </html>

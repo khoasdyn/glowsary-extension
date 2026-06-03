@@ -1,5 +1,6 @@
 const ENTRIES_KEY = "glowsaryEntries";
 const SETTINGS_KEY = "glowsarySettings";
+const EXCLUDED_SITES_KEY = "glowsaryExcludedSites";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
   revealTrigger: "hover",
@@ -8,6 +9,7 @@ const DEFAULT_SETTINGS = {
 
 let entries = [];
 let settings = { ...DEFAULT_SETTINGS };
+let excludedSites = [];
 let editingEntry = null;
 let searchQuery = "";
 
@@ -28,7 +30,13 @@ const elements = {
   searchInput: document.querySelector("#search-input"),
   sortSelect: document.querySelector("#sort-select"),
   emptyState: document.querySelector("#empty-state"),
-  entryList: document.querySelector("#entry-list")
+  entryList: document.querySelector("#entry-list"),
+  excludedForm: document.querySelector("#excluded-form"),
+  excludedInput: document.querySelector("#excluded-input"),
+  excludedMessage: document.querySelector("#excluded-message"),
+  excludedCount: document.querySelector("#excluded-count"),
+  excludedEmpty: document.querySelector("#excluded-empty"),
+  excludedList: document.querySelector("#excluded-list")
 };
 
 const storage = {
@@ -60,6 +68,10 @@ function normalizeEntry(entry) {
     ...entry,
     aliases: normalizeAliasList(entry.aliases)
   };
+}
+
+function normalizeExcludedSites(sites = []) {
+  return window.GlowsaryDomains?.normalizeExcludedSites?.(sites) || [];
 }
 
 function parseAliases(value, normalizedTerm) {
@@ -130,6 +142,11 @@ function setMessage(message, kind = "error") {
   elements.formMessage.classList.toggle("is-info", kind === "info");
 }
 
+function setExcludedMessage(message, kind = "error") {
+  elements.excludedMessage.textContent = message;
+  elements.excludedMessage.classList.toggle("is-info", kind === "info");
+}
+
 function showEditor(entry = null) {
   editingEntry = entry;
   elements.editorTitle.textContent = entry ? "Edit word" : "Add word";
@@ -166,6 +183,12 @@ async function saveSettings(nextSettings) {
   };
   await storage.set({ [SETTINGS_KEY]: settings });
   renderSettings();
+}
+
+async function saveExcludedSites(nextSites) {
+  excludedSites = normalizeExcludedSites(nextSites);
+  await storage.set({ [EXCLUDED_SITES_KEY]: excludedSites });
+  renderExcludedSites();
 }
 
 async function saveEntry() {
@@ -272,6 +295,125 @@ function renderEntries() {
   }
 }
 
+function isDuplicateExcludedDomain(domain, ignoredSite = null) {
+  return excludedSites.some((site) => site !== ignoredSite && site.domain === domain);
+}
+
+async function cleanExcludedDomain(value) {
+  return window.GlowsaryDomains?.getWholeSiteDomainFromInput?.(value);
+}
+
+async function addExcludedSite(value) {
+  const domain = await cleanExcludedDomain(value);
+
+  if (!domain) {
+    setExcludedMessage("Enter a valid domain.");
+    return;
+  }
+
+  if (isDuplicateExcludedDomain(domain)) {
+    setExcludedMessage("Already on the list.");
+    return;
+  }
+
+  await saveExcludedSites(excludedSites.concat({
+    domain,
+    enabled: true,
+    createdAt: Date.now()
+  }));
+  elements.excludedInput.value = "";
+  setExcludedMessage(`Added ${domain}.`, "info");
+}
+
+async function toggleExcludedSite(targetSite, enabled) {
+  await saveExcludedSites(excludedSites.map((site) => (
+    site === targetSite
+      ? { ...site, enabled }
+      : site
+  )));
+  setExcludedMessage("");
+}
+
+async function deleteExcludedSite(targetSite) {
+  await saveExcludedSites(excludedSites.filter((site) => site !== targetSite));
+  setExcludedMessage("");
+}
+
+async function commitExcludedDomain(input, targetSite) {
+  const previousDomain = targetSite.domain;
+  const domain = await cleanExcludedDomain(input.value);
+
+  if (!domain || isDuplicateExcludedDomain(domain, targetSite)) {
+    input.value = previousDomain;
+    setExcludedMessage(domain ? "Already on the list." : "Enter a valid domain.");
+    return;
+  }
+
+  if (domain === previousDomain) {
+    input.value = previousDomain;
+    setExcludedMessage("");
+    return;
+  }
+
+  await saveExcludedSites(excludedSites.map((site) => (
+    site === targetSite
+      ? { ...site, domain }
+      : site
+  )));
+  setExcludedMessage(`Updated to ${domain}.`, "info");
+}
+
+function renderExcludedSites() {
+  const visibleSites = excludedSites.slice().sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+  elements.excludedList.replaceChildren();
+  elements.excludedCount.textContent = `${visibleSites.length} ${visibleSites.length === 1 ? "site" : "sites"}`;
+  elements.excludedEmpty.hidden = visibleSites.length > 0;
+
+  for (const site of visibleSites) {
+    const row = document.createElement("div");
+    row.className = "excluded-row";
+
+    const toggleLabel = document.createElement("label");
+    toggleLabel.className = "switch-row excluded-toggle";
+
+    const toggleInput = document.createElement("input");
+    toggleInput.type = "checkbox";
+    toggleInput.checked = site.enabled !== false;
+    toggleInput.addEventListener("change", () => toggleExcludedSite(site, toggleInput.checked));
+
+    const toggleText = document.createElement("span");
+    const toggleTitle = document.createElement("strong");
+    toggleTitle.textContent = "Exclusion";
+    const toggleHint = document.createElement("small");
+    toggleHint.textContent = toggleInput.checked ? "On" : "Paused";
+    toggleText.append(toggleTitle, toggleHint);
+    toggleLabel.append(toggleInput, toggleText);
+
+    const domainInput = document.createElement("input");
+    domainInput.className = "excluded-domain-input";
+    domainInput.type = "text";
+    domainInput.value = site.domain;
+    domainInput.autocomplete = "off";
+    domainInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        domainInput.blur();
+      }
+    });
+    domainInput.addEventListener("blur", () => commitExcludedDomain(domainInput, site));
+
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "danger-button";
+    deleteButton.type = "button";
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", () => deleteExcludedSite(site));
+
+    row.append(toggleLabel, domainInput, deleteButton);
+    elements.excludedList.appendChild(row);
+  }
+}
+
 function bindEvents() {
   elements.addEntry.addEventListener("click", () => showEditor());
   elements.closeEditor.addEventListener("click", hideEditor);
@@ -284,6 +426,10 @@ function bindEvents() {
   elements.form.addEventListener("submit", (event) => {
     event.preventDefault();
     saveEntry();
+  });
+  elements.excludedForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    addExcludedSite(elements.excludedInput.value);
   });
   elements.searchInput.addEventListener("input", () => {
     searchQuery = elements.searchInput.value;
@@ -333,13 +479,19 @@ function bindEvents() {
       renderSettings();
       renderEntries();
     }
+
+    if (changes[EXCLUDED_SITES_KEY]) {
+      excludedSites = normalizeExcludedSites(changes[EXCLUDED_SITES_KEY].newValue);
+      renderExcludedSites();
+    }
   });
 }
 
 async function loadState() {
   const result = await storage.get({
     [ENTRIES_KEY]: [],
-    [SETTINGS_KEY]: DEFAULT_SETTINGS
+    [SETTINGS_KEY]: DEFAULT_SETTINGS,
+    [EXCLUDED_SITES_KEY]: []
   });
 
   entries = Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY].map(normalizeEntry) : [];
@@ -347,11 +499,13 @@ async function loadState() {
     ...DEFAULT_SETTINGS,
     ...(result[SETTINGS_KEY] || {})
   };
+  excludedSites = normalizeExcludedSites(result[EXCLUDED_SITES_KEY]);
 }
 
 async function init() {
   await loadState();
   renderSettings();
+  renderExcludedSites();
   renderEntries();
   bindEvents();
 }

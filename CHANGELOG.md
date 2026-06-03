@@ -1,3 +1,7 @@
+## 2026-06-04
+
+- Added excluded sites so highlighting can be suppressed per domain while saving and management still work.
+
 ## 2026-06-03
 
 - Added the toolbar popup with shared highlighting settings and a settings button that opens the management view.

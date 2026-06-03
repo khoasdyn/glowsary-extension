@@ -19,17 +19,6 @@ The product should help a reader recognize words they have already looked up, wi
 3. Show the saved definition on demand without leaving the page.
 4. Let the user manage their saved words in one place.
 
-## Non-goals
-
-The product is a passive memory aid. It is not a study tool. The following are out of scope:
-
-1. Flashcards, quizzes, spaced repetition, or any review mode.
-2. Tracking progress or marking a word as “learned”.
-3. Automatic matching of word forms (saving “love” will not by itself highlight “loved” or “loving”). The user can add these forms manually as aliases (see the Aliases section), but the product does not detect them on its own.
-4. Auto-filling definitions from a dictionary.
-5. Multiple meanings stored under one word or phrase.
-6. Cross-device sync or user accounts.
-
 ## Target user
 
 A self-directed English learner, often a non-native speaker, who reads English content online to improve. They already look up words while reading. They want a low-effort way to keep and recognize those words without changing how they read.

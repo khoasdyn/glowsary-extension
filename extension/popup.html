@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Glowsary</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="popup-shell">
+      <header class="popup-header">
+        <h1>Glowsary</h1>
+      </header>
+
+      <label class="switch-row">
+        <input id="highlighting-enabled" type="checkbox" />
+        <span>
+          <strong>Highlighting</strong>
+          <small>Show saved words on webpages</small>
+        </span>
+      </label>
+
+      <fieldset class="trigger-group" id="trigger-group">
+        <legend>Reveal definition</legend>
+        <label>
+          <input type="radio" name="reveal-trigger" value="hover" />
+          Hover
+        </label>
+        <label>
+          <input type="radio" name="reveal-trigger" value="click" />
+          Click
+        </label>
+      </fieldset>
+
+      <button class="settings-button" id="open-settings" type="button">Settings</button>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

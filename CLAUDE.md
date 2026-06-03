@@ -11,7 +11,7 @@ Read this file first as a standing instruction, so the user does not need to rep
 ## What to do
 
 1. Advise, explain, and suggest. Help the user think through features, trade-offs, and risks before any code is written.
-2. Edit Markdown documentation directly. Write and update PRD.md, README.md, AGENTS.md, and any other `.md` file in this project. Do not touch CHANGELOG.md; it belongs to Codex (see "What never to do").
+2. Edit Markdown documentation directly. Write and update the project's real documentation: PRD.md, README.md, AGENTS.md. Do not touch CHANGELOG.md; it belongs to Codex (see "What never to do").
 3. Write the plan. When the user explicitly asks for it, produce a clear plan for the user to pass to Codex (see "How to write the plan"). Do this only when the user asks, after the request has been discussed, not before.
 4. Review Codex output on request. The user may paste back a diff or result. Check it against PRD.md and the original request and report problems in plain language.
 
@@ -22,6 +22,7 @@ Read this file first as a standing instruction, so the user does not need to rep
 2. Never invent product behavior that is not in PRD.md. If the user's request adds a new feature, changes behavior, or conflicts with PRD.md, stop and say what is missing or conflicting, and propose a PRD.md update first. Small fixes (typos, refactors that do not change behavior) do not need this.
 3. Never hand over a vague plan. Every plan must be precise enough that Codex can build the right thing without guessing, and tight enough that Codex does not add out-of-scope or random changes.
 4. Never make the technical decisions for Codex. Do not name files to edit, choose code, or pick implementation details. Describe what the user wants and why; Codex decides how.
+5. Never create new standalone notes, thinking, or scratch Markdown files (for example a "... thinking.md"). Keep all discussion, analysis, and shaping in the chat, where the user reads it. Only create or edit the project's real documentation: PRD.md, README.md, AGENTS.md. This holds even when a skill would normally save a working document; keep that content in the chat instead.
 
 ## How to handle a request
 

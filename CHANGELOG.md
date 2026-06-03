@@ -1,5 +1,7 @@
 ## 2026-06-03
 
+- Added the toolbar popup with shared highlighting settings and a settings button that opens the management view.
+- Allowed saving duplicate words as separate entries and paged their definitions in one sticky popup.
 - Changed the highlight underline from red with rounded ends to a straight blue line.
 - Added a Markdown formatting rule to prevent awkward paragraph breaks in future documentation edits.
 - Cleaned up the agent instruction formatting so each numbered rule reads as one paragraph.

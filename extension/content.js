@@ -29,6 +29,7 @@
   let observer = null;
   let suppressMutations = false;
   let highlightTimer = 0;
+  let popupCloseTimer = 0;
   let activePopup = null;
   let activeDialog = null;
 
@@ -91,10 +92,6 @@
     return { aliases };
   }
 
-  function formatAliases(aliases = []) {
-    return normalizeAliasList(aliases).map((alias) => alias.displayTerm).join(", ");
-  }
-
   function escapeRegExp(value) {
     return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
@@ -151,14 +148,6 @@
     );
   }
 
-  function getStoredEntry(term) {
-    return entries.find((entry) => entry.term === term);
-  }
-
-  function getStoredEntryByTermOrAlias(term) {
-    return entries.find((entry) => entry.term === term || normalizeAliasList(entry.aliases).some((alias) => alias.term === term));
-  }
-
   function buildPattern(term) {
     return term
       .split(" ")
@@ -202,10 +191,50 @@
       }
     }
 
-    candidates.sort((a, b) => b.length - a.length || b.priority - a.priority || a.start - b.start);
-    const selected = [];
+    const groupedCandidates = [];
+    const groupMap = new Map();
 
     for (const candidate of candidates) {
+      const matchedText = text.slice(candidate.start, candidate.end);
+      const groupKey = `${candidate.start}:${candidate.end}:${matchedText.toLowerCase()}`;
+      const page = {
+        entry: candidate.entry,
+        source: candidate.source,
+        definition: candidate.entry.definition,
+        displayTerm: candidate.source.isAlias ? "" : candidate.entry.displayTerm,
+        isAlias: candidate.source.isAlias
+      };
+      let group = groupMap.get(groupKey);
+
+      if (!group) {
+        group = {
+          start: candidate.start,
+          end: candidate.end,
+          length: candidate.length,
+          priority: candidate.priority,
+          matchedText,
+          pages: [],
+          entries: new Set()
+        };
+        groupMap.set(groupKey, group);
+        groupedCandidates.push(group);
+      }
+
+      group.priority = Math.max(group.priority, candidate.priority);
+      if (!group.entries.has(candidate.entry)) {
+        group.entries.add(candidate.entry);
+        group.pages.push(page);
+      }
+    }
+
+    for (const group of groupedCandidates) {
+      group.pages.sort((a, b) => (b.entry.createdAt || 0) - (a.entry.createdAt || 0));
+    }
+
+    groupedCandidates.sort((a, b) => b.length - a.length || b.priority - a.priority || a.start - b.start);
+    const selected = [];
+
+    for (const candidate of groupedCandidates) {
       const overlaps = selected.some((match) => candidate.start < match.end && candidate.end > match.start);
       if (!overlaps) {
         selected.push(candidate);
@@ -237,10 +266,7 @@
 
       const span = document.createElement("span");
       span.className = HIGHLIGHT_CLASS;
-      span.dataset.glowsaryTerm = match.entry.term;
-      span.dataset.glowsaryDefinition = match.entry.definition;
-      span.dataset.glowsaryDisplayTerm = match.source.isAlias ? "" : match.entry.displayTerm;
-      span.dataset.glowsaryMatchType = match.source.isAlias ? "alias" : "term";
+      span.glowsaryPages = match.pages;
       span.textContent = text.slice(match.start, match.end);
       attachHighlightEvents(span);
       fragment.appendChild(span);
@@ -315,7 +341,7 @@
 
     element.addEventListener("mouseleave", () => {
       if (settings.revealTrigger === "hover") {
-        dismissPopup();
+        schedulePopupDismiss();
       }
     });
 
@@ -336,15 +362,27 @@
   function showPopup(anchor) {
     dismissPopup();
 
+    const pages = Array.isArray(anchor.glowsaryPages) && anchor.glowsaryPages.length
+      ? anchor.glowsaryPages
+      : [{ definition: "", displayTerm: anchor.textContent || "", isAlias: false }];
     const popup = document.createElement("div");
     popup.className = POPUP_CLASS;
-    popup.innerHTML = `<strong></strong><div></div>`;
-    const title = popup.querySelector("strong");
-    title.textContent = anchor.dataset.glowsaryDisplayTerm || anchor.textContent || "";
-    title.hidden = anchor.dataset.glowsaryMatchType === "alias";
-    popup.querySelector("div").textContent = anchor.dataset.glowsaryDefinition || "";
+    popup.innerHTML = `<strong></strong><div class="glowsary-popup-definition"></div>`;
     document.documentElement.appendChild(popup);
+    activePopup = { element: popup, anchor, pages, pageIndex: 0 };
 
+    if (settings.revealTrigger === "hover") {
+      popup.addEventListener("mouseenter", () => {
+        window.clearTimeout(popupCloseTimer);
+      });
+      popup.addEventListener("mouseleave", schedulePopupDismiss);
+    }
+
+    renderPopupPage();
+    positionPopup(anchor, popup);
+  }
+
+  function positionPopup(anchor, popup) {
     const rect = anchor.getBoundingClientRect();
     const popupRect = popup.getBoundingClientRect();
     const gap = 8;
@@ -361,10 +399,73 @@
 
     popup.style.top = `${Math.max(gap, top)}px`;
     popup.style.left = `${Math.max(gap, left)}px`;
-    activePopup = { element: popup, anchor };
+  }
+
+  function renderPopupPage() {
+    if (!activePopup) {
+      return;
+    }
+
+    const { element, anchor, pages } = activePopup;
+    const page = pages[activePopup.pageIndex] || pages[0];
+    const title = element.querySelector("strong");
+    const definition = element.querySelector(".glowsary-popup-definition");
+    title.textContent = page.displayTerm || anchor.textContent || "";
+    title.hidden = Boolean(page.isAlias);
+    definition.textContent = page.definition || "";
+    element.querySelector(".glowsary-popup-pagination")?.remove();
+
+    if (pages.length <= 1) {
+      positionPopup(anchor, element);
+      return;
+    }
+
+    const pagination = document.createElement("div");
+    pagination.className = "glowsary-popup-pagination";
+
+    const previous = document.createElement("button");
+    previous.type = "button";
+    previous.textContent = "Prev";
+    previous.disabled = activePopup.pageIndex === 0;
+    previous.addEventListener("click", () => {
+      activePopup.pageIndex = Math.max(0, activePopup.pageIndex - 1);
+      renderPopupPage();
+    });
+
+    const status = document.createElement("span");
+    status.textContent = `${activePopup.pageIndex + 1} / ${pages.length}`;
+
+    const next = document.createElement("button");
+    next.type = "button";
+    next.textContent = "Next";
+    next.disabled = activePopup.pageIndex === pages.length - 1;
+    next.addEventListener("click", () => {
+      activePopup.pageIndex = Math.min(pages.length - 1, activePopup.pageIndex + 1);
+      renderPopupPage();
+    });
+
+    pagination.append(previous, status, next);
+    element.appendChild(pagination);
+    positionPopup(anchor, element);
+  }
+
+  function schedulePopupDismiss() {
+    window.clearTimeout(popupCloseTimer);
+    popupCloseTimer = window.setTimeout(() => {
+      if (!activePopup) {
+        return;
+      }
+
+      if (activePopup.anchor.matches(":hover") || activePopup.element.matches(":hover")) {
+        return;
+      }
+
+      dismissPopup();
+    }, 180);
   }
 
   function dismissPopup() {
+    window.clearTimeout(popupCloseTimer);
     activePopup?.element.remove();
     activePopup = null;
   }
@@ -400,7 +501,7 @@
     };
   }
 
-  async function saveEntry(displayTerm, definition, aliasText = "", editingTerm = "") {
+  async function saveEntry(displayTerm, definition, aliasText = "") {
     const validation = validateEntry(displayTerm, definition, aliasText);
 
     if (validation.error) {
@@ -408,21 +509,14 @@
     }
 
     const currentEntries = await getEntries();
-    const existing = currentEntries.find(
-      (entry) => entry.term === validation.normalizedTerm || entry.aliases.some((alias) => alias.term === validation.normalizedTerm)
-    );
-    const previous = editingTerm ? currentEntries.find((entry) => entry.term === editingTerm) : null;
     const nextEntry = {
       term: validation.normalizedTerm,
       displayTerm: validation.cleanTerm,
       definition: validation.cleanDefinition,
       aliases: validation.aliases,
-      createdAt: existing?.createdAt || previous?.createdAt || Date.now()
+      createdAt: Date.now()
     };
-    const nextEntries = currentEntries
-      .filter((entry) => entry.term !== existing?.term && entry.term !== editingTerm)
-      .concat(nextEntry)
-      .sort((a, b) => a.displayTerm.localeCompare(b.displayTerm));
+    const nextEntries = currentEntries.concat(nextEntry).sort((a, b) => a.displayTerm.localeCompare(b.displayTerm));
 
     await storage.set({ [ENTRIES_KEY]: nextEntries });
     entries = nextEntries;
@@ -442,14 +536,12 @@
   function openNoteDialog(rawTerm) {
     closeDialog();
 
-    const normalizedTerm = normalizeTerm(rawTerm);
-    const existing = normalizedTerm ? getStoredEntryByTermOrAlias(normalizedTerm) : null;
     const backdrop = document.createElement("div");
     backdrop.className = "glowsary-dialog-backdrop";
     backdrop.innerHTML = `
       <section class="glowsary-dialog" role="dialog" aria-modal="true" aria-labelledby="glowsary-dialog-title">
         <div class="glowsary-dialog-header">
-          <h2 class="glowsary-dialog-title" id="glowsary-dialog-title">${existing ? "Edit word" : "Add word"}</h2>
+          <h2 class="glowsary-dialog-title" id="glowsary-dialog-title">Add word</h2>
           <button class="glowsary-dialog-close" type="button" aria-label="Close">&times;</button>
         </div>
         <form class="glowsary-form">
@@ -475,30 +567,14 @@
     `;
 
     const form = backdrop.querySelector("form");
-    const title = backdrop.querySelector(".glowsary-dialog-title");
     const termInput = backdrop.querySelector("#glowsary-term");
     const definitionInput = backdrop.querySelector("#glowsary-definition");
     const aliasInput = backdrop.querySelector("#glowsary-aliases");
     const error = backdrop.querySelector(".glowsary-error");
-    let editingTerm = existing?.term || "";
 
-    termInput.value = existing?.displayTerm || collapseSpaces(rawTerm);
-    definitionInput.value = existing?.definition || "";
-    aliasInput.value = existing ? formatAliases(existing.aliases) : "";
-
-    termInput.addEventListener("input", () => {
-      const duplicate = getStoredEntryByTermOrAlias(normalizeTerm(termInput.value));
-      if (!duplicate || duplicate.term === editingTerm) {
-        return;
-      }
-
-      editingTerm = duplicate.term;
-      title.textContent = "Edit word";
-      termInput.value = duplicate.displayTerm;
-      definitionInput.value = duplicate.definition;
-      aliasInput.value = formatAliases(duplicate.aliases);
-      error.textContent = "";
-    });
+    termInput.value = collapseSpaces(rawTerm);
+    definitionInput.value = "";
+    aliasInput.value = "";
 
     backdrop.querySelector(".glowsary-dialog-close").addEventListener("click", closeDialog);
     backdrop.querySelector("[data-action='cancel']").addEventListener("click", closeDialog);
@@ -507,7 +583,7 @@
       error.textContent = "";
 
       try {
-        await saveEntry(termInput.value, definitionInput.value, aliasInput.value, editingTerm);
+        await saveEntry(termInput.value, definitionInput.value, aliasInput.value);
         closeDialog();
       } catch (saveError) {
         error.textContent = saveError.message;

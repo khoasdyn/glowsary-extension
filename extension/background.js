@@ -1,10 +1,49 @@
 const CONTEXT_MENU_ID = "glowsary-create-note";
+const SETTINGS_KEY = "glowsarySettings";
+const DEFAULT_SETTINGS = {
+  highlightingEnabled: true,
+  revealTrigger: "hover",
+  managementSort: "latest"
+};
+
+function updateToolbarState(settings = DEFAULT_SETTINGS) {
+  const highlightingEnabled = settings.highlightingEnabled !== false;
+  const badgeText = highlightingEnabled ? "" : "OFF";
+  const title = highlightingEnabled ? "Glowsary: highlighting on" : "Glowsary: highlighting off";
+
+  chrome.action.setBadgeText({ text: badgeText });
+  chrome.action.setBadgeBackgroundColor({ color: "#647067" });
+  chrome.action.setTitle({ title });
+}
+
+function refreshToolbarState() {
+  chrome.storage.local.get({ [SETTINGS_KEY]: DEFAULT_SETTINGS }, (result) => {
+    updateToolbarState({
+      ...DEFAULT_SETTINGS,
+      ...(result[SETTINGS_KEY] || {})
+    });
+  });
+}
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: CONTEXT_MENU_ID,
     title: "Add word",
     contexts: ["selection"]
+  });
+  refreshToolbarState();
+});
+
+chrome.runtime.onStartup.addListener(refreshToolbarState);
+
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName !== "local" || !changes[SETTINGS_KEY]) {
+    return;
+  }
+
+  updateToolbarState({
+    ...DEFAULT_SETTINGS,
+    ...(changes[SETTINGS_KEY].newValue || {})
   });
 });
 
@@ -25,6 +64,4 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   );
 });
 
-chrome.action.onClicked.addListener(() => {
-  chrome.runtime.openOptionsPage();
-});
+refreshToolbarState();

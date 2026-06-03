@@ -8,7 +8,7 @@ const DEFAULT_SETTINGS = {
 
 let entries = [];
 let settings = { ...DEFAULT_SETTINGS };
-let editingTerm = "";
+let editingEntry = null;
 let searchQuery = "";
 
 const elements = {
@@ -125,33 +125,13 @@ function validateEntry(displayTerm, definition, aliasText = "") {
   };
 }
 
-function findEntry(term) {
-  return entries.find((entry) => entry.term === term);
-}
-
-function findEntryByTermOrAlias(term) {
-  return entries.find((entry) => entry.term === term || normalizeAliasList(entry.aliases).some((alias) => alias.term === term));
-}
-
-function findEntryByAnyAliasText(value) {
-  for (const alias of parseAliases(value, "").aliases || []) {
-    const entry = findEntryByTermOrAlias(alias.term);
-
-    if (entry) {
-      return entry;
-    }
-  }
-
-  return null;
-}
-
 function setMessage(message, kind = "error") {
   elements.formMessage.textContent = message;
   elements.formMessage.classList.toggle("is-info", kind === "info");
 }
 
 function showEditor(entry = null) {
-  editingTerm = entry?.term || "";
+  editingEntry = entry;
   elements.editorTitle.textContent = entry ? "Edit word" : "Add word";
   elements.termInput.value = entry?.displayTerm || "";
   elements.definitionInput.value = entry?.definition || "";
@@ -165,7 +145,7 @@ function showEditor(entry = null) {
 function hideEditor() {
   elements.editorPanel.hidden = true;
   document.body.classList.remove("modal-open");
-  editingTerm = "";
+  editingEntry = null;
   elements.form.reset();
   setMessage("");
 }
@@ -196,27 +176,25 @@ async function saveEntry() {
     return;
   }
 
-  const existing = findEntryByTermOrAlias(validation.normalizedTerm);
-  const previous = editingTerm ? findEntry(editingTerm) : null;
   const nextEntry = {
     term: validation.normalizedTerm,
     displayTerm: validation.cleanTerm,
     definition: validation.cleanDefinition,
     aliases: validation.aliases,
-    createdAt: existing?.createdAt || previous?.createdAt || Date.now()
+    createdAt: editingEntry?.createdAt || Date.now()
   };
-  const nextEntries = entries
-    .filter((entry) => entry.term !== existing?.term && entry.term !== editingTerm)
-    .concat(nextEntry);
+  const nextEntries = editingEntry
+    ? entries.map((entry) => (entry === editingEntry ? nextEntry : entry))
+    : entries.concat(nextEntry);
 
   await saveEntries(nextEntries);
   hideEditor();
 }
 
-async function deleteEntry(term) {
-  await saveEntries(entries.filter((entry) => entry.term !== term));
+async function deleteEntry(targetEntry) {
+  await saveEntries(entries.filter((entry) => entry !== targetEntry));
 
-  if (editingTerm === term) {
+  if (editingEntry === targetEntry) {
     hideEditor();
   }
 }
@@ -286,43 +264,12 @@ function renderEntries() {
     deleteButton.className = "danger-button";
     deleteButton.type = "button";
     deleteButton.textContent = "Delete";
-    deleteButton.addEventListener("click", () => deleteEntry(entry.term));
+    deleteButton.addEventListener("click", () => deleteEntry(entry));
 
     actions.append(editButton, deleteButton);
     card.append(term, definition, aliases, actions);
     elements.entryList.appendChild(card);
   }
-}
-
-function handleTermInput() {
-  const normalized = normalizeTerm(elements.termInput.value);
-  const duplicate = normalized ? findEntryByTermOrAlias(normalized) : null;
-
-  if (!duplicate || duplicate.term === editingTerm) {
-    return;
-  }
-
-  editingTerm = duplicate.term;
-  elements.editorTitle.textContent = "Edit word";
-  elements.termInput.value = duplicate.displayTerm;
-  elements.definitionInput.value = duplicate.definition;
-  elements.aliasInput.value = formatAliases(duplicate.aliases);
-  setMessage("Existing entry loaded for editing.", "info");
-}
-
-function handleAliasInput() {
-  const duplicate = findEntryByAnyAliasText(elements.aliasInput.value);
-
-  if (!duplicate || duplicate.term === editingTerm) {
-    return;
-  }
-
-  editingTerm = duplicate.term;
-  elements.editorTitle.textContent = "Edit word";
-  elements.termInput.value = duplicate.displayTerm;
-  elements.definitionInput.value = duplicate.definition;
-  elements.aliasInput.value = formatAliases(duplicate.aliases);
-  setMessage("Existing entry loaded for editing.", "info");
 }
 
 function bindEvents() {
@@ -338,8 +285,6 @@ function bindEvents() {
     event.preventDefault();
     saveEntry();
   });
-  elements.termInput.addEventListener("input", handleTermInput);
-  elements.aliasInput.addEventListener("input", handleAliasInput);
   elements.searchInput.addEventListener("input", () => {
     searchQuery = elements.searchInput.value;
     renderEntries();

@@ -3,13 +3,14 @@
   "name": "Glowsary",
   "version": "1.0.0",
   "description": "Highlight your saved vocabulary across the web and reveal your own definitions on demand.",
-  "permissions": ["contextMenus", "storage"],
+  "permissions": ["contextMenus", "storage", "tabs"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Open Glowsary"
+    "default_popup": "popup.html",
+    "default_title": "Glowsary"
   },
   "options_page": "options.html",
   "content_scripts": [

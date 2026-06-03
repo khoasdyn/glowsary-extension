@@ -1,5 +1,6 @@
 ## 2026-06-03
 
+- Changed the highlight underline from red with rounded ends to a straight blue line.
 - Added a Markdown formatting rule to prevent awkward paragraph breaks in future documentation edits.
 - Cleaned up the agent instruction formatting so each numbered rule reads as one paragraph.
 - Tightened the agent instructions for PRD checks, planning, and bug clarification before implementation.

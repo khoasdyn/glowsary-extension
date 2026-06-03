@@ -1,7 +1,5 @@
 ## Overview
 
-Version: 1.0
-
 Glowsary is a Chrome extension that adds a personal vocabulary layer over the web. When a user reads English content and looks up a word or phrase, they save it with their own definition. After that, the saved word or phrase is highlighted everywhere it appears on the web, and the saved definition shows up in a small popup when the user hovers or clicks it.
 
 The closest reference is Word Wise on a Kindle. The difference is that the highlights come from the user’s own saved words, not a fixed list, and the definition stays hidden until the user asks for it.

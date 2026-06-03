@@ -1,10 +1,10 @@
 ## Overview
 
+Version: 1.0
+
 Glowsary is a Chrome extension that adds a personal vocabulary layer over the web. When a user reads English content and looks up a word or phrase, they save it with their own definition. After that, the saved word or phrase is highlighted everywhere it appears on the web, and the saved definition shows up in a small popup when the user hovers or clicks it.
 
 The closest reference is Word Wise on a Kindle. The difference is that the highlights come from the user’s own saved words, not a fixed list, and the definition stays hidden until the user asks for it.
-
-This document describes version one only. It is intentionally small and focused on shipping something useful, not complete.
 
 ## Problem
 
@@ -14,8 +14,6 @@ People who learn English by reading articles, blogs, and social posts on sites l
 
 The product should help a reader recognize words they have already looked up, with as little effort as possible, while they read anywhere on the web.
 
-In version one the goals are:
-
 1. Let the user save a word and a definition quickly while reading.
 2. Highlight every saved word across all websites so the user recognizes it on sight.
 3. Show the saved definition on demand without leaving the page.
@@ -23,7 +21,7 @@ In version one the goals are:
 
 ## Non-goals
 
-Version one is a passive memory aid. It is not a study tool. The following are out of scope:
+The product is a passive memory aid. It is not a study tool. The following are out of scope:
 
 1. Flashcards, quizzes, spaced repetition, or any review mode.
 2. Tracking progress or marking a word as “learned”.
@@ -53,7 +51,7 @@ A self-directed English learner, often a non-native speaker, who reads English c
 - FR-2: Choosing the action opens a small in-page UI with three fields: Word, Definition, and Alias. The Word field is pre-filled with the exact text the user selected, including phrases such as “get in”. The Alias field is empty.
 - FR-2a: If the selected text already matches a saved entry by its term or by any of its aliases (ignoring capitalization), the UI opens that existing entry with its saved definition and aliases loaded, so the user edits it instead of creating a duplicate.
 - FR-3: The user can edit the Word field, type the Definition by hand, and optionally type one or more aliases. The Word and Definition fields are required to save. The Alias field is optional.
-- FR-3a: The Word field must contain at least 3 characters after trimming spaces. This blocks very short entries like “a”, “is”, and “at”. The count is measured on the whole field, so a phrase like “get in” (6 characters) is allowed even though “in” alone is short. This also blocks short real words such as “go” and “ID”, which is accepted for version one. The same 3-character minimum applies to each alias after trimming (see FR-3c).
+- FR-3a: The Word field must contain at least 3 characters after trimming spaces. This blocks very short entries like “a”, “is”, and “at”. The count is measured on the whole field, so a phrase like “get in” (6 characters) is allowed even though “in” alone is short. This also blocks short real words such as “go” and “ID”. The same 3-character minimum applies to each alias after trimming (see FR-3c).
 - FR-3b: The Alias field holds zero or more aliases separated by commas. Each alias is an alternate spelling or word form that should be highlighted with the same definition as the term, for example the term “version” with the alias “versions”. On save, the field is split on commas, each alias is trimmed of surrounding spaces, empty results are dropped, and duplicate aliases (ignoring capitalization) are removed. An alias that is identical to the term itself (ignoring capitalization) is also dropped, since the term already matches.
 - FR-3c: Each alias must contain at least 3 characters after trimming, using the same rule and reasons as the Word field (FR-3a). If any alias is shorter than 3 characters, the save is blocked and the user is told which alias is too short. As with the term, the count is measured on the whole alias, so a phrase alias such as “get out” is allowed.
 - FR-4: The user clicks Save to store the entry locally.
@@ -97,7 +95,7 @@ A self-directed English learner, often a non-native speaker, who reads English c
 
 ### Storage
 
-- FR-20: All saved words and settings are stored locally in the browser. There is no account and no cross-device sync in version one.
+- FR-20: All saved words and settings are stored locally in the browser. There is no account and no cross-device sync.
 
 ## UI components
 
@@ -158,37 +156,3 @@ Storing a normalized lowercase form for both the term and each alias supports ca
 
 1. Global highlighting switch (on or off).
 2. Reveal trigger (hover or click).
-
-## Edge cases and decisions to confirm
-
-These are small but should be confirmed before build:
-
-1. Empty or whitespace input. Save should be blocked if Word or Definition is empty after trimming, and if the Word field has fewer than 3 characters after trimming (FR-3a).
-2. Phrase spacing. When detecting duplicates and when matching on pages, extra spaces inside a selected phrase should be collapsed to single spaces so “get in” and “get in” are treated as the same.
-3. Overlapping entries. If the user saves both “get it” and “get”, a page that contains “get it” matches both. This is now settled by FR-10a: the longer match wins and no text is highlighted twice, so “get it” is highlighted as one entry and “get” inside it is not highlighted separately.
-4. Very common words. Saving a word like “the” would highlight most of the page. Version one allows this, but it is worth watching whether a warning is needed later.
-5. Editable content and input fields. Highlighting must not apply inside editable or interactive elements such as text boxes, editors, buttons, links, and navigation menus (see FR-9a). This prevents both visual confusion and functional breakage.
-6. Alias parsing. Commas split the Alias field. Surrounding spaces are trimmed, empty results from things like a trailing comma or two commas in a row are dropped, and case-insensitive duplicate aliases are removed. An alias equal to the term is dropped (FR-3b).
-7. Alias length. Each alias must be 3 or more characters after trimming, the same as the term. A too-short alias blocks the save with a message naming the alias (FR-3c).
-8. Shared text across entries. The same text may be a term in one entry and an alias in another, and the same alias text may appear in more than one entry. This is allowed. Highlighting still shows the text once, with the winner decided by longer match first and term over alias on a tie (FR-10a, FR-10b).
-9. Selecting an alias on a page. If the user selects text that matches an existing alias and chooses “Create note”, the save form opens that existing entry for editing rather than starting a new note (FR-2a).
-
-## Out of scope for now, possible later
-
-These ideas would turn the tool from a recognition aid into a learning tool. They are parked for after launch:
-
-1. Automatic matching of word forms so “loved” highlights when “love” is saved, without the user adding it as an alias by hand.
-2. Auto-filling definitions from a dictionary.
-3. Multiple meanings per word or phrase.
-4. Cross-device sync with an account.
-5. A review or practice mode (flashcards, spaced repetition).
-6. Search and sort in the management view, and showing the source page where an entry was saved.
-
-## Success signals
-
-Since version one is small, success is mostly about the basic loop working well:
-
-1. A user can save a word and see it highlighted on the current page in one short action.
-2. Saved words are reliably highlighted on other sites, including pages that load content while scrolling.
-3. The definition popup appears correctly and does not get in the way of reading.
-4. Users keep the extension turned on during normal reading rather than disabling it.

@@ -87,12 +87,12 @@ A self-directed English learner, often a non-native speaker, who reads English c
 ### Managing saved words
 
 - FR-17: The extension provides a management view that lists all saved words and phrases with their definitions and their aliases.
-- FR-17a: The management view has an “Add new” button that opens the same Word, Definition, and Alias form with empty fields. It uses the same rules as saving from a page: the 3-character minimum on the term and on each alias (FR-3a, FR-3c), the Word and Definition fields required, the Alias field optional, and the case-insensitive duplicate check on term and aliases (FR-2a). If the typed term or alias already exists, the form opens that existing entry for editing instead of creating a copy.
+- FR-17a: The management view has an “Add new” button that opens the same Word, Definition, and Alias form with empty fields in a centered modal. It uses the same rules as saving from a page: the 3-character minimum on the term and on each alias (FR-3a, FR-3c), the Word and Definition fields required, the Alias field optional, and the case-insensitive duplicate check on term and aliases (FR-2a). If the typed term or alias already exists, the form opens that existing entry for editing instead of creating a copy.
 - FR-17b: The management view has a search box that filters the list by term. Matching is case-insensitive and the list updates in real time as the user types. Only the term field is searched, not the definition and not the aliases.
 - FR-17c: If the search query matches no entries, the list area shows an empty state message. The search box remains active so the user can clear or change the query.
 - FR-17d: The management view has a sort control with two options: “Latest added” (sorted by `createdAt`, newest first) and “A → Z” (alphabetical by term, case-insensitive). The selected sort is persisted and restored when the view is next opened.
 - FR-17e: Search and sort work together. When a search query is active, the sort order applies to the filtered results, not the full list.
-- FR-18: From the list, the user can edit an entry’s definition and its aliases. Editing replaces the existing definition and replaces the existing alias list with the parsed result of the Alias field (FR-3b, FR-3c). An entry holds only one definition. After an edit, highlighting on open pages reflects the new aliases.
+- FR-18: From the list, the user can edit an entry’s definition and its aliases in the same centered modal used by Add new. Editing replaces the existing definition and replaces the existing alias list with the parsed result of the Alias field (FR-3b, FR-3c). An entry holds only one definition. After an edit, highlighting on open pages reflects the new aliases.
 - FR-19: From the list, the user can delete a saved entry. After deletion, that word or phrase is no longer highlighted anywhere.
 
 ### Storage
@@ -107,11 +107,13 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Definition popup** — The small floating panel that appears next to a highlighted word when the user hovers or clicks it (depending on the reveal trigger setting). Shows the saved definition for that entry. Dismissed by moving away (hover mode) or clicking elsewhere (click mode).
 
-**Save form** — The in-page UI that appears after the user chooses "Create note" from the context menu. Contains three fields: Word (pre-filled with the selected text), Definition (empty), and Alias (empty, optional). Has a Save button. Opens as an edit form if the selected text matches an existing entry’s term or alias.
+**Save form** — The in-page UI that appears after the user chooses “Create note” from the context menu. Contains three fields: Word (pre-filled with the selected text), Definition (empty), and Alias (empty, optional). Has a Save button. Opens as an edit form if the selected text matches an existing entry’s term or alias.
 
 **Alias field** — The text input in the save form and management form where the user types optional aliases for the entry, separated by commas. Each alias is an alternate spelling or word form that is highlighted with the same definition as the term.
 
-**Context menu item** — The "Create note" action injected into the browser's native right-click context menu when the user has text selected on a page.
+**Management form modal** — The centered modal opened by Add new and Edit in the management view. Contains Word, Definition, and Alias fields. Closes with the X button, Cancel, or Escape, but not by clicking the backdrop.
+
+**Context menu item** — The “Create note” action injected into the browser’s native right-click context menu when the user has text selected on a page.
 
 **Management view** — The full-page view (extension page or popup panel) that lists all saved entries. Contains the settings bar, the search box, the sort control, the entry list, and the Add new button.
 
@@ -123,13 +125,13 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Search box** — The text input in the management view that filters the entry list in real time by term.
 
-**Sort control** — The control in the management view that switches the entry list between "Latest added" and "A → Z" order. The chosen option persists across sessions.
+**Sort control** — The control in the management view that switches the entry list between “Latest added” and “A → Z” order. The chosen option persists across sessions.
 
 **Entry list** — The scrollable list of saved word entries inside the management view. Each row shows the term, the definition, the aliases (if any), an Edit button, and a Delete button.
 
 **Entry row** — A single item in the entry list. Displays one saved word or phrase, its definition, and its aliases if it has any, with actions to edit or delete.
 
-**Add new button** — The button in the management view that opens the save form with empty fields, allowing the user to add a word without selecting it on a page.
+**Add new button** — The button in the management view that opens the management form modal with empty fields, allowing the user to add a word without selecting it on a page.
 
 **Empty state** — The message shown in the entry list area when no entries match the current search query.
 

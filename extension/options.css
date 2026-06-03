@@ -22,6 +22,10 @@ body {
   font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
 .shell {
   width: min(960px, calc(100% - 40px));
   margin: 0 auto;
@@ -128,7 +132,6 @@ button {
 }
 
 .settings-panel,
-.editor-panel,
 .list-section {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -192,9 +195,29 @@ button {
   accent-color: var(--accent);
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.32);
+}
+
+.modal-backdrop[hidden] {
+  display: none;
+}
+
 .editor-panel {
-  margin-bottom: 14px;
+  width: min(520px, 100%);
+  max-height: min(720px, calc(100vh - 48px));
+  overflow: auto;
   padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.24);
 }
 
 .panel-header,
@@ -395,5 +418,13 @@ button {
 
   .entry-actions {
     justify-content: flex-start;
+  }
+
+  .modal-backdrop {
+    padding: 12px;
+  }
+
+  .editor-panel {
+    max-height: calc(100vh - 24px);
   }
 }

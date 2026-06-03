@@ -158,11 +158,13 @@ function showEditor(entry = null) {
   elements.aliasInput.value = entry ? formatAliases(entry.aliases) : "";
   setMessage("");
   elements.editorPanel.hidden = false;
+  document.body.classList.add("modal-open");
   elements.termInput.focus();
 }
 
 function hideEditor() {
   elements.editorPanel.hidden = true;
+  document.body.classList.remove("modal-open");
   editingTerm = "";
   elements.form.reset();
   setMessage("");
@@ -327,6 +329,11 @@ function bindEvents() {
   elements.addEntry.addEventListener("click", () => showEditor());
   elements.closeEditor.addEventListener("click", hideEditor);
   elements.cancelEditor.addEventListener("click", hideEditor);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !elements.editorPanel.hidden) {
+      hideEditor();
+    }
+  });
   elements.form.addEventListener("submit", (event) => {
     event.preventDefault();
     saveEntry();

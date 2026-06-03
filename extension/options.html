@@ -38,31 +38,33 @@
         </fieldset>
       </section>
 
-      <section class="editor-panel" id="editor-panel" hidden>
-        <div class="panel-header">
-          <h2 id="editor-title">Add word</h2>
-          <button class="icon-button" id="close-editor" type="button" aria-label="Close form">&times;</button>
-        </div>
-        <form id="entry-form" class="entry-form">
-          <label>
-            Word
-            <input id="term-input" name="term" autocomplete="off" />
-          </label>
-          <label>
-            Definition
-            <textarea id="definition-input" name="definition"></textarea>
-          </label>
-          <label>
-            Alias
-            <input id="alias-input" name="alias" autocomplete="off" placeholder="versions, versioned" />
-          </label>
-          <div class="form-message" id="form-message" role="alert"></div>
-          <div class="form-actions">
-            <button class="secondary-button" id="cancel-editor" type="button">Cancel</button>
-            <button class="primary-button" type="submit">Save</button>
+      <div class="modal-backdrop" id="editor-panel" hidden>
+        <section class="editor-panel" role="dialog" aria-modal="true" aria-labelledby="editor-title">
+          <div class="panel-header">
+            <h2 id="editor-title">Add word</h2>
+            <button class="icon-button" id="close-editor" type="button" aria-label="Close form">&times;</button>
           </div>
-        </form>
-      </section>
+          <form id="entry-form" class="entry-form">
+            <label>
+              Word
+              <input id="term-input" name="term" autocomplete="off" />
+            </label>
+            <label>
+              Definition
+              <textarea id="definition-input" name="definition"></textarea>
+            </label>
+            <label>
+              Alias
+              <input id="alias-input" name="alias" autocomplete="off" placeholder="versions, versioned" />
+            </label>
+            <div class="form-message" id="form-message" role="alert"></div>
+            <div class="form-actions">
+              <button class="secondary-button" id="cancel-editor" type="button">Cancel</button>
+              <button class="primary-button" type="submit">Save</button>
+            </div>
+          </form>
+        </section>
+      </div>
 
       <section class="list-section" aria-labelledby="list-heading">
         <div class="list-heading-row">

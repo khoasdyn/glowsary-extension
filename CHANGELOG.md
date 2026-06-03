@@ -1,3 +1,7 @@
+## 2026-06-03
+
+- Changed the management Add new and Edit form to open in a centered modal.
+
 ## 2026-06-02
 
 - Added aliases for saved entries, so alternate word forms can highlight with the same definition.

@@ -1,16 +1,21 @@
 # Glowsary Chrome Extension
 
-Glowsary is a vanilla Manifest V3 Chrome extension for saving personal vocabulary words and highlighting those saved words across the web.
+Glowsary is a Manifest V3 Chrome extension for saving personal vocabulary while you read. You save a word or phrase with your own definition, and Glowsary highlights it everywhere it appears on the web, showing your definition in a small popup on hover or click.
 
-## Load Locally
+## Load locally
 
 1. Open `chrome://extensions`.
 2. Turn on Developer mode.
 3. Choose **Load unpacked**.
 4. Select the `extension/` folder inside this project.
 
-Click the extension icon to open the management page. Select text on a webpage, right-click, and choose **Add word** to save a word or phrase from the page.
+## How to use
 
-## Manual Test
+1. Select a word or phrase on any page, right-click, and choose **Add word**, then type your definition and save.
+2. The saved word is underlined wherever it appears. Hover or click it to see your definition.
+3. Click the Glowsary toolbar icon to open the toolbar popup, where you can turn highlighting on or off, switch the reveal trigger between hover and click, and exclude the current site.
+4. In the popup, click the settings button to open the management view in a new tab, where you can search, sort, edit, delete, add words by hand, manage excluded sites, and import or export your list as CSV.
 
-Open `extension/manual-test.html` in Chrome after loading the extension. Save terms such as `love`, `get`, `get it`, and `get in` to verify exact matching, longer-match priority, phrase spacing, editable-area skipping, and dynamic content highlighting.
+## Documentation
+
+See `PRD.md` for the full product requirements and `CHANGELOG.md` for the version history.

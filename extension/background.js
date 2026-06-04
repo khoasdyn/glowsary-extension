@@ -5,12 +5,24 @@ const DEFAULT_SETTINGS = {
   revealTrigger: "hover",
   managementSort: "latest"
 };
+const ON_ICON_PATHS = {
+  16: "icons/icon-16.png",
+  32: "icons/icon-32.png",
+  48: "icons/icon-48.png"
+};
+const OFF_ICON_PATHS = {
+  16: "icons/icon-off-16.png",
+  32: "icons/icon-off-32.png",
+  48: "icons/icon-off-48.png"
+};
 
 function updateToolbarState(settings = DEFAULT_SETTINGS) {
   const highlightingEnabled = settings.highlightingEnabled !== false;
   const badgeText = highlightingEnabled ? "" : "OFF";
   const title = highlightingEnabled ? "Glowsary: highlighting on" : "Glowsary: highlighting off";
+  const iconPath = highlightingEnabled ? ON_ICON_PATHS : OFF_ICON_PATHS;
 
+  chrome.action.setIcon({ path: iconPath });
   chrome.action.setBadgeText({ text: badgeText });
   chrome.action.setBadgeBackgroundColor({ color: "#647067" });
   chrome.action.setTitle({ title });

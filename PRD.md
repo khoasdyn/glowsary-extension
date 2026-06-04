@@ -91,7 +91,7 @@ A self-directed English learner, often a non-native speaker, who reads English c
 - FR-22: The toolbar popup contains the global highlighting toggle and a settings button. The toggle is the same global on/off as FR-14 and shares one state with the global highlighting toggle in the settings bar, so changing it in either place updates the other. When highlighting is on, the popup also shows the reveal trigger selector (Hover or Click), which is the same control as FR-13 and shares one state with the reveal trigger selector in the settings bar. When highlighting is off, the reveal trigger selector is hidden from the popup. The popup also has an “Exclude this site” button that adds the current site to the excluded list in one click (FR-28).
 - FR-23: Changing the global toggle or the reveal trigger in the popup applies live to all open pages running the extension, with no reload. Turning highlighting off clears all highlights on every open page at once (FR-16), and turning it on restores them (FR-15). Changing the reveal trigger applies to all open pages right away.
 - FR-24: The settings button in the popup opens the management view as a full page in a new browser tab, and the popup closes. If a management view tab is already open, that existing tab is focused instead of opening a new one, so duplicate tabs do not pile up.
-- FR-25: The toolbar icon reflects the current global highlighting state. When highlighting is off, the icon is shown in a visibly different state, for example dimmed or with a small badge, so the user can tell the on or off state at a glance without opening the popup.
+- FR-25: The toolbar icon reflects the current global highlighting state. When highlighting is on, the icon shows its normal colored form with no badge. When highlighting is off, the icon switches to a grayscale form and a small "OFF" badge is shown at the same time, so the user can tell the on or off state at a glance without opening the popup.
 
 ### Managing saved words
 
@@ -145,7 +145,7 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Settings button** — The button inside the toolbar popup that opens the management view as a full page in a new browser tab and closes the popup. If a management view tab is already open, it focuses that tab instead of opening a new one.
 
-**Toolbar icon** — The Glowsary icon in the browser toolbar. Clicking it opens the toolbar popup. Its appearance reflects the global highlighting state, shown in a visibly different state (for example dimmed or badged) when highlighting is off.
+**Toolbar icon** — The Glowsary icon in the browser toolbar. Clicking it opens the toolbar popup. Its appearance reflects the global highlighting state: the normal colored icon with no badge when highlighting is on, and a grayscale icon shown together with a small "OFF" badge when highlighting is off.
 
 **Management view** — The full-page view, opened in a browser tab from the toolbar popup's settings button, that lists all saved entries. Contains the settings bar, the search box, the sort control, the entry list, the Add new button, the Export button, the Import button, and the excluded sites manager.
 

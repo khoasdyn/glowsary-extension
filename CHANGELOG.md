@@ -1,5 +1,6 @@
 ## 2026-06-04
 
+- Added Glowsary icons and made the toolbar icon switch between on and off states.
 - Added CSV import and export for saved words in the management view.
 - Added excluded sites so highlighting can be suppressed per domain while saving and management still work.
 

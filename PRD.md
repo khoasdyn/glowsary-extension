@@ -29,6 +29,7 @@ A self-directed English learner, often a non-native speaker, who reads English c
 4. As a reader, I want to turn the highlighting on and off, so I can read normally when I do not want it.
 5. As a reader, I want to review, edit, and delete my saved words in one place, so I can keep my list correct and clean.
 6. As a reader, I want to add a new word by hand in the management view, so I can save a word even when I am not reading it on a page.
+7. As a reader, I want to export my saved words to a file and import them back, so I can back them up or move them to another device.
 
 ## Functional requirements
 
@@ -107,6 +108,19 @@ A self-directed English learner, often a non-native speaker, who reads English c
 
 - FR-20: All saved words, the excluded sites list, and settings are stored locally in the browser. There is no account and no cross-device sync.
 
+### Import and export
+
+- FR-34: The management view has an Export button that saves all saved words to a CSV file. Export always includes the full list and ignores any active search filter (FR-17b), so a backup is never partial.
+- FR-35: The export file is a CSV with no header row and three columns by position: term, definition, and aliases. The term and definition use the user's original text as shown in the list. The aliases column holds the entry's aliases in their display form, separated by commas; an entry with no aliases has an empty aliases cell. The created timestamp is not exported. The file is encoded as UTF-8.
+- FR-35a: Commas, quotes, and line breaks inside any field are handled with standard CSV quoting, so a comma inside a definition or inside the alias list does not break a row.
+- FR-36: The management view has an Import button that lets the user pick a CSV file and add its words to the saved list. Each row is read by position using the same three columns as export (FR-35). No header row is expected, so every row is treated as data.
+- FR-36a: Each imported row goes through the same save rules as adding a word by hand (FR-3, FR-3a, FR-3b, FR-3c): the term and definition are required, the term and each alias must be at least 3 characters after trimming, and the alias field is split on commas, trimmed, de-duplicated, and cleaned.
+- FR-36b: Import skips exact duplicates. A row is an exact duplicate when its term, its definition, and its full set of aliases all match an existing entry, compared in normalized lowercase form, with alias order ignored. This is a deliberate exception to FR-2a that applies only to import, so re-importing a backup does not double the list. Duplicate rows within the same file are collapsed the same way.
+- FR-36c: Invalid rows are skipped, not fatal. A row missing a term or definition, with a term or alias under 3 characters, or otherwise malformed is dropped, and all valid rows still import. A file that cannot be read as CSV at all is rejected and nothing is imported.
+- FR-36d: After an import finishes, a toast message summarizes the result: how many entries were added, how many were skipped as duplicates, and how many were skipped as invalid. A file that cannot be read shows a short error toast instead.
+- FR-36e: Imported entries get the import time as their created timestamp, so the restored list orders by import time under the "Latest added" sort (FR-17d). An empty file, or a file with no valid rows, imports nothing and the toast reports that.
+- FR-37: Import and export cover saved words only. The excluded sites list and the settings are not exported or imported.
+
 ## UI components
 
 This section names every distinct UI component in the extension. Future references in specs, code, and conversations should use these exact names.
@@ -133,7 +147,7 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Toolbar icon** — The Glowsary icon in the browser toolbar. Clicking it opens the toolbar popup. Its appearance reflects the global highlighting state, shown in a visibly different state (for example dimmed or badged) when highlighting is off.
 
-**Management view** — The full-page view, opened in a browser tab from the toolbar popup's settings button, that lists all saved entries. Contains the settings bar, the search box, the sort control, the entry list, the Add new button, and the excluded sites manager.
+**Management view** — The full-page view, opened in a browser tab from the toolbar popup's settings button, that lists all saved entries. Contains the settings bar, the search box, the sort control, the entry list, the Add new button, the Export button, the Import button, and the excluded sites manager.
 
 **Excluded sites manager** — The area of the management view that controls the excluded sites list. Contains the add excluded site input and the excluded sites list. It is the only place to add by typing, pause, edit, or delete excluded sites.
 
@@ -158,6 +172,10 @@ This section names every distinct UI component in the extension. Future referenc
 **Entry row** — A single item in the entry list. Displays one saved word or phrase, its definition, and its aliases if it has any, with actions to edit or delete.
 
 **Add new button** — The button in the management view that opens the management form modal with empty fields, allowing the user to add a word without selecting it on a page.
+
+**Export button** — The button in the management view that saves all saved words to a CSV file. It always exports the full list, ignoring any active search filter.
+
+**Import button** — The button in the management view that lets the user pick a CSV file and add its words to the saved list, skipping exact duplicates and invalid rows.
 
 **Empty state** — The message shown in the entry list area when no entries match the current search query.
 

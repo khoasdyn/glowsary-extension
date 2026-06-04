@@ -27,6 +27,9 @@ const elements = {
   aliasInput: document.querySelector("#alias-input"),
   formMessage: document.querySelector("#form-message"),
   entryCount: document.querySelector("#entry-count"),
+  exportEntries: document.querySelector("#export-entries"),
+  importEntries: document.querySelector("#import-entries"),
+  importFile: document.querySelector("#import-file"),
   searchInput: document.querySelector("#search-input"),
   sortSelect: document.querySelector("#sort-select"),
   emptyState: document.querySelector("#empty-state"),
@@ -36,7 +39,8 @@ const elements = {
   excludedMessage: document.querySelector("#excluded-message"),
   excludedCount: document.querySelector("#excluded-count"),
   excludedEmpty: document.querySelector("#excluded-empty"),
-  excludedList: document.querySelector("#excluded-list")
+  excludedList: document.querySelector("#excluded-list"),
+  toast: document.querySelector("#toast")
 };
 
 const storage = {
@@ -106,6 +110,138 @@ function formatAliases(aliases = []) {
   return normalizeAliasList(aliases).map((alias) => alias.displayTerm).join(", ");
 }
 
+function quoteCsvField(value) {
+  const text = String(value ?? "");
+
+  if (/[",\r\n]/.test(text)) {
+    return `"${text.replace(/"/g, '""')}"`;
+  }
+
+  return text;
+}
+
+function serializeEntriesToCsv(savedEntries) {
+  return savedEntries.map((entry) => [
+    entry.displayTerm || entry.term || "",
+    entry.definition || "",
+    formatAliases(entry.aliases)
+  ].map(quoteCsvField).join(",")).join("\r\n");
+}
+
+function parseCsv(text) {
+  if (text.charCodeAt(0) === 0xfeff) {
+    text = text.slice(1);
+  }
+
+  const rows = [];
+  let row = [];
+  let field = "";
+  let inQuotes = false;
+  let afterQuote = false;
+  let fieldStarted = false;
+  let wroteRowContent = false;
+
+  function finishField() {
+    row.push(field);
+    field = "";
+    afterQuote = false;
+    fieldStarted = false;
+  }
+
+  function finishRow() {
+    finishField();
+    rows.push(row);
+    row = [];
+    wroteRowContent = false;
+  }
+
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+    const nextChar = text[index + 1];
+
+    if (inQuotes) {
+      if (char === '"') {
+        if (nextChar === '"') {
+          field += '"';
+          index += 1;
+        } else {
+          inQuotes = false;
+          afterQuote = true;
+        }
+      } else {
+        field += char;
+      }
+      continue;
+    }
+
+    if (afterQuote) {
+      if (char === ",") {
+        finishField();
+      } else if (char === "\n") {
+        finishRow();
+      } else if (char === "\r") {
+        if (nextChar === "\n") {
+          index += 1;
+        }
+        finishRow();
+      } else {
+        throw new Error("Malformed CSV.");
+      }
+      continue;
+    }
+
+    if (char === '"') {
+      if (fieldStarted || field) {
+        throw new Error("Malformed CSV.");
+      }
+      inQuotes = true;
+      fieldStarted = true;
+      wroteRowContent = true;
+    } else if (char === ",") {
+      finishField();
+      wroteRowContent = true;
+    } else if (char === "\n") {
+      finishRow();
+    } else if (char === "\r") {
+      if (nextChar === "\n") {
+        index += 1;
+      }
+      finishRow();
+    } else {
+      field += char;
+      fieldStarted = true;
+      wroteRowContent = true;
+    }
+  }
+
+  if (inQuotes) {
+    throw new Error("Malformed CSV.");
+  }
+
+  if (afterQuote || field || fieldStarted || row.length > 0 || wroteRowContent) {
+    finishField();
+    rows.push(row);
+  }
+
+  return rows;
+}
+
+function normalizeDefinitionForDuplicate(definition) {
+  return String(definition || "").trim().toLowerCase();
+}
+
+function getDuplicateKey(entry) {
+  const aliasTerms = normalizeAliasList(entry.aliases)
+    .map((alias) => alias.term)
+    .sort();
+
+  return JSON.stringify([
+    normalizeTerm(entry.displayTerm || entry.term),
+    normalizeDefinitionForDuplicate(entry.definition),
+    aliasTerms
+  ]);
+}
+
 function validateEntry(displayTerm, definition, aliasText = "") {
   const cleanTerm = collapseSpaces(displayTerm);
   const cleanDefinition = String(definition || "").trim();
@@ -145,6 +281,18 @@ function setMessage(message, kind = "error") {
 function setExcludedMessage(message, kind = "error") {
   elements.excludedMessage.textContent = message;
   elements.excludedMessage.classList.toggle("is-info", kind === "info");
+}
+
+let toastTimer = null;
+
+function showToast(message, kind = "info") {
+  elements.toast.textContent = message;
+  elements.toast.classList.toggle("is-error", kind === "error");
+  elements.toast.hidden = false;
+  window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => {
+    elements.toast.hidden = true;
+  }, 5000);
 }
 
 function showEditor(entry = null) {
@@ -220,6 +368,87 @@ async function deleteEntry(targetEntry) {
   if (editingEntry === targetEntry) {
     hideEditor();
   }
+}
+
+function downloadCsv(csvText) {
+  const date = new Date().toISOString().slice(0, 10);
+  const blob = new Blob([csvText], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `glowsary-words-${date}.csv`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function exportEntriesToCsv() {
+  downloadCsv(serializeEntriesToCsv(entries));
+  showToast(`Exported ${entries.length} ${entries.length === 1 ? "entry" : "entries"}.`);
+}
+
+function readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(String(reader.result || "")));
+    reader.addEventListener("error", () => reject(reader.error || new Error("Could not read file.")));
+    reader.readAsText(file, "utf-8");
+  });
+}
+
+async function importEntriesFromFile(file) {
+  let rows;
+
+  try {
+    rows = parseCsv(await readFileAsText(file));
+  } catch (error) {
+    showToast("Could not read that CSV file.", "error");
+    return;
+  }
+
+  const seenKeys = new Set(entries.map(getDuplicateKey));
+  const nextImportedEntries = [];
+  const importTime = Date.now();
+  let duplicateCount = 0;
+  let invalidCount = 0;
+
+  for (const row of rows) {
+    if (row.length < 2 || row.length > 3) {
+      invalidCount += 1;
+      continue;
+    }
+
+    const validation = validateEntry(row[0], row[1], row[2] || "");
+
+    if (validation.error) {
+      invalidCount += 1;
+      continue;
+    }
+
+    const nextEntry = {
+      term: validation.normalizedTerm,
+      displayTerm: validation.cleanTerm,
+      definition: validation.cleanDefinition,
+      aliases: validation.aliases,
+      createdAt: importTime
+    };
+    const duplicateKey = getDuplicateKey(nextEntry);
+
+    if (seenKeys.has(duplicateKey)) {
+      duplicateCount += 1;
+      continue;
+    }
+
+    seenKeys.add(duplicateKey);
+    nextImportedEntries.push(nextEntry);
+  }
+
+  if (nextImportedEntries.length > 0) {
+    await saveEntries(entries.concat(nextImportedEntries));
+  }
+
+  showToast(`Import complete: ${nextImportedEntries.length} added, ${duplicateCount} duplicate ${duplicateCount === 1 ? "row" : "rows"} skipped, ${invalidCount} invalid ${invalidCount === 1 ? "row" : "rows"} skipped.`);
 }
 
 function renderSettings() {
@@ -416,6 +645,16 @@ function renderExcludedSites() {
 
 function bindEvents() {
   elements.addEntry.addEventListener("click", () => showEditor());
+  elements.exportEntries.addEventListener("click", exportEntriesToCsv);
+  elements.importEntries.addEventListener("click", () => elements.importFile.click());
+  elements.importFile.addEventListener("change", () => {
+    const [file] = elements.importFile.files;
+    elements.importFile.value = "";
+
+    if (file) {
+      importEntriesFromFile(file);
+    }
+  });
   elements.closeEditor.addEventListener("click", hideEditor);
   elements.cancelEditor.addEventListener("click", hideEditor);
   document.addEventListener("keydown", (event) => {

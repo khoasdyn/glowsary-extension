@@ -239,6 +239,14 @@ button {
   gap: 16px;
 }
 
+.list-heading-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .entry-form {
   display: grid;
   gap: 12px;
@@ -443,6 +451,27 @@ button {
   gap: 8px;
 }
 
+.toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 20;
+  max-width: min(420px, calc(100% - 40px));
+  padding: 12px 14px;
+  color: #ffffff;
+  background: #14211b;
+  border-radius: 8px;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.24);
+}
+
+.toast[hidden] {
+  display: none;
+}
+
+.toast.is-error {
+  background: var(--danger);
+}
+
 @media (max-width: 760px) {
   body {
     min-width: 0;
@@ -473,6 +502,10 @@ button {
   }
 
   .entry-actions {
+    justify-content: flex-start;
+  }
+
+  .list-heading-actions {
     justify-content: flex-start;
   }
 

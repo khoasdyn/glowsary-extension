@@ -89,7 +89,12 @@
       <section class="list-section" aria-labelledby="list-heading">
         <div class="list-heading-row">
           <h2 id="list-heading">Saved words</h2>
-          <span id="entry-count">0 entries</span>
+          <div class="list-heading-actions">
+            <span id="entry-count">0 entries</span>
+            <button class="secondary-button" id="export-entries" type="button">Export</button>
+            <button class="secondary-button" id="import-entries" type="button">Import</button>
+            <input id="import-file" type="file" accept=".csv,text/csv" hidden />
+          </div>
         </div>
         <div class="list-controls">
           <label class="search-field">
@@ -108,6 +113,7 @@
         <div class="entry-list" id="entry-list"></div>
       </section>
     </main>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
     <script src="domain-utils.js"></script>
     <script src="options.js"></script>

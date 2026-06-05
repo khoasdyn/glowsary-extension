@@ -1,3 +1,7 @@
+## 2026-06-06
+
+- Added a project-local Consultant skill for planning Glowsary changes without editing product code.
+
 ## 2026-06-04
 
 - Removed the developer manual test page from the extension package.

@@ -27,7 +27,13 @@
   "options_page": "options.html",
   "web_accessible_resources": [
     {
-      "resources": ["public_suffix_list.dat"],
+      "resources": [
+        "public_suffix_list.dat",
+        "fonts/Copse/Copse-Regular.ttf",
+        "fonts/Poppins/Poppins-Regular.ttf",
+        "fonts/Poppins/Poppins-Medium.ttf",
+        "fonts/Poppins/Poppins-SemiBold.ttf"
+      ],
       "matches": ["<all_urls>"]
     }
   ],

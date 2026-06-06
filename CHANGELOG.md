@@ -1,5 +1,6 @@
 ## 2026-06-06
 
+- Wired local Copse and Poppins fonts into the extension UI while keeping webpage text unchanged.
 - Added a project-local Consultant skill for planning Glowsary changes without editing product code.
 
 ## 2026-06-04

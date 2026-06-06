@@ -138,3 +138,23 @@ These are not palette colors. They are black at low opacity, used inside the ske
 | shadow-xs | #0000000d (black 5%) |
 | shadow-skeumorphic-inner | #0000000d (black 5%) |
 | shadow-skeumorphic-inner-border | #0000002e (black 18%) |
+
+## Corner radius
+
+Corner radius uses a small scale of fixed values, plus one fully rounded option. Name each by its role.
+
+| Token | Value | Used for |
+|---|---|---|
+| radius-sm | 4px | Alias chips |
+| radius-md | 12px | Cards, input boxes, multi-line inputs, list rows |
+| radius-lg | 24px | The dialog |
+| radius-full | fully rounded | Buttons, the switch track, the tab bar, icon buttons, color-picker circles |
+
+### The fully rounded value in code
+
+In Figma, a fully rounded shape is sometimes drawn with 99, 999, or 9999. These all mean the same thing: round the corners completely. In code, do not copy those mixed numbers. Use one consistent rule instead.
+
+1. For pill shapes and fully rounded rectangles, like buttons, the switch track, and the tab bar, use `border-radius: 9999px`.
+2. For perfect circles, where the element has equal width and height, like icon buttons, the switch knob, and the color-picker circles, use `border-radius: 50%`.
+
+This keeps the code clean and avoids the random mix of 99, 999, and 9999.

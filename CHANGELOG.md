@@ -1,5 +1,6 @@
 ## 2026-06-06
 
+- Fixed injected page UI font loading so the definition popup and Add word dialog can use bundled fonts on websites.
 - Wired local Copse and Poppins fonts into the extension UI while keeping webpage text unchanged.
 - Added a project-local Consultant skill for planning Glowsary changes without editing product code.
 

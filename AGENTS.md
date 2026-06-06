@@ -11,12 +11,12 @@ Instructions for AI agents working on this project.
 
 ## Design system
 
-7. DESIGN.md is the project's design system. It holds the styling rules for the product: typography now, and spacing, color, and more over time. Treat it as the source of truth for how the product looks.
-8. For any design decision or new feature, follow DESIGN.md and use its defined styles. Do not invent new fonts, sizes, colors, or spacing.
-9. DESIGN.md is built up day by day and today covers typography only. Areas like spacing and color are not written yet.
-10. Never invent a design value that is not in DESIGN.md. If a style you need is missing, do not guess. Keep the current code value, do not add a new one, and clearly flag in your output that DESIGN.md is missing the rule so the user can add it.
-11. DESIGN.md is read-only for you. Only Claude maintains it. Never edit DESIGN.md.
-12. Figma is the upstream source of the design, and Claude syncs DESIGN.md from Figma. Follow DESIGN.md, not Figma.
+7. The codebase has one central place that defines all design tokens: the exact values for color, typography, radius, and later spacing. These tokens are the single source of design values for the code.
+8. For any design decision or new feature, use the existing tokens. Never hardcode a raw value, such as a hex color or a pixel size, in a component. Always reference the central token.
+9. DESIGN.md holds the rules and structure of the design system: token names, roles, and conventions. Read it for how to use the tokens. It does not hold the exact values.
+10. Never invent a new token. If a value you need does not exist, do not guess. Keep the current code value, do not add a new one, and clearly flag in your output that the token is missing, so the user can add it in Figma first.
+11. DESIGN.md is read-only for you. Only Claude maintains it. Never edit DESIGN.md, and never change a token value on your own. Change tokens only when a plan from the user gives you the new values.
+12. Figma is the upstream source of the design. Claude reads Figma and passes new token values to you through a plan. Follow the tokens and DESIGN.md, not Figma directly.
 
 ## After implementing
 

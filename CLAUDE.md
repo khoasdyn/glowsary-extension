@@ -60,8 +60,9 @@ Follow the Markdown rule already in AGENTS.md: keep each numbered rule, bullet, 
 
 ## Design system and Figma
 
-1. DESIGN.md is the project's design system. Claude owns it and updates it day by day as the user grows the design. Today it covers typography only; spacing, color, and more come later.
-2. Claude is allowed to create and edit DESIGN.md. Codex only reads it and never edits it.
+1. DESIGN.md is the project's design system documentation. It holds the rules and structure of the design (token names, roles, and conventions), not the exact values. The exact values for color, typography, radius, and later spacing live as central design tokens in the code. Claude owns DESIGN.md and updates it as the design grows. It currently covers typography, color, and corner radius; spacing comes later.
+2. Claude is allowed to create and edit DESIGN.md. Codex only reads DESIGN.md and the code tokens, and never edits DESIGN.md.
 3. Figma is the source of truth for the design. The user updates Figma first, so it always holds the latest design. The user usually uses the Figma MCP to let Claude see the mockup.
-4. When the user shares a Figma mockup link or asks for a check, read the design from Figma and update DESIGN.md to match it. DESIGN.md always takes its values from Figma.
-5. When Claude sees a Figma mockup, compare it against DESIGN.md and the current code. If a style is missing from DESIGN.md, or does not match between Figma and the code, flag it to the user and ask before changing DESIGN.md or writing a plan. Always tell the user if something is missed.
+4. When the user shares a Figma mockup link or asks for a check, read the design from Figma. Update the exact values by writing a Codex plan that changes the central tokens in the code, because the values live there, not in DESIGN.md. Update DESIGN.md itself only when a rule, a token name, or a role changes.
+5. When Claude sees a Figma mockup, compare it against the code tokens, DESIGN.md, and the current code. If a value or a rule is missing or does not match, flag it to the user and ask before writing a plan or changing DESIGN.md. Always tell the user if something is missed.
+6. Design changes flow to the code in one direction. The order is: the user updates Figma first, then Claude updates the DESIGN.md rules if any rule changed, then Claude writes a Codex plan with the new token values, then Codex updates the central tokens and CHANGELOG.md. If a token or text style is removed or renamed, the plan must tell Codex to find and replace every place the old one was used.

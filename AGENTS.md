@@ -14,9 +14,9 @@ Instructions for AI agents working on this project.
 7. The codebase has one central place that defines all design tokens: the exact values for color, typography, radius, and later spacing. These tokens are the single source of design values for the code.
 8. For any design decision or new feature, use the existing tokens. Never hardcode a raw value, such as a hex color or a pixel size, in a component. Always reference the central token.
 9. DESIGN.md holds the rules and structure of the design system: token names, roles, and conventions. Read it for how to use the tokens. It does not hold the exact values.
-10. Never invent a new token. If a value you need does not exist, do not guess. Keep the current code value, do not add a new one, and clearly flag in your output that the token is missing, so the user can add it in Figma first.
+10. When the plan refers to a design token that does not exist yet in the code, add that token to the central tokens using the value the plan gives, note it in your output and in CHANGELOG.md, flag it clearly for the user, and keep building normally. If the plan does not give a value for that token, do not invent one: flag it, keep the current code value in that spot, and continue. Never invent a design value on your own.
 11. DESIGN.md is read-only for you. Only Claude maintains it. Never edit DESIGN.md, and never change a token value on your own. Change tokens only when a plan from the user gives you the new values.
-12. Figma is the upstream source of the design. Claude reads Figma and passes new token values to you through a plan. Follow the tokens and DESIGN.md, not Figma directly.
+12. Figma is the upstream source of the design. Normally you build only from the plan and the tokens, and you do not open Figma. Claude reads Figma and passes new token values to you through a plan. You may read a Figma link only when the user includes the link in the prompt, usually for a complex visual. Follow the tokens and DESIGN.md, not Figma directly, unless the prompt gives you a Figma link.
 
 ## After implementing
 

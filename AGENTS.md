@@ -9,7 +9,16 @@ Instructions for AI agents working on this project.
 5. For bug fixes, first restate the bug and the expected behavior in clear language. If the bug report is ambiguous, ask focused clarification questions before fixing it.
 6. When editing Markdown documentation, keep each numbered rule, bullet, and short paragraph on one readable line unless a line break is needed for Markdown syntax or readability. Do not hard-wrap sentences in a way that creates awkward paragraph breaks in rendered or plain-text views.
 
+## Design system
+
+7. DESIGN.md is the project's design system. It holds the styling rules for the product: typography now, and spacing, color, and more over time. Treat it as the source of truth for how the product looks.
+8. For any design decision or new feature, follow DESIGN.md and use its defined styles. Do not invent new fonts, sizes, colors, or spacing.
+9. DESIGN.md is built up day by day and today covers typography only. Areas like spacing and color are not written yet.
+10. Never invent a design value that is not in DESIGN.md. If a style you need is missing, do not guess. Keep the current code value, do not add a new one, and clearly flag in your output that DESIGN.md is missing the rule so the user can add it.
+11. DESIGN.md is read-only for you. Only Claude maintains it. Never edit DESIGN.md.
+12. Figma is the upstream source of the design, and Claude syncs DESIGN.md from Figma. Follow DESIGN.md, not Figma.
+
 ## After implementing
 
-7. Update CHANGELOG.md: add a short entry under today's date describing what changed, in plain language. Add new entries on top. Do not rewrite past entries.
-8. Give a short commit message for the change (one line, present tense, e.g. "Add definition popup hover trigger").
+13. Update CHANGELOG.md: add a short entry under today's date describing what changed, in plain language. Add new entries on top. Do not rewrite past entries.
+14. Give a short commit message for the change (one line, present tense, e.g. "Add definition popup hover trigger").

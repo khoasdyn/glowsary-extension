@@ -1,3 +1,5 @@
+importScripts("color-tokens.js");
+
 const CONTEXT_MENU_ID = "glowsary-create-note";
 const SETTINGS_KEY = "glowsarySettings";
 const DEFAULT_SETTINGS = {
@@ -24,7 +26,9 @@ function updateToolbarState(settings = DEFAULT_SETTINGS) {
 
   chrome.action.setIcon({ path: iconPath });
   chrome.action.setBadgeText({ text: badgeText });
-  chrome.action.setBadgeBackgroundColor({ color: "#647067" });
+  chrome.action.setBadgeBackgroundColor({
+    color: globalThis.GlowsaryColorTokens.getToken("Neutral", "500").hex
+  });
   chrome.action.setTitle({ title });
 }
 

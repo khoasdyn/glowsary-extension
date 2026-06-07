@@ -1,3 +1,8 @@
+## 2026-06-07
+
+- Renamed primitive color CSS variables from the Glowsary-prefixed form to the shorter `--color-*` form.
+- Centralized extension UI colors into one Figma primitive token registry and replaced raw UI colors with primitive token references.
+
 ## 2026-06-06
 
 - Fixed injected page UI font loading so the definition popup and Add word dialog can use bundled fonts on websites.

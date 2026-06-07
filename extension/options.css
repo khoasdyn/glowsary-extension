@@ -32,14 +32,6 @@
 
 :root {
   color-scheme: light;
-  --bg: #f6f8f7;
-  --surface: #ffffff;
-  --text: #14211b;
-  --muted: #647067;
-  --line: #d8e1dc;
-  --accent: #16855d;
-  --accent-dark: #106c4a;
-  --danger: #b42318;
   --font-serif: "Copse", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-sans: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -51,8 +43,8 @@
 body {
   min-width: 680px;
   margin: 0;
-  color: var(--text);
-  background: var(--bg);
+  color: var(--color-mist-900);
+  background: var(--color-neutral-100);
   font: 14px/1.5 var(--font-sans);
 }
 
@@ -96,7 +88,7 @@ h2 {
 
 .topbar p {
   margin-top: 6px;
-  color: var(--muted);
+  color: var(--color-neutral-500);
 }
 
 button,
@@ -123,57 +115,57 @@ button {
 .danger-button {
   min-height: 38px;
   padding: 0 14px;
-  border: 1px solid transparent;
+  border: 1px solid var(--color-base-transparent);
 }
 
 .primary-button {
-  color: #ffffff;
-  background: var(--accent);
+  color: var(--color-base-white);
+  background: var(--color-emerald-700);
 }
 
 .primary-button:hover {
-  background: var(--accent-dark);
+  background: var(--color-emerald-800);
 }
 
 .secondary-button {
-  color: #334155;
-  background: #ffffff;
-  border-color: var(--line);
+  color: var(--color-slate-700);
+  background: var(--color-base-white);
+  border-color: var(--color-gray-300);
 }
 
 .secondary-button:hover {
-  background: #f8fafc;
+  background: var(--color-slate-50);
 }
 
 .danger-button {
-  color: var(--danger);
-  background: #ffffff;
-  border-color: #f0c7c2;
+  color: var(--color-red-700);
+  background: var(--color-base-white);
+  border-color: var(--color-red-200);
 }
 
 .danger-button:hover {
-  background: #fff5f4;
+  background: var(--color-red-50);
 }
 
 .icon-button {
   width: 32px;
   height: 32px;
-  color: #475569;
-  background: transparent;
+  color: var(--color-slate-600);
+  background: var(--color-base-transparent);
   border: 0;
   font-size: 24px;
   line-height: 1;
 }
 
 .icon-button:hover {
-  background: #eef4f1;
+  background: var(--color-mist-100);
 }
 
 .settings-panel,
 .excluded-section,
 .list-section {
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: var(--color-base-white);
+  border: 1px solid var(--color-gray-300);
   border-radius: 8px;
 }
 
@@ -193,7 +185,7 @@ button {
 
 .excluded-section p {
   margin-top: 4px;
-  color: var(--muted);
+  color: var(--color-neutral-500);
 }
 
 .switch-row {
@@ -205,7 +197,7 @@ button {
 .switch-row input {
   width: 18px;
   height: 18px;
-  accent-color: var(--accent);
+  accent-color: var(--color-emerald-700);
 }
 
 .switch-row span {
@@ -214,7 +206,7 @@ button {
 }
 
 .switch-row small {
-  color: var(--muted);
+  color: var(--color-neutral-500);
 }
 
 .switch-row strong {
@@ -233,7 +225,7 @@ button {
 .trigger-group legend {
   float: left;
   margin-right: 12px;
-  color: var(--muted);
+  color: var(--color-neutral-500);
   font-size: 13px;
   font-weight: 600;
 }
@@ -245,7 +237,7 @@ button {
 }
 
 .trigger-group input {
-  accent-color: var(--accent);
+  accent-color: var(--color-emerald-700);
 }
 
 .modal-backdrop {
@@ -255,7 +247,7 @@ button {
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgba(15, 23, 42, 0.32);
+  background: color-mix(in srgb, var(--color-slate-900) 32%, var(--color-base-transparent));
 }
 
 .modal-backdrop[hidden] {
@@ -267,10 +259,10 @@ button {
   max-height: min(720px, calc(100vh - 48px));
   overflow: auto;
   padding: 16px;
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: var(--color-base-white);
+  border: 1px solid var(--color-gray-300);
   border-radius: 8px;
-  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.24);
+  box-shadow: 0 24px 70px color-mix(in srgb, var(--color-slate-900) 24%, var(--color-base-transparent));
 }
 
 .panel-header,
@@ -298,7 +290,7 @@ button {
 .entry-form label {
   display: grid;
   gap: 6px;
-  color: #334155;
+  color: var(--color-slate-700);
   font-size: 13px;
   font-weight: 600;
 }
@@ -306,9 +298,9 @@ button {
 .entry-form input,
 .entry-form textarea {
   width: 100%;
-  color: var(--text);
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
+  color: var(--color-mist-900);
+  background: var(--color-base-white);
+  border: 1px solid var(--color-slate-300);
   border-radius: 7px;
   outline: none;
 }
@@ -326,18 +318,18 @@ button {
 
 .entry-form input:focus,
 .entry-form textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(36, 160, 111, 0.16);
+  border-color: var(--color-emerald-700);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-emerald-600) 16%, var(--color-base-transparent));
 }
 
 .form-message {
   min-height: 18px;
-  color: var(--danger);
+  color: var(--color-red-700);
   font-size: 13px;
 }
 
 .form-message.is-info {
-  color: var(--accent-dark);
+  color: var(--color-emerald-800);
 }
 
 .form-actions {
@@ -351,7 +343,7 @@ button {
 }
 
 #entry-count {
-  color: var(--muted);
+  color: var(--color-neutral-500);
   font-size: 13px;
   font-weight: 600;
 }
@@ -368,7 +360,7 @@ button {
 .excluded-field {
   display: grid;
   gap: 6px;
-  color: #334155;
+  color: var(--color-slate-700);
   font-size: 13px;
   font-weight: 600;
 }
@@ -379,9 +371,9 @@ button {
 .excluded-domain-input {
   width: 100%;
   min-height: 40px;
-  color: var(--text);
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
+  color: var(--color-mist-900);
+  background: var(--color-base-white);
+  border: 1px solid var(--color-slate-300);
   border-radius: 7px;
   outline: none;
 }
@@ -400,8 +392,8 @@ button {
 .sort-field select:focus,
 .excluded-field input:focus,
 .excluded-domain-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(36, 160, 111, 0.16);
+  border-color: var(--color-emerald-700);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-emerald-600) 16%, var(--color-base-transparent));
 }
 
 .excluded-form {
@@ -413,7 +405,7 @@ button {
 }
 
 #excluded-count {
-  color: var(--muted);
+  color: var(--color-neutral-500);
   font-size: 13px;
   font-weight: 600;
 }
@@ -430,7 +422,7 @@ button {
   gap: 12px;
   align-items: center;
   padding: 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--color-gray-300);
   border-radius: 8px;
 }
 
@@ -441,9 +433,9 @@ button {
 .empty-state {
   margin-top: 16px;
   padding: 22px;
-  color: var(--muted);
-  background: #f8fafc;
-  border: 1px dashed var(--line);
+  color: var(--color-neutral-500);
+  background: var(--color-slate-50);
+  border: 1px dashed var(--color-gray-300);
   border-radius: 8px;
   text-align: center;
 }
@@ -460,7 +452,7 @@ button {
   gap: 14px;
   align-items: start;
   padding: 14px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--color-gray-300);
   border-radius: 8px;
 }
 
@@ -470,7 +462,7 @@ button {
 }
 
 .entry-definition {
-  color: #334155;
+  color: var(--color-slate-700);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -478,13 +470,13 @@ button {
 .entry-aliases {
   display: grid;
   gap: 6px;
-  color: var(--muted);
+  color: var(--color-neutral-500);
   font-size: 13px;
   overflow-wrap: anywhere;
 }
 
 .entry-aliases strong {
-  color: #334155;
+  color: var(--color-slate-700);
   font-size: 12px;
   font-weight: 600;
 }
@@ -501,10 +493,10 @@ button {
   z-index: 20;
   max-width: min(420px, calc(100% - 40px));
   padding: 12px 14px;
-  color: #ffffff;
-  background: #14211b;
+  color: var(--color-base-white);
+  background: var(--color-mist-900);
   border-radius: 8px;
-  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.24);
+  box-shadow: 0 14px 40px color-mix(in srgb, var(--color-slate-900) 24%, var(--color-base-transparent));
 }
 
 .toast[hidden] {
@@ -512,7 +504,7 @@ button {
 }
 
 .toast.is-error {
-  background: var(--danger);
+  background: var(--color-red-700);
 }
 
 @media (max-width: 760px) {

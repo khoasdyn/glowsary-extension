@@ -9,7 +9,7 @@ This file currently covers typography, color, and corner radius. Spacing and mor
 The system has three layers, and updates flow in one direction.
 
 1. Figma is the source of truth. The user updates Figma first, so it always holds the latest design.
-2. The code holds the central design tokens: the exact values, defined once in one place, used everywhere. This is the precise registry the code reads from.
+2. The code holds the central design tokens: the exact values, defined once in one place, used everywhere. This is the precise registry the code reads from. For color, that one place is the file `extension/color-tokens.js`, generated from the Figma color export.
 3. This file holds the rules and structure: what tokens exist, how they are named, what each is for, and what agents may and may not do. It does not repeat the exact values.
 
 Sync rule: when the user shares a Figma link or asks for a check, Claude reads Figma, hands the updated values to Codex through a plan so Codex updates the central tokens, and keeps this file's rules in step. If Figma and the code tokens ever disagree, Figma is right.
@@ -43,21 +43,17 @@ Notes: alias chips use Copse Regular at the smallest text size. Every custom fon
 
 ## Color
 
-Neutrals: a gray scale plus white, used for text, borders, surfaces, and backgrounds.
+All color comes from one file, `extension/color-tokens.js`. This file is the single source of color for the whole extension. It is generated from the Figma color export, so Figma stays the upstream source. The file holds the full primitive color library: every color family and every step from Figma (steps 50 to 950), plus Base white, black, and transparent, and a Neutral alpha set. The values match Figma exactly.
 
-Accent families: four families, named Purple, Green, Blue, and Yellow. Purple is the default. Each family uses the same five steps, and each step has a fixed role.
+Token names follow one pattern: `--color-{family}-{step}`, for example `--color-slate-700` or `--color-emerald-600`. The family and step names match the Figma names, so any token traces straight back to its Figma variable. The file exposes these tokens as CSS variables for the UI, and also as plain values for code that runs without CSS, such as the service worker that sets the toolbar badge color.
 
-1. Step 50: the lightest tint, the chip background.
-2. Step 100: the card background.
-3. Step 200: the border or the color-picker circle.
-4. Step 800: the definition (body) text.
-5. Step 900: the title text.
+Rule for all color: the UI never uses a raw color value (no hex, rgb, rgba, or named color). Every color references a token from this file. The only place raw color values live is this one file.
 
-Destructive: a red family, used for delete and other destructive actions.
+Opacity and shadows: where a color needs transparency, the code mixes a primitive token with the transparent token to reach the right opacity, instead of writing a raw rgba. Shadows use a dark primitive (currently Slate 900) at low opacity, built the same way, not a separate shadow color token.
 
-Shadow colors: black at low opacity, used inside the skeuomorphic shadow effect on switches and inputs.
+Stage note: right now the system has only the primitive layer. Semantic role tokens, like text, surface, primary, and danger, are not defined yet. They come in a later stage as a separate layer that points to these primitives. Until then, color is chosen directly from primitives, so the neutral grays currently come from more than one family (Slate, Neutral, Gray, and Mist) and will be unified when the semantic layer is added.
 
-Note: the four accent families exist to support a per-word color, the color picker in the Add and Edit dialog. That feature is not in PRD.md yet. The color tokens may exist, but the rules for how the per-word color behaves must be defined in PRD.md before the feature is built.
+Note: a per-word color, a color picker for each saved word in the Add and Edit dialog, is a future feature not yet in PRD.md. Its color rules, including which tokens it may use, must be defined in PRD.md before the feature is built.
 
 ## Corner radius
 

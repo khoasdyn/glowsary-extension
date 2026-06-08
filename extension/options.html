@@ -8,6 +8,7 @@
     <script src="tokens/semantic-color-tokens.js"></script>
     <script src="tokens/typography-tokens.js"></script>
     <script src="tokens/semantic-typography-tokens.js"></script>
+    <link rel="stylesheet" href="text-button.css" />
     <link rel="stylesheet" href="options.css" />
   </head>
   <body>
@@ -17,7 +18,7 @@
           <h1>Glowsary</h1>
           <p>Your saved vocabulary, ready wherever you read.</p>
         </div>
-        <button class="primary-button" id="add-entry" type="button">Add new</button>
+        <button class="text-button text-button--default" id="add-entry" type="button"><span class="text-button__label">Add new</span></button>
       </header>
 
       <section class="settings-panel" aria-label="Settings">
@@ -55,7 +56,7 @@
             Domain
             <input id="excluded-input" type="text" autocomplete="off" placeholder="spotify.com" />
           </label>
-          <button class="secondary-button" type="submit">Exclude site</button>
+          <button class="text-button text-button--secondary" type="submit"><span class="text-button__label">Exclude site</span></button>
         </form>
         <div class="form-message" id="excluded-message" role="status"></div>
         <div class="empty-state" id="excluded-empty">No sites excluded.</div>
@@ -83,8 +84,8 @@
             </label>
             <div class="form-message" id="form-message" role="alert"></div>
             <div class="form-actions">
-              <button class="secondary-button" id="cancel-editor" type="button">Cancel</button>
-              <button class="primary-button" type="submit">Save</button>
+              <button class="text-button text-button--secondary" id="cancel-editor" type="button"><span class="text-button__label">Cancel</span></button>
+              <button class="text-button text-button--default" type="submit"><span class="text-button__label">Save</span></button>
             </div>
           </form>
         </section>
@@ -95,8 +96,8 @@
           <h2 id="list-heading">Saved words</h2>
           <div class="list-heading-actions">
             <span id="entry-count">0 entries</span>
-            <button class="secondary-button" id="export-entries" type="button">Export</button>
-            <button class="secondary-button" id="import-entries" type="button">Import</button>
+            <button class="text-button text-button--secondary" id="export-entries" type="button"><span class="text-button__label">Export</span></button>
+            <button class="text-button text-button--secondary" id="import-entries" type="button"><span class="text-button__label">Import</span></button>
             <input id="import-file" type="file" accept=".csv,text/csv" hidden />
           </div>
         </div>

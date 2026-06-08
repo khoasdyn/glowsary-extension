@@ -57,6 +57,8 @@ Leave the technical choices to Codex: which files to edit, which code to write, 
 
 For a design or visual plan based on a Figma mockup, keep the behavior and the user flow in product language, but name the exact tokens, text styles, and layout from Figma, so the plan reflects Figma accurately. Do not write raw values (hex colors or pixel sizes), except when the plan must define a brand new token, and do not name code files. The plan points to existing tokens by name, and Codex pulls the values from them.
 
+When the plan builds or changes a shared component that already has a spec in the Components section of DESIGN.md, do not restate that spec in the plan. Point Codex to the component's entry in DESIGN.md by name, and keep in the plan only what is specific to this task: which instances to touch, where they live, the behavior to preserve, and what is out of scope. This keeps the component spec in one place, so the plan and DESIGN.md never drift. If the component has no entry yet, first add it to DESIGN.md from Figma, then write the plan that points to it.
+
 ## Documentation style
 
 Follow the Markdown rule already in AGENTS.md: keep each numbered rule, bullet, and short paragraph on one readable line. Do not hard-wrap sentences in a way that creates awkward breaks in rendered or plain-text views. Write in simple, plain English because the user is a non-native English speaker.

@@ -8,6 +8,7 @@
     <script src="tokens/semantic-color-tokens.js"></script>
     <script src="tokens/typography-tokens.js"></script>
     <script src="tokens/semantic-typography-tokens.js"></script>
+    <link rel="stylesheet" href="text-button.css" />
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
@@ -37,11 +38,11 @@
       </fieldset>
 
       <section class="exclude-panel" aria-label="Excluded site">
-        <button class="secondary-button" id="exclude-site" type="button">Exclude this site</button>
+        <button class="text-button text-button--secondary" id="exclude-site" type="button"><span class="text-button__label">Exclude this site</span></button>
         <div class="popup-message" id="exclude-message" role="status"></div>
       </section>
 
-      <button class="settings-button" id="open-settings" type="button">Settings</button>
+      <button class="text-button text-button--default" id="open-settings" type="button"><span class="text-button__label">Settings</span></button>
     </main>
 
     <script src="domain-utils.js"></script>

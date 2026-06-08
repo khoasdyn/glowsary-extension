@@ -1,0 +1,70 @@
+.text-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  max-width: 100%;
+  height: 40px;
+  min-width: 0;
+  padding: 12px 20px;
+  gap: 8px;
+  color: var(--text-button-label);
+  background: var(--text-button-bg);
+  border: 0;
+  border-radius: 9999px;
+  box-shadow: none;
+  appearance: none;
+  cursor: pointer;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-text-sm);
+  letter-spacing: 0;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-button__label {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-button svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  color: var(--text-button-icon);
+}
+
+.text-button--default {
+  --text-button-bg: var(--bg-primary-solid);
+  --text-button-label: var(--text-white);
+  --text-button-icon: var(--fg-white);
+}
+
+.text-button--secondary {
+  --text-button-bg: var(--bg-quaternary);
+  --text-button-label: var(--text-primary);
+  --text-button-icon: var(--fg-primary);
+}
+
+.text-button--destructive {
+  --text-button-bg: var(--color-base-transparent);
+  --text-button-label: var(--text-error-primary);
+  --text-button-icon: var(--fg-error-primary);
+}
+
+.text-button--disabled,
+.text-button:disabled {
+  --text-button-bg: var(--bg-quaternary);
+  --text-button-label: var(--text-white);
+  --text-button-icon: var(--fg-white);
+  cursor: default;
+  pointer-events: none;
+}

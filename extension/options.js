@@ -475,6 +475,13 @@ function getVisibleEntries() {
   });
 }
 
+function createTextButtonLabel(label) {
+  const span = document.createElement("span");
+  span.className = "text-button__label";
+  span.textContent = label;
+  return span;
+}
+
 function renderEntries() {
   const visibleEntries = getVisibleEntries();
 
@@ -507,15 +514,15 @@ function renderEntries() {
     actions.className = "entry-actions";
 
     const editButton = document.createElement("button");
-    editButton.className = "secondary-button";
+    editButton.className = "text-button text-button--secondary";
     editButton.type = "button";
-    editButton.textContent = "Edit";
+    editButton.append(createTextButtonLabel("Edit"));
     editButton.addEventListener("click", () => showEditor(entry));
 
     const deleteButton = document.createElement("button");
-    deleteButton.className = "danger-button";
+    deleteButton.className = "text-button text-button--destructive";
     deleteButton.type = "button";
-    deleteButton.textContent = "Delete";
+    deleteButton.append(createTextButtonLabel("Delete"));
     deleteButton.addEventListener("click", () => deleteEntry(entry));
 
     actions.append(editButton, deleteButton);
@@ -633,9 +640,9 @@ function renderExcludedSites() {
     domainInput.addEventListener("blur", () => commitExcludedDomain(domainInput, site));
 
     const deleteButton = document.createElement("button");
-    deleteButton.className = "danger-button";
+    deleteButton.className = "text-button text-button--destructive";
     deleteButton.type = "button";
-    deleteButton.textContent = "Delete";
+    deleteButton.append(createTextButtonLabel("Delete"));
     deleteButton.addEventListener("click", () => deleteExcludedSite(site));
 
     row.append(toggleLabel, domainInput, deleteButton);

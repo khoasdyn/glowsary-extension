@@ -23,7 +23,7 @@ Sync rule: when the user shares a Figma link or asks for a check, Claude reads F
 3. If a value you need does not exist as a token, do not guess. Stop and tell the user, so the user adds it in Figma first and Claude adds the token.
 4. Token names match across Figma, this file, and the code, so there is no guessing.
 5. Only Claude maintains this file. Codex reads the tokens and this file, and never edits this file.
-6. Component styles always come from this file. The Components section below is the single style guide for shared UI components (button, input, card, and so on). When you build or change a component, match its spec here. Do not invent a component style that is not in this section; if one is missing or unclear, stop and tell the user so Claude adds it from Figma first.
+6. Component styles always come from this file. The Components section below is the single style guide for shared UI components (Text Button, input, card, and so on). When you build or change a component, match its spec here. Do not invent a component style that is not in this section; if one is missing or unclear, stop and tell the user so Claude adds it from Figma first.
 
 ## Typography
 
@@ -75,21 +75,27 @@ Not defined yet. To be added.
 
 ## Components
 
-This section is the single style guide for shared UI components. Each component lists the tokens it uses by role, so the code reads from tokens, never from raw values. A component is added here only after Figma defines it. Where a value has no token yet (for example spacing and sizing), the spec leaves it out and records the gap in NOTES.md, instead of guessing a value.
+This section is the single style guide for shared UI components, detailed enough that a plan can simply point an agent here instead of restating the spec. Each component lists the tokens it uses by role, so the code reads from tokens, never from raw values. A component is added here only after Figma defines it. Where a value has no token yet (for example spacing and sizing), the spec gives the exact value from Figma as a clearly marked temporary value and records the gap in NOTES.md, so an agent can still build the component and we replace the raw value with a token once the scale exists.
 
-### Button
+### Text Button
 
-The button is a single action control with four states: Default, Secondary, Destructive, and Disabled. It shows body text, Medium weight, with an optional trailing icon (the share-style icon), centered, on a fully rounded pill shape.
+The Text Button is the standard action button. It always shows a text label, which is what sets it apart from an icon-only button, so it is named Text Button. It has one optional trailing icon and comes in four variants: Default, Secondary, Destructive, and Disabled. In Figma the component exposes a variant property (the state), the label text, a show or hide toggle for the trailing icon, and a slot to pass a custom icon.
 
-Color by state, all from existing semantic color tokens:
+Anatomy: a single centered row, the label first and one optional trailing icon after it. There is no leading icon. No variant has a border or a shadow.
 
-1. Default: background `--bg-primary-solid`, text `--text-white`, icon `--fg-white`. The primary, solid dark button.
-2. Secondary: background `--bg-quaternary`, text `--text-primary`, icon `--fg-primary`. A light gray button for secondary actions.
-3. Destructive: no background fill (transparent), text `--text-error-primary`, icon `--fg-error-primary`. For destructive actions like delete.
-4. Disabled: background `--bg-quaternary`, text `--text-white`, icon `--fg-white`. The faded, non-interactive state.
+Variants, with colors from existing semantic tokens. Background is the surface, text is the label color, icon is the trailing icon color:
 
-Typography: the body font at the `text-sm` size and `text-sm` line height, Medium weight. This is the shared button text style already noted under Typography.
+1. Default: background `--bg-primary-solid`, text `--text-white`, icon `--fg-white`. The primary, solid dark button, for the main action.
+2. Secondary: background `--bg-quaternary`, text `--text-primary`, icon `--fg-primary`. A light gray button, for secondary actions.
+3. Destructive: no background fill (transparent) and no border, text `--text-error-primary`, icon `--fg-error-primary`. For destructive actions such as delete.
+4. Disabled: background `--bg-quaternary`, text `--text-white`, icon `--fg-white`. The faded, non-interactive look. In Figma this differs from Default only by the gray background.
+
+Typography: the label uses the body font (Poppins) at the `text-sm` size and `text-sm` line height, Medium weight, with letter spacing 0. This is the shared button text style already noted under Typography. The label stays on a single line: it does not wrap, and if it is too long it is cut with an ellipsis.
+
+Icon: the trailing icon is optional and is 20 by 20. It takes the icon (foreground) token of its variant, so it always matches the label color. The share-style icon in Figma is only a sample; the real icon is passed in by the caller. The app's current buttons are all label only, so they show no icon.
 
 Radius: the `full` role, a fully rounded pill.
 
-Not yet defined, tracked in NOTES.md: the spacing and sizing tokens the button needs (height, inner padding, the gap between text and icon, and the icon size), and the interaction states (hover, focus, and pressed). The Destructive state also has no background and no border yet, so it currently reads as plain colored text; this is flagged in NOTES.md for a design decision.
+Sizing and spacing (temporary raw values, not yet tokens): a fixed height of 40, inner padding of 12 top and bottom and 20 left and right, and a gap of 8 between the label and the trailing icon. The trailing icon is 20 by 20. The button has no fixed width; it sizes to its content. These numbers are the one place this file holds raw values, because no spacing or sizing scale exists yet. This is temporary debt tracked in NOTES.md; replace these with tokens once the scale is defined in Figma.
+
+States not yet designed: there is no hover, focus, or pressed style in Figma yet, and the Destructive variant has no background or border, so it reads as plain red text for now. Both are tracked in NOTES.md and wait on a design decision.

@@ -1,5 +1,6 @@
 ## 2026-06-08
 
+- Added the reusable Text Button style across popup, management, and in-page buttons, including the temporary raw sizing values tracked in NOTES.md.
 - Added typography token files and mapped extension UI text styles to the shared Figma type scale.
 - Moved color token files into `extension/tokens` and updated extension load paths without changing token values.
 - Added the light semantic color token layer that references primitive color tokens without changing current UI colors.

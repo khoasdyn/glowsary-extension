@@ -577,8 +577,8 @@
           </div>
           <div class="glowsary-error" role="alert"></div>
           <div class="glowsary-actions">
-            <button class="glowsary-button glowsary-button-secondary" type="button" data-action="cancel">Cancel</button>
-            <button class="glowsary-button glowsary-button-primary" type="submit">Save</button>
+            <button class="glowsary-text-button glowsary-text-button-secondary" type="button" data-action="cancel"><span class="glowsary-text-button-label">Cancel</span></button>
+            <button class="glowsary-text-button glowsary-text-button-default" type="submit"><span class="glowsary-text-button-label">Save</span></button>
           </div>
         </form>
       </section>

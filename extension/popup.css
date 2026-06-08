@@ -152,26 +152,6 @@ h1 {
   border-top: 1px solid var(--color-gray-300);
 }
 
-.secondary-button {
-  min-height: 38px;
-  color: var(--color-slate-700);
-  background: var(--color-base-white);
-  border: 1px solid var(--color-gray-300);
-  border-radius: 7px;
-  font-size: var(--font-size-text-sm);
-  font-weight: var(--font-weight-medium);
-  line-height: var(--line-height-text-sm);
-}
-
-.secondary-button:hover:not(:disabled) {
-  background: var(--color-slate-50);
-}
-
-.secondary-button:disabled {
-  color: var(--color-slate-400);
-  cursor: not-allowed;
-}
-
 .popup-message {
   min-height: 18px;
   color: var(--color-red-700);
@@ -181,19 +161,4 @@ h1 {
 
 .popup-message.is-info {
   color: var(--color-emerald-800);
-}
-
-.settings-button {
-  min-height: 38px;
-  color: var(--color-base-white);
-  background: var(--color-emerald-700);
-  border: 1px solid var(--color-base-transparent);
-  border-radius: 7px;
-  font-size: var(--font-size-text-sm);
-  font-weight: var(--font-weight-medium);
-  line-height: var(--line-height-text-sm);
-}
-
-.settings-button:hover {
-  background: var(--color-emerald-800);
 }

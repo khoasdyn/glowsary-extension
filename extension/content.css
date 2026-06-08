@@ -236,33 +236,73 @@
   gap: 8px;
 }
 
-.glowsary-button {
-  min-height: 36px;
-  padding: 0 12px;
-  border: 1px solid var(--color-base-transparent);
-  border-radius: 7px;
+.glowsary-text-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  max-width: 100%;
+  height: 40px;
+  min-width: 0;
+  padding: 12px 20px;
+  gap: 8px;
+  color: var(--glowsary-text-button-label);
+  background: var(--glowsary-text-button-bg);
+  border: 0;
+  border-radius: 9999px;
+  box-shadow: none;
+  appearance: none;
   cursor: pointer;
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-text-sm);
+  letter-spacing: 0;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.glowsary-button-secondary {
-  color: var(--color-slate-700);
-  background: var(--color-base-white);
-  border-color: var(--color-slate-300);
+.glowsary-text-button-label {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.glowsary-button-secondary:hover {
-  background: var(--color-slate-50);
+.glowsary-text-button svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  color: var(--glowsary-text-button-icon);
 }
 
-.glowsary-button-primary {
-  color: var(--color-base-white);
-  background: var(--color-emerald-700);
+.glowsary-text-button-default {
+  --glowsary-text-button-bg: var(--bg-primary-solid);
+  --glowsary-text-button-label: var(--text-white);
+  --glowsary-text-button-icon: var(--fg-white);
 }
 
-.glowsary-button-primary:hover {
-  background: var(--color-emerald-800);
+.glowsary-text-button-secondary {
+  --glowsary-text-button-bg: var(--bg-quaternary);
+  --glowsary-text-button-label: var(--text-primary);
+  --glowsary-text-button-icon: var(--fg-primary);
+}
+
+.glowsary-text-button-destructive {
+  --glowsary-text-button-bg: var(--color-base-transparent);
+  --glowsary-text-button-label: var(--text-error-primary);
+  --glowsary-text-button-icon: var(--fg-error-primary);
+}
+
+.glowsary-text-button-disabled,
+.glowsary-text-button:disabled {
+  --glowsary-text-button-bg: var(--bg-quaternary);
+  --glowsary-text-button-label: var(--text-white);
+  --glowsary-text-button-icon: var(--fg-white);
+  cursor: default;
+  pointer-events: none;
 }

@@ -232,7 +232,9 @@ States not yet designed: the same as the Field input. Figma shows only the fille
 
 The Management form panel is the right-side panel that holds the Add and Edit form. It replaces the earlier centered modal. In Figma it is the "Dialog" frame. It maps to PRD.md FR-17a, FR-18, FR-18a, and the Management form panel component entry, which own its behavior; this section owns its look. It is a composition of components already specced above, not a new control.
 
-Placement: the panel sits against the right edge of the management view, is full height, and keeps a 16px margin on all four edges. In the mockup its width is 400. It opens over the management view.
+Placement: the panel is a right-side drawer. It floats near the right edge with a 16px gap from the top, the right, and the bottom of the viewport, so it does not touch those three edges; on the left it does not have a margin, because the overlay fills the space to its left. The panel is full height minus those 16px top and bottom gaps. In the mockup its width is 400. It opens over the management view.
+
+Overlay: behind the panel is a full-screen overlay (scrim) that dims the management view. In Figma the overlay fill is black at 40% opacity. It should reference the black primitive at 40% opacity rather than a raw color; there is no semantic overlay token yet, so this is tracked in NOTES.md. The 16px gaps around the panel show this dimmed overlay, which is what makes the panel read as a floating card. Clicking the overlay does not close the panel (PRD.md behavior); only the X or Escape closes it.
 
 Anatomy: a white surface in a vertical stack of three sections with a 32px gap between them, in this order: the header, the form, and the footer.
 

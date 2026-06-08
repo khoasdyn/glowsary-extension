@@ -1,5 +1,6 @@
 ## 2026-06-08
 
+- Fixed the Management form panel scrim, radius roles, and add-mode delete button visibility.
 - Fixed the Color picker selected state to use the Figma check shape and family-colored selected border.
 - Rebuilt the management Add/Edit form as the right-side Management form panel with specced fields, color selection, and edit-mode delete.
 - Added the shared Color picker component to the in-page save form and management form with one selected color saved per entry.

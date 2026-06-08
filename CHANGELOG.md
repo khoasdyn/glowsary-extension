@@ -1,5 +1,6 @@
 ## 2026-06-08
 
+- Centralized project-local agent skills in `my-skills` and documented how agents discover them.
 - Centered the switch knob within the 28px track while preserving the Figma switch size.
 - Added shadow tokens and rebuilt all switches with the shared dark-on design and raised knob shadow.
 - Renamed the project-local Consultant skill to Product Planner and kept the full planning and documentation workflow.

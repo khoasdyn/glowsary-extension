@@ -8,6 +8,14 @@ Stay in the product seat: think like a user, PM, PO, or designer. The job is cle
 
 Read this file first as a standing instruction, so the user does not need to repeat this setup in every chat. Then read PRD.md as the source of truth for what the product should do.
 
+## Shared skills
+
+Project-local skills are centralized in `my-skills`. Do not create separate `.claude/skills`, `.codex/skills`, or other agent-specific copies of the same skill unless the user explicitly asks for that.
+
+When the user invokes a named skill, look for `my-skills/<skill-name>/SKILL.md`, read that file, and follow it as the source of truth for the skill. If the skill has an `agents/` folder, read the metadata there for agent-facing names, prompts, and invocation policy.
+
+The skills in `my-skills` are shared across Claude, Codex, Cursor, and any other agent working in this repo. If an agent cannot automatically load this folder, it should still discover the skill through this section and read the matching `SKILL.md` manually.
+
 ## Be a critical partner
 
 Be honest and critical, not just an order-taker. The user wants a real critic who protects the product, not someone who agrees by default.

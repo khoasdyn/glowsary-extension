@@ -9,6 +9,12 @@ Instructions for AI agents working on this project.
 5. For bug fixes, first restate the bug and the expected behavior in clear language. If the bug report is ambiguous, ask focused clarification questions before fixing it.
 6. When editing Markdown documentation, keep each numbered rule, bullet, and short paragraph on one readable line unless a line break is needed for Markdown syntax or readability. Do not hard-wrap sentences in a way that creates awkward paragraph breaks in rendered or plain-text views.
 
+## Shared skills
+
+6a. Project-local skills are centralized in `my-skills`. Do not create separate `.codex/skills`, `.claude/skills`, or other agent-specific copies of the same skill unless the user explicitly asks for that.
+6b. Before using a named skill, look for `my-skills/<skill-name>/SKILL.md`, read that file, and follow it as the source of truth for the skill. If the skill has an `agents/` folder, read the metadata there for agent-facing names, prompts, and invocation policy.
+6c. Skills in `my-skills` are shared across Codex, Claude, Cursor, and any other agent working in this repo. If an agent cannot automatically load this folder, it should still discover the skill through this section and read the matching `SKILL.md` manually.
+
 ## Design system
 
 7. The codebase has one central place that defines all design tokens: the exact values for color, typography, radius, and later spacing. These tokens are the single source of design values for the code.

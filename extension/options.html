@@ -34,45 +34,34 @@
       </nav>
 
       <section class="management-tab-panel" id="management-panel-home" role="tabpanel" aria-labelledby="management-tab-home" data-tab-panel="home">
-        <section class="settings-panel" aria-label="Highlighting">
-          <label class="switch-row">
-            <input id="highlighting-enabled" type="checkbox" />
-            <span>
-              <strong>Highlighting</strong>
-              <small>Show saved words on webpages</small>
-            </span>
-          </label>
-        </section>
-
-        <div class="management-home-actions">
-          <button class="text-button text-button--default" id="add-entry" type="button"><span class="text-button__label">Add new</span></button>
-        </div>
-
-        <section class="list-section" aria-labelledby="list-heading">
-          <div class="list-heading-row">
-            <h2 id="list-heading">Saved words</h2>
-            <div class="list-heading-actions">
-              <span id="entry-count">0 entries</span>
-              <button class="text-button text-button--secondary" id="export-entries" type="button"><span class="text-button__label">Export</span></button>
-              <button class="text-button text-button--secondary" id="import-entries" type="button"><span class="text-button__label">Import</span></button>
-              <input id="import-file" type="file" accept=".csv,text/csv" hidden />
+        <section class="home-section" aria-labelledby="list-heading">
+          <header class="home-header">
+            <div class="home-title-group">
+              <div class="home-title-row">
+                <h2 id="list-heading">Saved Words (<span id="entry-count">0</span>)</h2>
+                <label class="switch-row home-highlighting-switch" aria-label="Highlighting">
+                  <input id="highlighting-enabled" type="checkbox" />
+                  <span class="home-highlighting-switch__label">Highlighting</span>
+                </label>
+              </div>
+              <p>Your saved words are highlighted across every site you visit</p>
             </div>
-          </div>
+          </header>
           <div class="list-controls">
             <label class="search-field">
-              Search
+              <span class="visually-hidden">Search</span>
               <input id="search-input" type="search" autocomplete="off" placeholder="Search terms" />
             </label>
             <label class="sort-field">
-              Sort
+              <span class="visually-hidden">Sort</span>
               <select id="sort-select">
                 <option value="latest">Latest added</option>
                 <option value="az">A -> Z</option>
               </select>
             </label>
           </div>
-          <div class="empty-state" id="empty-state">No words saved yet.</div>
           <div class="entry-list" id="entry-list"></div>
+          <div class="empty-state grid-empty-state" id="empty-state">No words saved yet.</div>
         </section>
       </section>
 
@@ -102,6 +91,17 @@
           <div class="form-message" id="excluded-message" role="status"></div>
           <div class="empty-state" id="excluded-empty">No sites excluded.</div>
           <div class="excluded-list" id="excluded-list"></div>
+        </section>
+
+        <section class="list-section" aria-labelledby="data-tools-heading">
+          <div class="list-heading-row">
+            <h2 id="data-tools-heading">Data</h2>
+            <div class="list-heading-actions">
+              <button class="text-button text-button--secondary" id="export-entries" type="button"><span class="text-button__label">Export</span></button>
+              <button class="text-button text-button--secondary" id="import-entries" type="button"><span class="text-button__label">Import</span></button>
+              <input id="import-file" type="file" accept=".csv,text/csv" hidden />
+            </div>
+          </div>
         </section>
       </section>
 

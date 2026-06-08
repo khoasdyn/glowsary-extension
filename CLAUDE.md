@@ -49,3 +49,7 @@ These hold in every chat, whether or not a skill is invoked.
 ## Documentation style
 
 Follow the Markdown rule in AGENTS.md: keep each numbered rule, bullet, and short paragraph on one readable line. Do not hard-wrap sentences in a way that creates awkward breaks in rendered or plain-text views. Write in simple, plain English because the user is a non-native English speaker.
+
+## Build plan format
+
+Always wrap the full build plan in a single fenced Markdown code block (` ```markdown ` … ` ``` `). This lets the user click the copy button and paste the whole plan into Codex in one action. The plan content inside the block must still follow the plan format defined in the product-planner or design-planner skill.

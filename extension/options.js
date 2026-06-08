@@ -18,7 +18,6 @@ let entryColorPicker = null;
 const elements = {
   managementTabNav: document.querySelector("#management-tab-nav"),
   managementTabPanels: Array.from(document.querySelectorAll("[data-tab-panel]")),
-  addEntry: document.querySelector("#add-entry"),
   highlightingEnabled: document.querySelector("#highlighting-enabled"),
   excludedSitesEnabled: document.querySelector("#excluded-sites-enabled"),
   editorPanel: document.querySelector("#editor-panel"),
@@ -500,7 +499,7 @@ function renderSettings() {
 function getVisibleEntries() {
   const normalizedQuery = normalizeTerm(searchQuery);
   const filteredEntries = normalizedQuery
-    ? entries.filter((entry) => normalizeTerm(entry.displayTerm || entry.term).includes(normalizedQuery) || entry.term.includes(normalizedQuery))
+    ? entries.filter((entry) => normalizeTerm(entry.displayTerm || entry.term).includes(normalizedQuery))
     : entries.slice();
 
   return filteredEntries.sort((a, b) => {
@@ -519,52 +518,78 @@ function createTextButtonLabel(label) {
   return span;
 }
 
+function createAddEntryCard() {
+  const card = document.createElement("button");
+  card.className = "entry-card entry-card--add";
+  card.type = "button";
+  card.setAttribute("aria-label", "Add New Word");
+  card.addEventListener("click", () => showEditor());
+
+  const label = document.createElement("span");
+  label.className = "entry-card-add-label";
+  label.textContent = "Add New Word";
+
+  const icon = document.createElement("span");
+  icon.className = "entry-card-add-icon";
+  icon.setAttribute("aria-hidden", "true");
+
+  card.append(label, icon);
+  return card;
+}
+
+function createAliasChip(alias) {
+  const chip = document.createElement("span");
+  chip.className = "entry-alias-chip";
+  chip.textContent = alias.displayTerm;
+  return chip;
+}
+
+function createEntryCard(entry) {
+  const card = document.createElement("button");
+  card.className = `entry-card entry-card--word entry-card--${window.GlowsaryColorPicker?.normalizeColor?.(entry.color) || "purple"}`;
+  card.type = "button";
+  card.setAttribute("aria-label", `Edit ${entry.displayTerm || entry.term}`);
+  card.addEventListener("click", () => showEditor(entry));
+
+  const main = document.createElement("span");
+  main.className = "entry-card-main";
+
+  const term = document.createElement("span");
+  term.className = "entry-term";
+  term.textContent = entry.displayTerm;
+
+  const definition = document.createElement("span");
+  definition.className = "entry-definition";
+  definition.textContent = entry.definition;
+
+  main.append(term, definition);
+
+  const aliases = document.createElement("span");
+  aliases.className = "entry-aliases";
+
+  for (const alias of normalizeAliasList(entry.aliases)) {
+    aliases.append(createAliasChip(alias));
+  }
+
+  card.append(main, aliases);
+  return card;
+}
+
 function renderEntries() {
   const visibleEntries = getVisibleEntries();
 
   elements.entryList.replaceChildren();
-  elements.entryCount.textContent = `${visibleEntries.length} ${visibleEntries.length === 1 ? "entry" : "entries"}`;
+  elements.entryList.append(createAddEntryCard());
+  elements.entryCount.textContent = String(entries.length);
   elements.emptyState.hidden = visibleEntries.length > 0;
   elements.emptyState.textContent = entries.length === 0 ? "No words saved yet." : "No matching words.";
 
+  if (visibleEntries.length === 0) {
+    elements.entryList.append(elements.emptyState);
+  }
+
   for (const entry of visibleEntries) {
-    const card = document.createElement("article");
-    card.className = "entry-card";
-
-    const term = document.createElement("div");
-    term.className = "entry-term";
-    term.textContent = entry.displayTerm;
-
-    const definition = document.createElement("div");
-    definition.className = "entry-definition";
-    definition.textContent = entry.definition;
-
-    const aliases = document.createElement("div");
-    aliases.className = "entry-aliases";
-    const aliasText = formatAliases(entry.aliases);
-    aliases.innerHTML = aliasText ? "<strong>Aliases</strong>" : "";
-    if (aliasText) {
-      aliases.append(document.createTextNode(aliasText));
-    }
-
-    const actions = document.createElement("div");
-    actions.className = "entry-actions";
-
-    const editButton = document.createElement("button");
-    editButton.className = "text-button text-button--secondary";
-    editButton.type = "button";
-    editButton.append(createTextButtonLabel("Edit"));
-    editButton.addEventListener("click", () => showEditor(entry));
-
-    const deleteButton = document.createElement("button");
-    deleteButton.className = "text-button text-button--destructive";
-    deleteButton.type = "button";
-    deleteButton.append(createTextButtonLabel("Delete"));
-    deleteButton.addEventListener("click", () => deleteEntry(entry));
-
-    actions.append(editButton, deleteButton);
-    card.append(term, definition, aliases, actions);
-    elements.entryList.appendChild(card);
+    elements.entryList.append(createEntryCard(entry));
   }
 }
 
@@ -670,7 +695,6 @@ function renderExcludedSites() {
 }
 
 function bindEvents() {
-  elements.addEntry.addEventListener("click", () => showEditor());
   elements.exportEntries.addEventListener("click", exportEntriesToCsv);
   elements.importEntries.addEventListener("click", () => elements.importFile.click());
   elements.importFile.addEventListener("change", () => {

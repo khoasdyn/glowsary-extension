@@ -97,23 +97,25 @@ A self-directed English learner, often a non-native speaker, who reads English c
 ### Management view layout
 
 - FR-38: The management view is split into two tabs, Home and Settings, under a shared header. The shared header shows a single centered title, "Welcome to Glowsary!", with no subtitle, and stays visible on both tabs. A tab nav sits directly below the centered title and switches between Home and Settings.
-- FR-39: The Home tab holds everything for managing saved words: the global highlighting switch (the highlighting bar), the Add new button, and the saved words area, which is the entry count, the Export button, the Import button, the search box, the sort control, and the entry list.
-- FR-40: The Settings tab holds the excluded sites manager only: the master on/off switch, the add excluded site input, and the excluded sites list.
-- FR-41: The management view always opens on the Home tab. Switching between tabs does not reload the page and does not change or lose any saved word, excluded site, search text, or sort choice. It only changes which tab is shown.
+- FR-39: The Home tab holds everything for managing saved words. At the top is a section heading that shows the word count as "Saved Words (N)" with the global highlighting switch placed inline to the right of the heading text. Below the heading is a subtitle line that reads "Your saved words are highlighted across every site you visit". Below the subtitle sit the search box and sort control. Below those is the word card grid, which shows all saved word cards and always has the "Add New Word" card as its first item.
+- FR-40: The Settings tab holds the excluded sites manager and the data tools. The excluded sites manager has the master on/off switch, the add excluded site input, and the excluded sites list. The data tools section has the Export button and the Import button.
+- FR-41: The management view always opens on the Home tab.
+- FR-42: The word card grid uses four columns. Each card has a fixed height. When the definition text is too long to fit in the card, it is truncated with an ellipsis. The full definition is only visible inside the Management form panel.
+- FR-43: Each word card shows three pieces of content: the term at the top, the definition below it, and any aliases as small pills at the bottom. If an entry has no aliases, the alias area is empty. Switching between tabs does not reload the page and does not change or lose any saved word, excluded site, search text, or sort choice. It only changes which tab is shown.
 
 ### Managing saved words
 
-- FR-17: The extension provides a management view that lists all saved words and phrases with their definitions and their aliases.
-- FR-17a: The management view has an “Add new” button that opens the same Word, Definition, Alias, and Color form with empty fields in a right-side panel (the Management form panel). The panel slides in from the right edge, is full height, and keeps a 16px margin on all edges, opening over the management view. It uses the same rules as saving from a page: the 3-character minimum on the term and on each alias (FR-3a, FR-3c), the Word and Definition fields required, and the Alias field optional. In add mode the footer shows only a Save button and no delete button. There is no duplicate check (FR-2a). Typing a word that already exists creates a new separate entry on save; the form never switches into edit mode.
+- FR-17: The extension provides a management view that displays all saved words and phrases with their definitions and aliases in a grid of cards.
+- FR-17a: The management view has an “Add New Word” card that is always the first item in the grid, regardless of search or sort state. Clicking it opens the Management form panel with empty fields. The panel slides in from the right edge, is full height, and keeps a 16px margin on all edges, opening over the management view. It uses the same rules as saving from a page: the 3-character minimum on the term and on each alias (FR-3a, FR-3c), the Word and Definition fields required, and the Alias field optional. In add mode the footer shows only a Save button and no delete button. There is no duplicate check (FR-2a). Typing a word that already exists creates a new separate entry on save; the form never switches into edit mode.
 - FR-17b: The management view has a search box that filters the list by term. Matching is case-insensitive and the list updates in real time as the user types. Only the term field is searched, not the definition and not the aliases.
-- FR-17c: If the search query matches no entries, the list area shows an empty state message. The search box remains active so the user can clear or change the query.
+- FR-17c: If the search query matches no entries, the grid shows the "Add New Word" card and an empty state message in place of any word cards. The search box remains active so the user can clear or change the query.
 - FR-17d: The management view has a sort control with two options: “Latest added” (sorted by `createdAt`, newest first) and “A → Z” (alphabetical by term, case-insensitive). The selected sort is persisted and restored when the view is next opened.
 - FR-17e: Search and sort work together. When a search query is active, the sort order applies to the filtered results, not the full list.
 - FR-17f: The Management form panel has a Color field below the Aliases field, holding a color picker of the four fixed colors. Exactly one color is always selected and cannot be cleared to none. In add mode the first color is selected by default; in edit mode the entry’s saved color is selected. The user changes the color by tapping another color, which moves the selection.
-- FR-17g: The chosen color is shown on the entry’s card in the entry list as a visual tag. The exact way the card shows the color (for example a color bar, a dot, or a tint) is not decided yet and is left to a later design pass.
-- FR-18: From the list, the user can edit an entry’s definition, its aliases, and its color in the same right-side panel (the Management form panel) used by Add new. Editing replaces the existing definition and replaces the existing alias list with the parsed result of the Alias field (FR-3b, FR-3c). An entry holds only one definition. After an edit, highlighting on open pages reflects the new aliases.
+- FR-17g: The chosen color is the full background color of the word card. Each of the four fixed colors maps to a distinct pastel background that covers the entire card surface.
+- FR-18: By clicking a word card in the grid, the user can edit an entry’s definition, its aliases, and its color in the same right-side panel (the Management form panel) used by Add New Word. Editing replaces the existing definition and replaces the existing alias list with the parsed result of the Alias field (FR-3b, FR-3c). An entry holds only one definition. After an edit, highlighting on open pages reflects the new aliases.
 - FR-18a: In edit mode the panel footer shows a Save button and a delete button beside it. The delete button removes the entry at once: there is no confirmation step and no undo. This is the same delete result as deleting from the list (FR-19), now also reachable from inside the edit panel. Add mode has no delete button. Note: the user accepted the accidental-loss risk of immediate delete with no confirm and no undo (decision 2026-06-08).
-- FR-19: From the list, the user can delete a saved entry. After deletion, that word or phrase is no longer highlighted anywhere.
+- FR-19: The user can delete a saved entry from inside the Management form panel in edit mode (FR-18a). There is no delete action on the word card itself. After deletion, that word or phrase is no longer highlighted anywhere.
 
 ### Storage
 
@@ -160,13 +162,13 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Toolbar icon** — The Glowsary icon in the browser toolbar. Clicking it opens the toolbar popup. Its appearance reflects the global highlighting state: the normal colored icon with no badge when highlighting is on, and a grayscale icon shown together with a small "OFF" badge when highlighting is off.
 
-**Management view** — The full-page view, opened in a browser tab from the toolbar popup's settings button. It has a shared header with a single centered title, "Welcome to Glowsary!", and no subtitle, and a tab nav below it that splits the view into two tabs, the Home tab and the Settings tab. It opens on the Home tab. It still contains all the same parts as before, now divided across the two tabs: the saved words tools on the Home tab and the excluded sites manager on the Settings tab (FR-38, FR-39, FR-40).
+**Management view** — The full-page view, opened in a browser tab from the toolbar popup's settings button. It has a shared header with a single centered title, "Welcome to Glowsary!", and no subtitle in the shared header, and a tab nav below it that splits the view into two tabs, the Home tab and the Settings tab. It opens on the Home tab. The saved words tools are on the Home tab, and the excluded sites manager plus the data tools (Export and Import) are on the Settings tab (FR-38, FR-39, FR-40).
 
 **Tab nav** — The navigation control below the shared header of the management view that switches between the Home tab and the Settings tab.
 
-**Home tab** — The default tab of the management view. Holds the tools for managing saved words: the highlighting bar with the global highlighting switch, the Add new button, and the saved words area (the entry count, the Export button, the Import button, the search box, the sort control, and the entry list).
+**Home tab** — The default tab of the management view. Holds the tools for managing saved words: the "Saved Words (N)" heading with the global highlighting switch inline, the subtitle line, the search box, the sort control, and the entry grid.
 
-**Settings tab** — The tab of the management view that holds the excluded sites manager only: the master on/off switch, the add excluded site input, and the excluded sites list.
+**Settings tab** — The tab of the management view that holds the excluded sites manager and the data tools. The excluded sites manager has the master on/off switch, the add excluded site input, and the excluded sites list. The data tools section has the Export button and the Import button.
 
 **Shared header** — The top area of the management view, above the tab nav, that shows a single centered title, "Welcome to Glowsary!", with no subtitle. It stays visible on both the Home tab and the Settings tab.
 
@@ -178,19 +180,19 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Excluded site row** — A single item in the excluded sites list. Shows one excluded domain as an inline-editable field, with a delete button. It has no per-site toggle, no separate edit button; the domain is edited inline.
 
-**Highlighting bar** — The row at the top of the Home tab that holds the global highlighting switch. This was called the settings bar before the two-tab layout; it was renamed to avoid confusion with the Settings tab.
+**Highlighting bar** — Retired. The global highlighting switch is no longer in a separate bar row. It is now inline to the right of the "Saved Words (N)" heading on the Home tab.
 
-**Global highlighting switch** — The on/off switch inside the highlighting bar and the toolbar popup. Controls whether highlights appear on all web pages. The same state is shared between both locations.
+**Global highlighting switch** — The on/off switch that controls whether highlights appear on all web pages. It appears inline with the "Saved Words (N)" heading on the Home tab, and also inside the toolbar popup. The same state is shared between both locations.
 
 **Search box** — The text input in the management view that filters the entry list in real time by term.
 
 **Sort control** — The control in the management view that switches the entry list between “Latest added” and “A → Z” order. The chosen option persists across sessions.
 
-**Entry list** — The scrollable list of saved word entries inside the management view. Each row shows the term, the definition, the aliases (if any), an Edit button, and a Delete button.
+**Entry grid** — The scrollable grid of word cards inside the management view. It always begins with the "Add New Word" card, followed by the saved word cards in the current sort order. The grid uses four columns. Formerly called "Entry list".
 
-**Entry row** — A single item in the entry list. Displays one saved word or phrase, its definition, its aliases if it has any, and its color as a visual tag, with actions to edit or delete. The exact way the row shows the color is left to a later design pass (FR-17g).
+**Word card** — A single item in the entry grid. Displays one saved word or phrase using the entry's color as the full card background. Shows the term at the top, the definition below it (truncated with an ellipsis if too long), and alias pills at the bottom. Clicking the card opens the Management form panel in edit mode. Formerly called "Entry row".
 
-**Add new button** — The button in the management view that opens the Management form panel with empty fields, allowing the user to add a word without selecting it on a page.
+**Add New Word card** — The card in the word card grid that opens the Management form panel with empty fields, allowing the user to add a word without selecting it on a page. It is always the first item in the grid, shown with a dashed border and no color background, regardless of search or sort state.
 
 **Export button** — The button in the management view that saves all saved words to a CSV file. It always exports the full list, ignoring any active search filter.
 

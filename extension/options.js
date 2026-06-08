@@ -24,7 +24,7 @@ const elements = {
   editorPanel: document.querySelector("#editor-panel"),
   editorTitle: document.querySelector("#editor-title"),
   closeEditor: document.querySelector("#close-editor"),
-  cancelEditor: document.querySelector("#cancel-editor"),
+  deleteEntryFromPanel: document.querySelector("#delete-entry-from-panel"),
   form: document.querySelector("#entry-form"),
   termInput: document.querySelector("#term-input"),
   definitionInput: document.querySelector("#definition-input"),
@@ -335,11 +335,12 @@ function initEntryColorPicker() {
 
 function showEditor(entry = null) {
   editingEntry = entry;
-  elements.editorTitle.textContent = entry ? "Edit word" : "Add word";
+  elements.editorTitle.textContent = entry ? "Edit Word" : "Add Word";
   elements.termInput.value = entry?.displayTerm || "";
   elements.definitionInput.value = entry?.definition || "";
   elements.aliasInput.value = entry ? formatAliases(entry.aliases) : "";
   entryColorPicker?.setValue(entry?.color);
+  elements.deleteEntryFromPanel.hidden = !entry;
   setMessage("");
   elements.editorPanel.hidden = false;
   document.body.classList.add("modal-open");
@@ -351,6 +352,8 @@ function hideEditor() {
   document.body.classList.remove("modal-open");
   editingEntry = null;
   elements.form.reset();
+  entryColorPicker?.setValue();
+  elements.deleteEntryFromPanel.hidden = true;
   setMessage("");
 }
 
@@ -679,7 +682,11 @@ function bindEvents() {
     }
   });
   elements.closeEditor.addEventListener("click", hideEditor);
-  elements.cancelEditor.addEventListener("click", hideEditor);
+  elements.deleteEntryFromPanel.addEventListener("click", () => {
+    if (editingEntry) {
+      deleteEntry(editingEntry);
+    }
+  });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !elements.editorPanel.hidden) {
       hideEditor();

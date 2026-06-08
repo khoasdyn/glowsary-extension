@@ -227,6 +227,10 @@
   display: block;
 }
 
+.glowsary-color-picker__option.is-selected {
+  border: 1px solid var(--color-picker-check);
+}
+
 .glowsary-input,
 .glowsary-textarea {
   box-sizing: border-box;

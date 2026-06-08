@@ -1,5 +1,7 @@
 ## 2026-06-08
 
+- Fixed the Color picker selected state to use the Figma check shape and family-colored selected border.
+- Rebuilt the management Add/Edit form as the right-side Management form panel with specced fields, color selection, and edit-mode delete.
 - Added the shared Color picker component to the in-page save form and management form with one selected color saved per entry.
 - Updated the management shared header to a centered "Welcome to Glowsary!" title with no subtitle.
 - Split the management view into Home and Settings tabs under the shared header while preserving existing saved-word and excluded-site behavior.

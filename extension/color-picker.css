@@ -33,3 +33,7 @@
 .color-picker__option.is-selected .color-picker__check {
   display: block;
 }
+
+.color-picker__option.is-selected {
+  border: 1px solid var(--color-picker-check);
+}

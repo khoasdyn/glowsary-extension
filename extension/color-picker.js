@@ -25,8 +25,12 @@
     icon.setAttribute("focusable", "false");
 
     const path = root.document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute("d", "M16.7 5.3a1 1 0 0 1 0 1.4l-8 8a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L8 12.6l7.3-7.3a1 1 0 0 1 1.4 0z");
-    path.setAttribute("fill", "currentColor");
+    path.setAttribute("d", "M16.6666 5L7.49998 14.1667L3.33331 10");
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", "currentColor");
+    path.setAttribute("stroke-width", "2");
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-linejoin", "round");
     icon.append(path);
 
     return icon;

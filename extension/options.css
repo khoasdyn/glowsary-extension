@@ -110,14 +110,14 @@ button {
   cursor: pointer;
 }
 
-.icon-button {
+.editor-close-button {
   border-radius: 7px;
   font-size: var(--font-size-text-sm);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-text-sm);
 }
 
-.icon-button {
+.editor-close-button {
   width: 32px;
   height: 32px;
   color: var(--color-slate-600);
@@ -127,7 +127,7 @@ button {
   line-height: var(--line-height-display-xs);
 }
 
-.icon-button:hover {
+.editor-close-button:hover {
   background: var(--color-mist-100);
 }
 

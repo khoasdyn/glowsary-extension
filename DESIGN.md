@@ -130,3 +130,25 @@ Radius: the `full` role. The track is a pill (`9999px`); the knob is a true circ
 Sizing and spacing (temporary raw values, not yet tokens): the track is 54 wide and 28 tall, with 4 padding top and bottom and 6 padding left and right; the knob is 20 by 20. With that padding, the knob travels from the left edge to the right edge between the two states. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
 States not yet designed: Figma defines only the off and on states. There is no disabled, hover, or pressed style yet, and there is no focus style. Because keyboard users must still see which control is focused, the switch keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision. The motion of the knob between states is a small slide; an exact timing is not set in Figma yet.
+
+### Icon Button
+
+The Icon Button is a round, icon-only button. It shows a single icon and no text label, which is what sets it apart from the Text Button. It is used for compact actions where space is tight or the meaning is clear from the icon, such as a Delete (trash) action. In Figma the component exposes a variant property (the style) and a slot to pass a custom icon. It comes in three variants: Primary, Secondary, and Destructive. No variant has a border or a shadow.
+
+Anatomy: a fixed square box with the icon centered inside it. The box is fully rounded, so it reads as a circle. There is one icon and nothing else.
+
+Variants, with colors from existing semantic tokens. Background is the surface, icon is the icon color:
+
+1. Primary: background `--bg-primary-solid`, icon `--fg-white`. The solid dark button, for the main icon action. This is the icon-only match of the Text Button's Default variant.
+2. Secondary: background `--bg-quaternary`, icon `--fg-primary`. A light gray button, for secondary actions.
+3. Destructive: background `--bg-error-solid` (a solid red fill), icon `--fg-error-white`. For destructive actions such as delete. Note this differs from the Text Button's Destructive, which has no fill and shows plain red text; the Icon Button's Destructive is a filled red circle, so it reads stronger.
+
+Icon: the icon is required and is 18 by 18. It takes the icon (foreground) token of its variant, so it always matches the variant. The trash icon in Figma is only a sample; the real icon is passed in by the caller.
+
+Radius: the `full` role. The box has equal width and height, so it is a true circle (`50%`) per the corner radius rule.
+
+Sizing and spacing (temporary raw values, not yet tokens): a fixed box of 40 by 40, with the icon 18 by 18 centered inside. The button has no label and no fixed content sizing beyond the icon. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
+
+Accessibility: because the button has no visible text, it must carry an accessible name so screen readers can announce its action, and a tooltip on hover so sighted users learn what it does. The caller provides this name and tooltip text. This is a build requirement, not a Figma value.
+
+States not yet designed: Figma defines only the three static variants. There is no hover, focus, pressed, or disabled style yet. Because keyboard users must still see which control is focused, the Icon Button keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision.

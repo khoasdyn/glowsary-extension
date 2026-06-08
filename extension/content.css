@@ -306,3 +306,48 @@
   cursor: default;
   pointer-events: none;
 }
+
+.glowsary-icon-button {
+  --glowsary-icon-button-bg: var(--bg-primary-solid);
+  --glowsary-icon-button-icon: var(--fg-white);
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0;
+  color: var(--glowsary-icon-button-icon);
+  background: var(--glowsary-icon-button-bg);
+  border: 0;
+  border-radius: 9999px;
+  box-shadow: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.glowsary-icon-button svg,
+.glowsary-icon-button__icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  color: currentColor;
+}
+
+.glowsary-icon-button--primary {
+  --glowsary-icon-button-bg: var(--bg-primary-solid);
+  --glowsary-icon-button-icon: var(--fg-white);
+}
+
+.glowsary-icon-button--secondary {
+  --glowsary-icon-button-bg: var(--bg-quaternary);
+  --glowsary-icon-button-icon: var(--fg-primary);
+}
+
+.glowsary-icon-button--destructive {
+  --glowsary-icon-button-bg: var(--bg-error-solid);
+  --glowsary-icon-button-icon: var(--fg-error-white);
+}

@@ -1,0 +1,44 @@
+.icon-button {
+  --icon-button-bg: var(--bg-primary-solid);
+  --icon-button-icon: var(--fg-white);
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0;
+  color: var(--icon-button-icon);
+  background: var(--icon-button-bg);
+  border: 0;
+  border-radius: 9999px;
+  box-shadow: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.icon-button svg,
+.icon-button__icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  color: currentColor;
+}
+
+.icon-button--primary {
+  --icon-button-bg: var(--bg-primary-solid);
+  --icon-button-icon: var(--fg-white);
+}
+
+.icon-button--secondary {
+  --icon-button-bg: var(--bg-quaternary);
+  --icon-button-icon: var(--fg-primary);
+}
+
+.icon-button--destructive {
+  --icon-button-bg: var(--bg-error-solid);
+  --icon-button-icon: var(--fg-error-white);
+}

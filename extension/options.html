@@ -10,6 +10,7 @@
     <script src="tokens/typography-tokens.js"></script>
     <script src="tokens/semantic-typography-tokens.js"></script>
     <link rel="stylesheet" href="text-button.css" />
+    <link rel="stylesheet" href="icon-button.css" />
     <link rel="stylesheet" href="switch.css" />
     <link rel="stylesheet" href="options.css" />
   </head>
@@ -64,7 +65,7 @@
         <section class="editor-panel" role="dialog" aria-modal="true" aria-labelledby="editor-title">
           <div class="panel-header">
             <h2 id="editor-title">Add word</h2>
-            <button class="icon-button" id="close-editor" type="button" aria-label="Close form">&times;</button>
+            <button class="editor-close-button" id="close-editor" type="button" aria-label="Close form">&times;</button>
           </div>
           <form id="entry-form" class="entry-form">
             <label>
@@ -118,6 +119,7 @@
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
     <script src="domain-utils.js"></script>
+    <script src="icon-button.js"></script>
     <script src="options.js"></script>
   </body>
 </html>

@@ -40,7 +40,14 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["tokens/color-tokens.js", "tokens/semantic-color-tokens.js", "domain-utils.js", "content.js"],
+      "js": [
+        "tokens/color-tokens.js",
+        "tokens/semantic-color-tokens.js",
+        "tokens/typography-tokens.js",
+        "tokens/semantic-typography-tokens.js",
+        "domain-utils.js",
+        "content.js"
+      ],
       "css": ["content.css"],
       "run_at": "document_idle"
     }

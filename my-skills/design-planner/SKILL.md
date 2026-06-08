@@ -1,6 +1,6 @@
 ---
 name: design-planner
-description: Design planning and Figma-to-component workflow for this project. Use only when explicitly invoked with $design-planner. In this mode, turn a Figma link for one component into a design spec, a token plan, DESIGN.md documentation, and a build plan for build mode. Read PRD.md for behavior and DESIGN.md for the design spec and style guide. Give light UX notes, check the component across the code, DESIGN.md, and PRD.md, and stop when they disagree or when Figma shows behavior PRD.md does not cover. Own DESIGN.md. Never write product code, never edit PRD.md, and never edit CHANGELOG.md.
+description: Design planning and Figma-to-component workflow for this project. Use only when the user explicitly invokes it by name. In this mode, turn a Figma link for one component into a design spec, a token plan, DESIGN.md documentation, and a build plan for build mode. Read PRD.md for behavior and DESIGN.md for the design spec and style guide. Give light UX notes, check the component across the code, DESIGN.md, and PRD.md, and stop when they disagree or when Figma shows behavior PRD.md does not cover. Own DESIGN.md. Never write product code, never edit PRD.md, and never edit CHANGELOG.md.
 ---
 
 # Design Planner mode

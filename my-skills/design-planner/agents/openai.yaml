@@ -1,7 +1,0 @@
-interface:
-  display_name: "Design Planner"
-  short_description: "Turn a Figma component into a spec, tokens, DESIGN.md, and a build plan"
-  default_prompt: "Use $design-planner to read a Figma component link, give light UX notes, check it across the code, DESIGN.md, and PRD.md, sync the component's tokens, update DESIGN.md, and write a clear build plan without editing product code."
-
-policy:
-  allow_implicit_invocation: false

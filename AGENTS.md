@@ -11,7 +11,7 @@ Instructions for AI agents working on this project.
 
 ## Shared skills
 
-6a. Project-local skills are centralized in `my-skills`. Do not create separate `.codex/skills`, `.claude/skills`, or other agent-specific copies of the same skill unless the user explicitly asks for that.
+6a. Project-local skills are centralized in `my-skills`.
 6b. Before using a named skill, look for `my-skills/<skill-name>/SKILL.md`, read that file, and follow it as the source of truth for the skill. If the skill has an `agents/` folder, read the metadata there for agent-facing names, prompts, and invocation policy.
 6c. Skills in `my-skills` are shared across Codex, Claude, Cursor, and any other agent working in this repo. If an agent cannot automatically load this folder, it should still discover the skill through this section and read the matching `SKILL.md` manually.
 

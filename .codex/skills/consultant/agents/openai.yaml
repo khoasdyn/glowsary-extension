@@ -1,7 +1,0 @@
-interface:
-  display_name: "Consultant"
-  short_description: "Plan project changes without editing code"
-  default_prompt: "Use $consultant to shape a Glowsary change into clear PRD updates and an implementation plan."
-
-policy:
-  allow_implicit_invocation: false

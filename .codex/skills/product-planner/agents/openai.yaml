@@ -1,0 +1,7 @@
+interface:
+  display_name: "Product Planner"
+  short_description: "Run the project planning workflow"
+  default_prompt: "Use $product-planner to discuss Glowsary changes, update project docs, track mismatches, and write clear build plans without editing product code."
+
+policy:
+  allow_implicit_invocation: false

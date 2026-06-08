@@ -36,7 +36,7 @@ Named text styles, taken from Figma. Each one is a font family, a weight, a size
 
 1. Page Title: heading font, regular, the `display-md` size and line height. The main page title.
 2. Section Title: heading font, regular, the `display-xs` size and line height. Section headings and dialog titles.
-3. Card Title: heading font, regular, the `text-xl` size and line height. The saved word shown on a card.
+3. Card Title: heading font, regular, the `text-lg` size and line height. The saved word shown on a card.
 4. Subtitle Page: body font, regular, the `text-md` size and line height. The subtitle line under a page title.
 5. Body Text: body font, regular, the `text-sm` size and line height. Body text, definitions, input values, and list text.
 

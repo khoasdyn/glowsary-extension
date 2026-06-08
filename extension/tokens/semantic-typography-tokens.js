@@ -18,8 +18,8 @@
       cssPrefix: "--text-style-card-title",
       fontFamily: "--font-family-heading",
       fontWeight: "--font-weight-regular",
-      fontSize: "--font-size-text-xl",
-      lineHeight: "--line-height-text-xl"
+      fontSize: "--font-size-text-lg",
+      lineHeight: "--line-height-text-lg"
     },
     subtitlePage: {
       cssPrefix: "--text-style-subtitle-page",

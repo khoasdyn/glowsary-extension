@@ -18,59 +18,90 @@
   <body>
     <main class="shell">
       <header class="topbar">
-        <div>
-          <h1>Glowsary</h1>
-          <p>Your saved vocabulary, ready wherever you read.</p>
-        </div>
-        <button class="text-button text-button--default" id="add-entry" type="button"><span class="text-button__label">Add new</span></button>
+        <h1>Welcome to Glowsary!</h1>
       </header>
 
       <nav class="tab-nav" id="management-tab-nav" role="tablist" aria-label="Management sections">
-        <button class="tab-nav__item is-active" id="management-tab-home" type="button" role="tab" aria-selected="true" data-tab-value="home">
+        <button class="tab-nav__item is-active" id="management-tab-home" type="button" role="tab" aria-selected="true" aria-controls="management-panel-home" data-tab-value="home">
           <span class="tab-nav__icon tab-nav__icon--home" aria-hidden="true"></span>
           <span class="tab-nav__label">Home</span>
         </button>
-        <button class="tab-nav__item" id="management-tab-settings" type="button" role="tab" aria-selected="false" data-tab-value="settings" tabindex="-1">
+        <button class="tab-nav__item" id="management-tab-settings" type="button" role="tab" aria-selected="false" aria-controls="management-panel-settings" data-tab-value="settings" tabindex="-1">
           <span class="tab-nav__icon tab-nav__icon--settings" aria-hidden="true"></span>
           <span class="tab-nav__label">Settings</span>
         </button>
       </nav>
 
-      <section class="settings-panel" aria-label="Settings">
-        <label class="switch-row">
-          <input id="highlighting-enabled" type="checkbox" />
-          <span>
-            <strong>Highlighting</strong>
-            <small>Show saved words on webpages</small>
-          </span>
-        </label>
+      <section class="management-tab-panel" id="management-panel-home" role="tabpanel" aria-labelledby="management-tab-home" data-tab-panel="home">
+        <section class="settings-panel" aria-label="Highlighting">
+          <label class="switch-row">
+            <input id="highlighting-enabled" type="checkbox" />
+            <span>
+              <strong>Highlighting</strong>
+              <small>Show saved words on webpages</small>
+            </span>
+          </label>
+        </section>
+
+        <div class="management-home-actions">
+          <button class="text-button text-button--default" id="add-entry" type="button"><span class="text-button__label">Add new</span></button>
+        </div>
+
+        <section class="list-section" aria-labelledby="list-heading">
+          <div class="list-heading-row">
+            <h2 id="list-heading">Saved words</h2>
+            <div class="list-heading-actions">
+              <span id="entry-count">0 entries</span>
+              <button class="text-button text-button--secondary" id="export-entries" type="button"><span class="text-button__label">Export</span></button>
+              <button class="text-button text-button--secondary" id="import-entries" type="button"><span class="text-button__label">Import</span></button>
+              <input id="import-file" type="file" accept=".csv,text/csv" hidden />
+            </div>
+          </div>
+          <div class="list-controls">
+            <label class="search-field">
+              Search
+              <input id="search-input" type="search" autocomplete="off" placeholder="Search terms" />
+            </label>
+            <label class="sort-field">
+              Sort
+              <select id="sort-select">
+                <option value="latest">Latest added</option>
+                <option value="az">A -> Z</option>
+              </select>
+            </label>
+          </div>
+          <div class="empty-state" id="empty-state">No words saved yet.</div>
+          <div class="entry-list" id="entry-list"></div>
+        </section>
       </section>
 
-      <section class="excluded-section" aria-labelledby="excluded-heading">
-        <div class="list-heading-row">
-          <div>
-            <h2 id="excluded-heading">Excluded sites</h2>
-            <p>Pause highlighting on sites where saved words are noise.</p>
+      <section class="management-tab-panel" id="management-panel-settings" role="tabpanel" aria-labelledby="management-tab-settings" data-tab-panel="settings" hidden>
+        <section class="excluded-section" aria-labelledby="excluded-heading">
+          <div class="list-heading-row">
+            <div>
+              <h2 id="excluded-heading">Excluded sites</h2>
+              <p>Pause highlighting on sites where saved words are noise.</p>
+            </div>
+            <span id="excluded-count">0 sites</span>
           </div>
-          <span id="excluded-count">0 sites</span>
-        </div>
-        <label class="switch-row excluded-master">
-          <input id="excluded-sites-enabled" type="checkbox" />
-          <span>
-            <strong>Use excluded sites list</strong>
-            <small>When off, highlighting runs everywhere.</small>
-          </span>
-        </label>
-        <form class="excluded-form" id="excluded-form">
-          <label class="excluded-field">
-            Domain
-            <input id="excluded-input" type="text" autocomplete="off" placeholder="spotify.com" />
+          <label class="switch-row excluded-master">
+            <input id="excluded-sites-enabled" type="checkbox" />
+            <span>
+              <strong>Use excluded sites list</strong>
+              <small>When off, highlighting runs everywhere.</small>
+            </span>
           </label>
-          <button class="text-button text-button--secondary" type="submit"><span class="text-button__label">Exclude site</span></button>
-        </form>
-        <div class="form-message" id="excluded-message" role="status"></div>
-        <div class="empty-state" id="excluded-empty">No sites excluded.</div>
-        <div class="excluded-list" id="excluded-list"></div>
+          <form class="excluded-form" id="excluded-form">
+            <label class="excluded-field">
+              Domain
+              <input id="excluded-input" type="text" autocomplete="off" placeholder="spotify.com" />
+            </label>
+            <button class="text-button text-button--secondary" type="submit"><span class="text-button__label">Exclude site</span></button>
+          </form>
+          <div class="form-message" id="excluded-message" role="status"></div>
+          <div class="empty-state" id="excluded-empty">No sites excluded.</div>
+          <div class="excluded-list" id="excluded-list"></div>
+        </section>
       </section>
 
       <div class="modal-backdrop" id="editor-panel" hidden>
@@ -100,33 +131,6 @@
           </form>
         </section>
       </div>
-
-      <section class="list-section" aria-labelledby="list-heading">
-        <div class="list-heading-row">
-          <h2 id="list-heading">Saved words</h2>
-          <div class="list-heading-actions">
-            <span id="entry-count">0 entries</span>
-            <button class="text-button text-button--secondary" id="export-entries" type="button"><span class="text-button__label">Export</span></button>
-            <button class="text-button text-button--secondary" id="import-entries" type="button"><span class="text-button__label">Import</span></button>
-            <input id="import-file" type="file" accept=".csv,text/csv" hidden />
-          </div>
-        </div>
-        <div class="list-controls">
-          <label class="search-field">
-            Search
-            <input id="search-input" type="search" autocomplete="off" placeholder="Search terms" />
-          </label>
-          <label class="sort-field">
-            Sort
-            <select id="sort-select">
-              <option value="latest">Latest added</option>
-              <option value="az">A -> Z</option>
-            </select>
-          </label>
-        </div>
-        <div class="empty-state" id="empty-state">No words saved yet.</div>
-        <div class="entry-list" id="entry-list"></div>
-      </section>
     </main>
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 

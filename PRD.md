@@ -94,7 +94,7 @@ A self-directed English learner, often a non-native speaker, who reads English c
 
 ### Management view layout
 
-- FR-38: The management view is split into two tabs, Home and Settings, under a shared header. The shared header holds the Glowsary page title and its subtitle and stays visible on both tabs. A tab nav sits directly below the header and switches between Home and Settings.
+- FR-38: The management view is split into two tabs, Home and Settings, under a shared header. The shared header shows a single centered title, "Welcome to Glowsary!", with no subtitle, and stays visible on both tabs. A tab nav sits directly below the centered title and switches between Home and Settings.
 - FR-39: The Home tab holds everything for managing saved words: the global highlighting switch (the highlighting bar), the Add new button, and the saved words area, which is the entry count, the Export button, the Import button, the search box, the sort control, and the entry list.
 - FR-40: The Settings tab holds the excluded sites manager only: the master on/off switch, the add excluded site input, and the excluded sites list.
 - FR-41: The management view always opens on the Home tab. Switching between tabs does not reload the page and does not change or lose any saved word, excluded site, search text, or sort choice. It only changes which tab is shown.
@@ -153,7 +153,7 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Toolbar icon** — The Glowsary icon in the browser toolbar. Clicking it opens the toolbar popup. Its appearance reflects the global highlighting state: the normal colored icon with no badge when highlighting is on, and a grayscale icon shown together with a small "OFF" badge when highlighting is off.
 
-**Management view** — The full-page view, opened in a browser tab from the toolbar popup's settings button. It has a shared header with the Glowsary title and subtitle, and a tab nav below it that splits the view into two tabs, the Home tab and the Settings tab. It opens on the Home tab. It still contains all the same parts as before, now divided across the two tabs: the saved words tools on the Home tab and the excluded sites manager on the Settings tab (FR-38, FR-39, FR-40).
+**Management view** — The full-page view, opened in a browser tab from the toolbar popup's settings button. It has a shared header with a single centered title, "Welcome to Glowsary!", and no subtitle, and a tab nav below it that splits the view into two tabs, the Home tab and the Settings tab. It opens on the Home tab. It still contains all the same parts as before, now divided across the two tabs: the saved words tools on the Home tab and the excluded sites manager on the Settings tab (FR-38, FR-39, FR-40).
 
 **Tab nav** — The navigation control below the shared header of the management view that switches between the Home tab and the Settings tab.
 
@@ -161,7 +161,7 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Settings tab** — The tab of the management view that holds the excluded sites manager only: the master on/off switch, the add excluded site input, and the excluded sites list.
 
-**Shared header** — The top area of the management view, above the tab nav, that shows the Glowsary title and subtitle and stays visible on both the Home tab and the Settings tab.
+**Shared header** — The top area of the management view, above the tab nav, that shows a single centered title, "Welcome to Glowsary!", with no subtitle. It stays visible on both the Home tab and the Settings tab.
 
 **Excluded sites manager** — The area of the management view that controls the excluded sites list. Contains the master on/off switch that pauses or resumes all exclusions at once, the add excluded site input, and the excluded sites list. It is the only place to add by typing, edit, or delete excluded sites.
 

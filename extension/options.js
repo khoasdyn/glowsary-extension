@@ -16,6 +16,7 @@ let activeManagementTab = "home";
 
 const elements = {
   managementTabNav: document.querySelector("#management-tab-nav"),
+  managementTabPanels: Array.from(document.querySelectorAll("[data-tab-panel]")),
   addEntry: document.querySelector("#add-entry"),
   highlightingEnabled: document.querySelector("#highlighting-enabled"),
   excludedSitesEnabled: document.querySelector("#excluded-sites-enabled"),
@@ -306,7 +307,18 @@ function showToast(message, kind = "info") {
 }
 
 function handleManagementTabChange(event) {
-  activeManagementTab = event.detail.activeTab;
+  const nextTab = event.detail.activeTab;
+  const currentPanel = elements.managementTabPanels.find((panel) => panel.dataset.tabPanel === activeManagementTab);
+
+  if (nextTab !== activeManagementTab && currentPanel?.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+
+  activeManagementTab = nextTab;
+
+  for (const panel of elements.managementTabPanels) {
+    panel.hidden = panel.dataset.tabPanel !== activeManagementTab;
+  }
 }
 
 function initManagementTabNav() {

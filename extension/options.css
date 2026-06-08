@@ -42,7 +42,7 @@ body {
   min-width: 680px;
   margin: 0;
   color: var(--color-mist-900);
-  background: var(--color-neutral-100);
+  background: var(--bg-primary);
   font-family: var(--text-style-body-text-font-family);
   font-size: var(--text-style-body-text-font-size);
   font-weight: var(--text-style-body-text-font-weight);
@@ -61,10 +61,24 @@ body.modal-open {
 
 .topbar {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+#management-tab-nav {
   margin-bottom: 20px;
+}
+
+.management-tab-panel[hidden] {
+  display: none;
+}
+
+.management-home-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 14px;
 }
 
 h1,
@@ -78,6 +92,7 @@ h1 {
   font-size: var(--text-style-page-title-font-size);
   font-weight: var(--text-style-page-title-font-weight);
   line-height: var(--text-style-page-title-line-height);
+  white-space: nowrap;
 }
 
 h2 {
@@ -85,15 +100,6 @@ h2 {
   font-size: var(--text-style-section-title-font-size);
   font-weight: var(--text-style-section-title-font-weight);
   line-height: var(--text-style-section-title-line-height);
-}
-
-.topbar p {
-  margin-top: 6px;
-  color: var(--color-neutral-500);
-  font-family: var(--text-style-subtitle-page-font-family);
-  font-size: var(--text-style-subtitle-page-font-size);
-  font-weight: var(--text-style-subtitle-page-font-weight);
-  line-height: var(--text-style-subtitle-page-line-height);
 }
 
 button,

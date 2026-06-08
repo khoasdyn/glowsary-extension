@@ -1,5 +1,7 @@
 ## 2026-06-08
 
+- Updated the management shared header to a centered "Welcome to Glowsary!" title with no subtitle.
+- Split the management view into Home and Settings tabs under the shared header while preserving existing saved-word and excluded-site behavior.
 - Added the shared management Tab nav component with Home and Settings tabs, token-based styling, and keyboard-accessible tab state.
 - Added the reusable Icon Button component with token-based variants, required accessibility inputs, and temporary raw sizing from the design spec.
 - Centralized project-local agent skills in `my-skills` and documented how agents discover them.

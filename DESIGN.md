@@ -23,6 +23,7 @@ Sync rule: when the user shares a Figma link or asks for a check, Claude reads F
 3. If a value you need does not exist as a token, do not guess. Stop and tell the user, so the user adds it in Figma first and Claude adds the token.
 4. Token names match across Figma, this file, and the code, so there is no guessing.
 5. Only Claude maintains this file. Codex reads the tokens and this file, and never edits this file.
+6. Component styles always come from this file. The Components section below is the single style guide for shared UI components (button, input, card, and so on). When you build or change a component, match its spec here. Do not invent a component style that is not in this section; if one is missing or unclear, stop and tell the user so Claude adds it from Figma first.
 
 ## Typography
 
@@ -71,3 +72,24 @@ The fully rounded value in code: in Figma a fully rounded shape is sometimes dra
 ## Spacing
 
 Not defined yet. To be added.
+
+## Components
+
+This section is the single style guide for shared UI components. Each component lists the tokens it uses by role, so the code reads from tokens, never from raw values. A component is added here only after Figma defines it. Where a value has no token yet (for example spacing and sizing), the spec leaves it out and records the gap in NOTES.md, instead of guessing a value.
+
+### Button
+
+The button is a single action control with four states: Default, Secondary, Destructive, and Disabled. It shows body text, Medium weight, with an optional trailing icon (the share-style icon), centered, on a fully rounded pill shape.
+
+Color by state, all from existing semantic color tokens:
+
+1. Default: background `--bg-primary-solid`, text `--text-white`, icon `--fg-white`. The primary, solid dark button.
+2. Secondary: background `--bg-quaternary`, text `--text-primary`, icon `--fg-primary`. A light gray button for secondary actions.
+3. Destructive: no background fill (transparent), text `--text-error-primary`, icon `--fg-error-primary`. For destructive actions like delete.
+4. Disabled: background `--bg-quaternary`, text `--text-white`, icon `--fg-white`. The faded, non-interactive state.
+
+Typography: the body font at the `text-sm` size and `text-sm` line height, Medium weight. This is the shared button text style already noted under Typography.
+
+Radius: the `full` role, a fully rounded pill.
+
+Not yet defined, tracked in NOTES.md: the spacing and sizing tokens the button needs (height, inner padding, the gap between text and icon, and the icon size), and the interaction states (hover, focus, and pressed). The Destructive state also has no background and no border yet, so it currently reads as plain colored text; this is flagged in NOTES.md for a design decision.

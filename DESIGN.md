@@ -79,6 +79,14 @@ Composite effect style: `--shadow-xs-skeuomorphic` is the named shadow style, th
 
 This is a brand new category, so the section names the layer offsets, blur, and spread from Figma directly, so an agent can build the token without guessing. The opacity values (5% and 18%) are the Figma effect color values, not a value mixed from any gray family.
 
+## Icons
+
+Icons are SVG assets in one folder, `extension/assets`, one file per icon, named for the icon, for example `trash-03.svg` and `settings-02.svg`. Agents take icons from this folder. The names match the Figma icon names so each file traces back to its source.
+
+A Figma icon export cannot link to a color token, so each SVG ships with a fixed color from Figma. That color in the file is only a placeholder; the icon does not get its final color from the file. Where the icon is used, it takes the color of its context, so the foreground token of the Icon Button variant or the Text Button drives it. Applying that color is done at the point of use, not in the asset.
+
+The standard icon slot is 18 by 18, used by the Icon Button and the Text Button trailing icon. An icon drawn at another size is scaled to fit the slot.
+
 ## Spacing
 
 Not defined yet. To be added.

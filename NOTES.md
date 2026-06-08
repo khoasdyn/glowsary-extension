@@ -21,7 +21,3 @@ How to read an item: the area it touches, what the mismatch or gap is, and its s
 3. Destructive Text Button variant has no background and no border. In Figma the Destructive state has a transparent background and no border, so it reads as plain red text and icon on the page. This may be intended, or it may need a border or a light red background. Area: Figma and UX. Status: open, waiting on a design decision from the user. Note: after the Text Button is applied to all buttons (decision 2026-06-08), the Delete buttons move from a solid red fill to this transparent red-text style, so Delete looks weaker. Revisit once the Destructive look is decided in Figma.
 
 ## Resolved
-
-- Switch/toggle component had no spec in DESIGN.md or Figma. Resolved 2026-06-08: the user designed the Switch in Figma; Claude added the Switch entry to the Components section and a Shadows section for the knob's `--shadow-xs-skeuomorphic` style. Follow-up mismatches from the design are tracked as open items 5 and 6.
-- (item 4) Switch code did not match the new Figma spec. Resolved 2026-06-08: Codex rebuilt all switches with the dark on state (`--bg-primary-solid`), the 54 by 28 track, the 20 knob, the off track of `--bg-quaternary` with a `--border-primary` border, and the `--shadow-xs-skeuomorphic` knob shadow.
-- (item 7) Shadow token category did not exist in code. Resolved 2026-06-08: Codex created `extension/tokens/shadow-tokens.js` and the `--shadow-xs-skeuomorphic` style is now in use.

@@ -1,3 +1,7 @@
+## 2026-06-08
+
+- Added the light semantic color token layer that references primitive color tokens without changing current UI colors.
+
 ## 2026-06-07
 
 - Renamed primitive color CSS variables from the Glowsary-prefixed form to the shorter `--color-*` form.

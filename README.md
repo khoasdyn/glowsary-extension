@@ -18,4 +18,4 @@ Glowsary is a Manifest V3 Chrome extension for saving personal vocabulary while 
 
 ## Documentation
 
-See `PRD.md` for the full product requirements and `CHANGELOG.md` for the version history. See `DESIGN.md` for the design system; all color comes from one file, `extension/color-tokens.js`.
+See `PRD.md` for the full product requirements and `CHANGELOG.md` for the version history. See `DESIGN.md` for the design system. Color has two layers: the primitive palette in `extension/color-tokens.js`, and a semantic role layer that references it.

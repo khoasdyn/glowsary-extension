@@ -51,7 +51,11 @@ Rule for all color: the UI never uses a raw color value (no hex, rgb, rgba, or n
 
 Opacity and shadows: where a color needs transparency, the code mixes a primitive token with the transparent token to reach the right opacity, instead of writing a raw rgba. Shadows use a dark primitive (currently Slate 900) at low opacity, built the same way, not a separate shadow color token.
 
-Stage note: right now the system has only the primitive layer. Semantic role tokens, like text, surface, primary, and danger, are not defined yet. They come in a later stage as a separate layer that points to these primitives. Until then, color is chosen directly from primitives, so the neutral grays currently come from more than one family (Slate, Neutral, Gray, and Mist) and will be unified when the semantic layer is added.
+The system has two color layers. The first is the primitive layer in `extension/color-tokens.js` described above. The second is the semantic layer: a separate file that gives colors a role, such as the main text color or the page background. Each semantic token references a primitive token, never a raw value, so the primitives stay the single source of the actual color.
+
+Semantic tokens use short role names, for example `--text-primary`, `--bg-secondary`, `--fg-error-primary`, and `--border-primary`. They are grouped as Text (text fills), Foreground (icons and graphic marks), Background (surfaces), and Border. The set is small and matches the Figma semantic export exactly. It covers one mode, light, for now; a dark mode would be added later as a second mode.
+
+Adoption note: the semantic layer exists, but the UI still uses primitives directly for now. Switching each screen to the matching semantic role is a separate, later step, done from the Figma screens so each element gets the right role. When that happens, the neutral grays (currently a mix of Slate, Neutral, Gray, and Mist) will settle onto the single Gray family that the semantics use.
 
 Note: a per-word color, a color picker for each saved word in the Add and Edit dialog, is a future feature not yet in PRD.md. Its color rules, including which tokens it may use, must be defined in PRD.md before the feature is built.
 

@@ -53,8 +53,6 @@ Token names follow one pattern: `--color-{family}-{step}`, for example `--color-
 
 Rule for all color: the UI never uses a raw color value (no hex, rgb, rgba, or named color). Every color references a token from this file. The only place raw color values live is this one file.
 
-Opacity and shadows: where a color needs transparency, the code mixes a primitive token with the transparent token to reach the right opacity, instead of writing a raw rgba. Shadows use a dark primitive (currently Slate 900) at low opacity, built the same way, not a separate shadow color token.
-
 The system has two color layers. The first is the primitive layer in `extension/tokens/color-tokens.js` described above. The second is the semantic layer in `extension/tokens/semantic-color-tokens.js`: a file that gives colors a role, such as the main text color or the page background. Each semantic token references a primitive token, never a raw value, so the primitives stay the single source of the actual color.
 
 Semantic tokens use short role names, for example `--text-primary`, `--bg-secondary`, `--fg-error-primary`, and `--border-primary`. They are grouped as Text (text fills), Foreground (icons and graphic marks), Background (surfaces), and Border. The set is small and matches the Figma semantic export exactly. It covers one mode, light, for now; a dark mode would be added later as a second mode.
@@ -68,6 +66,18 @@ Note: a per-word color, a color picker for each saved word in the Add and Edit d
 A small scale by role: small for chips, medium for cards, inputs, and list rows, large for the dialog, and full for fully rounded shapes like buttons, the switch, the tab bar, icon buttons, and the color circles.
 
 The fully rounded value in code: in Figma a fully rounded shape is sometimes drawn with 99, 999, or 9999. These all mean the same thing. In code, do not copy those mixed numbers. Use `border-radius: 9999px` for pill shapes and fully rounded rectangles, and `border-radius: 50%` for true circles, where the element has equal width and height.
+
+## Shadows
+
+Shadows are the first effect category. Like color and typography, the exact values come from Figma and live as central tokens in the code, in their own file `extension/tokens/shadow-tokens.js`, generated from the Figma effect export. The code references these tokens and never writes a raw shadow value.
+
+Figma defines shadows in two parts: a few shadow effect colors, and one composite effect style built from them.
+
+Shadow effect colors: these are Base black at low opacity, matching the Figma effect color variables one to one. Each one references the `--color-base-black` primitive and applies the opacity from Figma, so no raw color lives outside `color-tokens.js`. There are three: `--shadow-xs` (black at 5%), `--shadow-skeumorphic-inner` (black at 5%), and `--shadow-skeumorphic-inner-border` (black at 18%). The names keep Figma's spelling, including "skeumorphic", so each token traces straight back to its Figma variable.
+
+Composite effect style: `--shadow-xs-skeuomorphic` is the named shadow style, the same idea as a named text style in Typography. It stacks three layers, in this order, using the effect colors above: an outer drop shadow in `--shadow-xs`, offset 0 down 1, blur 2, spread 0; an inner shadow in `--shadow-skeumorphic-inner`, offset 0 up 2, blur 0, spread 0; and an inner shadow in `--shadow-skeumorphic-inner-border`, offset 0, blur 0, spread 1. This is the soft, raised, skeuomorphic look used by the switch knob.
+
+This is a brand new category, so the section names the layer offsets, blur, and spread from Figma directly, so an agent can build the token without guessing. The opacity values (5% and 18%) are the Figma effect color values, not a value mixed from any gray family.
 
 ## Spacing
 
@@ -99,3 +109,24 @@ Radius: the `full` role, a fully rounded pill.
 Sizing and spacing (temporary raw values, not yet tokens): a fixed height of 40, inner padding of 12 top and bottom and 20 left and right, and a gap of 8 between the label and the trailing icon. The trailing icon is 20 by 20. The button has no fixed width; it sizes to its content. These numbers are the one place this file holds raw values, because no spacing or sizing scale exists yet. This is temporary debt tracked in NOTES.md; replace these with tokens once the scale is defined in Figma.
 
 States not yet designed: there is no hover, focus, or pressed style in Figma yet, and the Destructive variant has no background or border, so it reads as plain red text for now. Both are tracked in NOTES.md and wait on a design decision.
+
+### Switch
+
+The Switch is the pill on/off toggle. It is used for the global highlighting switch (in the toolbar popup and the settings bar, sharing one state) and for the excluded sites master switch. In Figma the component exposes one boolean property, Active, with two states: off (Active=No) and on (Active=Yes).
+
+Anatomy: a rounded pill track with a round white knob inside. The knob sits against the left edge when off and slides to the right edge when on. The knob position is what shows the state.
+
+Variants, with colors from existing semantic tokens. Track background, track border, and knob fill:
+
+1. Off (Active=No): track background `--bg-quaternary`, track border a 1px solid `--border-primary`, knob fill `--bg-primary` (white). The knob sits on the left.
+2. On (Active=Yes): track background `--bg-primary-solid`, no border, knob fill `--bg-primary` (white). The knob sits on the right.
+
+These are the same two surfaces as the Text Button (light gray and solid dark), so the on state is the dark brand color, not a separate accent color.
+
+Knob shadow: the knob carries the `--shadow-xs-skeuomorphic` style (see Shadows) in both states, which gives it the soft raised look. The track has no shadow.
+
+Radius: the `full` role. The track is a pill (`9999px`); the knob is a true circle (`50%`), since it has equal width and height.
+
+Sizing and spacing (temporary raw values, not yet tokens): the track is 54 wide and 28 tall, with 4 padding top and bottom and 6 padding left and right; the knob is 20 by 20. With that padding, the knob travels from the left edge to the right edge between the two states. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
+
+States not yet designed: Figma defines only the off and on states. There is no disabled, hover, or pressed style yet, and there is no focus style. Because keyboard users must still see which control is focused, the switch keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision. The motion of the knob between states is a small slide; an exact timing is not set in Figma yet.

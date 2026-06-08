@@ -1,5 +1,7 @@
 ## 2026-06-08
 
+- Centered the switch knob within the 28px track while preserving the Figma switch size.
+- Added shadow tokens and rebuilt all switches with the shared dark-on design and raised knob shadow.
 - Renamed the project-local Consultant skill to Product Planner and kept the full planning and documentation workflow.
 - Removed the click reveal trigger, added the excluded sites master switch, and changed popup highlighting control to a switch.
 - Added the reusable Text Button style across popup, management, and in-page buttons, including the temporary raw sizing values tracked in NOTES.md.

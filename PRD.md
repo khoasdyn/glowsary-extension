@@ -87,10 +87,17 @@ A self-directed English learner, often a non-native speaker, who reads English c
 ### Toolbar popup
 
 - FR-21: Clicking the Glowsary icon in the browser toolbar opens the toolbar popup, a small panel. It does not open the management view directly anymore.
-- FR-22: The toolbar popup contains the global highlighting switch and a settings button. The switch is the same global on/off as FR-14 and shares one state with the global highlighting switch in the settings bar, so changing it in either place updates the other. The popup also has an “Exclude this site” button that adds the current site to the excluded list in one click (FR-28).
+- FR-22: The toolbar popup contains the global highlighting switch and a settings button. The switch is the same global on/off as FR-14 and shares one state with the global highlighting switch in the highlighting bar, so changing it in either place updates the other. The popup also has an “Exclude this site” button that adds the current site to the excluded list in one click (FR-28).
 - FR-23: Changing the global switch in the popup applies live to all open pages running the extension, with no reload. Turning highlighting off clears all highlights on every open page at once (FR-16), and turning it on restores them (FR-15).
 - FR-24: The settings button in the popup opens the management view as a full page in a new browser tab, and the popup closes. If a management view tab is already open, that existing tab is focused instead of opening a new one, so duplicate tabs do not pile up.
 - FR-25: The toolbar icon reflects the current global highlighting state. When highlighting is on, the icon shows its normal colored form with no badge. When highlighting is off, the icon switches to a grayscale form and a small "OFF" badge is shown at the same time, so the user can tell the on or off state at a glance without opening the popup.
+
+### Management view layout
+
+- FR-38: The management view is split into two tabs, Home and Settings, under a shared header. The shared header holds the Glowsary page title and its subtitle and stays visible on both tabs. A tab nav sits directly below the header and switches between Home and Settings.
+- FR-39: The Home tab holds everything for managing saved words: the global highlighting switch (the highlighting bar), the Add new button, and the saved words area, which is the entry count, the Export button, the Import button, the search box, the sort control, and the entry list.
+- FR-40: The Settings tab holds the excluded sites manager only: the master on/off switch, the add excluded site input, and the excluded sites list.
+- FR-41: The management view always opens on the Home tab. Switching between tabs does not reload the page and does not change or lose any saved word, excluded site, search text, or sort choice. It only changes which tab is shown.
 
 ### Managing saved words
 
@@ -146,7 +153,15 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Toolbar icon** — The Glowsary icon in the browser toolbar. Clicking it opens the toolbar popup. Its appearance reflects the global highlighting state: the normal colored icon with no badge when highlighting is on, and a grayscale icon shown together with a small "OFF" badge when highlighting is off.
 
-**Management view** — The full-page view, opened in a browser tab from the toolbar popup's settings button, that lists all saved entries. Contains the settings bar, the search box, the sort control, the entry list, the Add new button, the Export button, the Import button, and the excluded sites manager.
+**Management view** — The full-page view, opened in a browser tab from the toolbar popup's settings button. It has a shared header with the Glowsary title and subtitle, and a tab nav below it that splits the view into two tabs, the Home tab and the Settings tab. It opens on the Home tab. It still contains all the same parts as before, now divided across the two tabs: the saved words tools on the Home tab and the excluded sites manager on the Settings tab (FR-38, FR-39, FR-40).
+
+**Tab nav** — The navigation control below the shared header of the management view that switches between the Home tab and the Settings tab.
+
+**Home tab** — The default tab of the management view. Holds the tools for managing saved words: the highlighting bar with the global highlighting switch, the Add new button, and the saved words area (the entry count, the Export button, the Import button, the search box, the sort control, and the entry list).
+
+**Settings tab** — The tab of the management view that holds the excluded sites manager only: the master on/off switch, the add excluded site input, and the excluded sites list.
+
+**Shared header** — The top area of the management view, above the tab nav, that shows the Glowsary title and subtitle and stays visible on both the Home tab and the Settings tab.
 
 **Excluded sites manager** — The area of the management view that controls the excluded sites list. Contains the master on/off switch that pauses or resumes all exclusions at once, the add excluded site input, and the excluded sites list. It is the only place to add by typing, edit, or delete excluded sites.
 
@@ -156,9 +171,9 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Excluded site row** — A single item in the excluded sites list. Shows one excluded domain as an inline-editable field, with a delete button. It has no per-site toggle, no separate edit button; the domain is edited inline.
 
-**Settings bar** — The row at the top of the management view that holds the global highlighting switch.
+**Highlighting bar** — The row at the top of the Home tab that holds the global highlighting switch. This was called the settings bar before the two-tab layout; it was renamed to avoid confusion with the Settings tab.
 
-**Global highlighting switch** — The on/off switch inside the settings bar and the toolbar popup. Controls whether highlights appear on all web pages. The same state is shared between both locations.
+**Global highlighting switch** — The on/off switch inside the highlighting bar and the toolbar popup. Controls whether highlights appear on all web pages. The same state is shared between both locations.
 
 **Search box** — The text input in the management view that filters the entry list in real time by term.
 

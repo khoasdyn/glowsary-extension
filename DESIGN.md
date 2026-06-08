@@ -63,7 +63,7 @@ Note: a per-word color, a color picker for each saved word in the Add and Edit d
 
 ## Corner radius
 
-A small scale by role: small for chips, medium for cards, inputs, and list rows, large for the dialog, and full for fully rounded shapes like buttons, the switch, the tab bar, icon buttons, and the color circles.
+A small scale by role: small for chips, medium for cards, inputs, and list rows, large for the dialog, and full for fully rounded shapes like buttons, the switch, the Tab nav, icon buttons, and the color circles.
 
 The fully rounded value in code: in Figma a fully rounded shape is sometimes drawn with 99, 999, or 9999. These all mean the same thing. In code, do not copy those mixed numbers. Use `border-radius: 9999px` for pill shapes and fully rounded rectangles, and `border-radius: 50%` for true circles, where the element has equal width and height.
 
@@ -160,3 +160,28 @@ Sizing and spacing (temporary raw values, not yet tokens): a fixed box of 40 by 
 Accessibility: because the button has no visible text, it must carry an accessible name so screen readers can announce its action, and a tooltip on hover so sighted users learn what it does. The caller provides this name and tooltip text. This is a build requirement, not a Figma value.
 
 States not yet designed: Figma defines only the three static variants. There is no hover, focus, pressed, or disabled style yet. Because keyboard users must still see which control is focused, the Icon Button keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision.
+
+### Tab nav
+
+The Tab nav is the two-tab switch at the top of the management view, below the shared header. It switches between the Home tab and the Settings tab. In Figma the component exposes one property, page, with two values, Home and Settings, which sets the active tab.
+
+Anatomy: a rounded pill track that holds two equal-width items side by side, the Home item first and the Settings item second. Each item is one leading icon followed by a text label, centered together as a row. The active item is filled with a white pill; the inactive item has no fill, so the track shows behind it. The white fill is the only thing that marks the active tab; the label and icon colors do not change between the active and the inactive item.
+
+Items and icons: the Home item uses the home-smile icon with the label "Home"; the Settings item uses the settings-02 icon with the label "Settings". Both icons already ship in `extension/assets` (home-smile.svg, settings-02.svg).
+
+Variants, with colors from existing semantic tokens. Track background, active item background, label color, icon color:
+
+1. Home active (page=Home): the Home item background is `--bg-primary` (white); the Settings item has no fill. Track background `--bg-tertiary`.
+2. Settings active (page=Settings): the Settings item background is `--bg-primary` (white); the Home item has no fill. Track background `--bg-tertiary`.
+
+In both states the label color is `--text-primary` and the icon color is `--fg-primary`, the same for the active and the inactive item.
+
+Typography: the label uses the body font (Poppins) at the `text-md` size and `text-md` line height, Medium weight, with letter spacing 0. This is not one of the five named text styles; it uses the scale tokens directly with medium weight. Figma names this style "Text md/Medium".
+
+Icon: each item has one leading icon, 24 by 24, taking the `--fg-primary` color. This is larger than the standard 18 by 18 icon slot used by the Text Button and the Icon Button, so the Tab nav uses a 24 by 24 icon slot.
+
+Radius: the `full` role for both the track and the items. The track is a pill (`9999px`) and each item is a pill (`9999px`).
+
+Sizing and spacing (temporary raw values, not yet tokens): the track has a fixed height of 60, 6 padding on all sides, and a gap of 16 between the two items. Each item has 16 padding left and right, 12 padding top and bottom, and a gap of 12 between its icon and label. The two items share the width equally, each taking half, so the nav stretches to fill the width of its container and has no fixed width. The icon is 24 by 24. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
+
+States not yet designed: Figma defines only the two active states, Home active and Settings active. There is no hover, focus, pressed, or disabled style. Because the active tab is shown by the white fill alone, and keyboard users must see which tab is focused, the Tab nav keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision.

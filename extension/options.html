@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="text-button.css" />
     <link rel="stylesheet" href="icon-button.css" />
     <link rel="stylesheet" href="switch.css" />
+    <link rel="stylesheet" href="tab-nav.css" />
     <link rel="stylesheet" href="options.css" />
   </head>
   <body>
@@ -23,6 +24,17 @@
         </div>
         <button class="text-button text-button--default" id="add-entry" type="button"><span class="text-button__label">Add new</span></button>
       </header>
+
+      <nav class="tab-nav" id="management-tab-nav" role="tablist" aria-label="Management sections">
+        <button class="tab-nav__item is-active" id="management-tab-home" type="button" role="tab" aria-selected="true" data-tab-value="home">
+          <span class="tab-nav__icon tab-nav__icon--home" aria-hidden="true"></span>
+          <span class="tab-nav__label">Home</span>
+        </button>
+        <button class="tab-nav__item" id="management-tab-settings" type="button" role="tab" aria-selected="false" data-tab-value="settings" tabindex="-1">
+          <span class="tab-nav__icon tab-nav__icon--settings" aria-hidden="true"></span>
+          <span class="tab-nav__label">Settings</span>
+        </button>
+      </nav>
 
       <section class="settings-panel" aria-label="Settings">
         <label class="switch-row">
@@ -120,6 +132,7 @@
 
     <script src="domain-utils.js"></script>
     <script src="icon-button.js"></script>
+    <script src="tab-nav.js"></script>
     <script src="options.js"></script>
   </body>
 </html>

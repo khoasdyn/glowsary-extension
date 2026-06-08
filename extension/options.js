@@ -12,8 +12,10 @@ let settings = { ...DEFAULT_SETTINGS };
 let excludedSites = [];
 let editingEntry = null;
 let searchQuery = "";
+let activeManagementTab = "home";
 
 const elements = {
+  managementTabNav: document.querySelector("#management-tab-nav"),
   addEntry: document.querySelector("#add-entry"),
   highlightingEnabled: document.querySelector("#highlighting-enabled"),
   excludedSitesEnabled: document.querySelector("#excluded-sites-enabled"),
@@ -301,6 +303,15 @@ function showToast(message, kind = "info") {
   toastTimer = window.setTimeout(() => {
     elements.toast.hidden = true;
   }, 5000);
+}
+
+function handleManagementTabChange(event) {
+  activeManagementTab = event.detail.activeTab;
+}
+
+function initManagementTabNav() {
+  elements.managementTabNav?.addEventListener("glowsary-tab-change", handleManagementTabChange);
+  window.GlowsaryTabNav?.init?.(elements.managementTabNav, { defaultValue: activeManagementTab });
 }
 
 function showEditor(entry = null) {
@@ -728,6 +739,7 @@ async function loadState() {
 }
 
 async function init() {
+  initManagementTabNav();
   await loadState();
   renderSettings();
   renderExcludedSites();

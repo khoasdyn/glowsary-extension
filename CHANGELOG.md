@@ -1,5 +1,6 @@
 ## 2026-06-08
 
+- Moved color token files into `extension/tokens` and updated extension load paths without changing token values.
 - Added the light semantic color token layer that references primitive color tokens without changing current UI colors.
 
 ## 2026-06-07

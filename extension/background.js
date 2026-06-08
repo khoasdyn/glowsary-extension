@@ -1,4 +1,4 @@
-importScripts("color-tokens.js");
+importScripts("tokens/color-tokens.js");
 
 const CONTEXT_MENU_ID = "glowsary-create-note";
 const SETTINGS_KEY = "glowsarySettings";

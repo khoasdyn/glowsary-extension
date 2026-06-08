@@ -1,0 +1,35 @@
+.color-picker {
+  display: flex;
+  width: max-content;
+  gap: 12px;
+}
+
+.color-picker__option {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  color: var(--color-picker-check);
+  background: var(--color-picker-fill);
+  border: 0;
+  border-radius: 50%;
+  appearance: none;
+  cursor: pointer;
+}
+
+.color-picker__option:focus-visible {
+  outline: auto;
+}
+
+.color-picker__check {
+  width: 20px;
+  height: 20px;
+  display: none;
+}
+
+.color-picker__option.is-selected .color-picker__check {
+  display: block;
+}

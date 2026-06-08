@@ -191,6 +191,42 @@
   line-height: var(--line-height-text-sm);
 }
 
+.glowsary-color-picker {
+  display: flex;
+  width: max-content;
+  gap: 12px;
+}
+
+.glowsary-color-picker__option {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  color: var(--color-picker-check);
+  background: var(--color-picker-fill);
+  border: 0;
+  border-radius: 50%;
+  appearance: none;
+  cursor: pointer;
+}
+
+.glowsary-color-picker__option:focus-visible {
+  outline: auto;
+}
+
+.glowsary-color-picker__check {
+  width: 20px;
+  height: 20px;
+  display: none;
+}
+
+.glowsary-color-picker__option.is-selected .glowsary-color-picker__check {
+  display: block;
+}
+
 .glowsary-input,
 .glowsary-textarea {
   box-sizing: border-box;

@@ -13,6 +13,7 @@ let excludedSites = [];
 let editingEntry = null;
 let searchQuery = "";
 let activeManagementTab = "home";
+let entryColorPicker = null;
 
 const elements = {
   managementTabNav: document.querySelector("#management-tab-nav"),
@@ -28,6 +29,7 @@ const elements = {
   termInput: document.querySelector("#term-input"),
   definitionInput: document.querySelector("#definition-input"),
   aliasInput: document.querySelector("#alias-input"),
+  colorPicker: document.querySelector("#color-picker"),
   formMessage: document.querySelector("#form-message"),
   entryCount: document.querySelector("#entry-count"),
   exportEntries: document.querySelector("#export-entries"),
@@ -73,6 +75,7 @@ function normalizeAliasList(aliases = []) {
 function normalizeEntry(entry) {
   return {
     ...entry,
+    color: window.GlowsaryColorPicker?.normalizeColor?.(entry.color) || "purple",
     aliases: normalizeAliasList(entry.aliases)
   };
 }
@@ -326,12 +329,17 @@ function initManagementTabNav() {
   window.GlowsaryTabNav?.init?.(elements.managementTabNav, { defaultValue: activeManagementTab });
 }
 
+function initEntryColorPicker() {
+  entryColorPicker = window.GlowsaryColorPicker?.init?.(elements.colorPicker);
+}
+
 function showEditor(entry = null) {
   editingEntry = entry;
   elements.editorTitle.textContent = entry ? "Edit word" : "Add word";
   elements.termInput.value = entry?.displayTerm || "";
   elements.definitionInput.value = entry?.definition || "";
   elements.aliasInput.value = entry ? formatAliases(entry.aliases) : "";
+  entryColorPicker?.setValue(entry?.color);
   setMessage("");
   elements.editorPanel.hidden = false;
   document.body.classList.add("modal-open");
@@ -380,6 +388,7 @@ async function saveEntry() {
     displayTerm: validation.cleanTerm,
     definition: validation.cleanDefinition,
     aliases: validation.aliases,
+    color: entryColorPicker?.getValue?.() || window.GlowsaryColorPicker?.defaultColor || "purple",
     createdAt: editingEntry?.createdAt || Date.now()
   };
   const nextEntries = editingEntry
@@ -752,6 +761,7 @@ async function loadState() {
 
 async function init() {
   initManagementTabNav();
+  initEntryColorPicker();
   await loadState();
   renderSettings();
   renderExcludedSites();

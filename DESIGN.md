@@ -59,7 +59,7 @@ Semantic tokens use short role names, for example `--text-primary`, `--bg-second
 
 Adoption note: the semantic layer exists, but the UI still uses primitives directly for now. Switching each screen to the matching semantic role is a separate, later step, done from the Figma screens so each element gets the right role. When that happens, the neutral grays (currently a mix of Slate, Neutral, Gray, and Mist) will settle onto the single Gray family that the semantics use.
 
-Note: a per-word color, a color picker for each saved word in the Add and Edit dialog, is a future feature not yet in PRD.md. Its color rules, including which tokens it may use, must be defined in PRD.md before the feature is built.
+Note: the per-word color picker is now in PRD.md (FR-3e, FR-17f, FR-17g) and specced in the Components section as "Color picker". Its four colors map to existing primitive tokens (Purple 200, Green 200, Blue 200, Yellow 200) and the selected check uses the family's 800 step, so no new color tokens are needed. See the Color picker entry for the full spec.
 
 ## Corner radius
 
@@ -185,3 +185,65 @@ Radius: the `full` role for both the track and the items. The track is a pill (`
 Sizing and spacing (temporary raw values, not yet tokens): the track has a fixed height of 60, 6 padding on all sides, and a gap of 16 between the two items. Each item has 16 padding left and right, 12 padding top and bottom, and a gap of 12 between its icon and label. The two items share the width equally, each taking half, so the nav stretches to fill the width of its container and has no fixed width. The icon is 24 by 24. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
 States not yet designed: Figma defines only the two active states, Home active and Settings active. There is no hover, focus, pressed, or disabled style. Because the active tab is shown by the white fill alone, and keyboard users must see which tab is focused, the Tab nav keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision.
+
+### Color picker
+
+The Color picker is the row of fixed color choices used to tag a saved word, shown in the Color field of the in-page save form and the Management form panel. It maps to PRD.md FR-17f. Its color is a visual tag for the entry's card only; it does not change on-page highlighting (PRD.md FR-3e). In Figma it is a single row of color circles where exactly one is selected.
+
+Anatomy: a left-aligned horizontal row of four color circles in a fixed order. Each circle is a solid color fill. The selected circle shows a check mark centered inside it; the unselected circles show only their fill. Exactly one circle is always selected.
+
+Colors, taken from existing primitive tokens (no new tokens needed), in order: the first circle `--color-purple-200`, the second `--color-green-200`, the third `--color-blue-200`, the fourth `--color-yellow-200`. The first circle is the default for a new entry. These are intentional primitive uses: the palette is a fixed decorative set with no semantic role, so no semantic token fits, which is the allowed case for using a primitive directly.
+
+Selected state: the selected circle shows two marks together, a 1px solid border around the circle and a check mark centered inside it, both in the family's 800 step. So the purple circle uses `--color-purple-800`, the green circle `--color-green-800`, the blue circle `--color-blue-800`, and the yellow circle `--color-yellow-800` for both its border and its check. Unselected circles have only their 200 fill, with no border and no check. The mockup shows the purple state, and the family 800 rule for the other three was confirmed by the user (decision 2026-06-08).
+
+Check icon: the check mark is 20 by 20, centered in the 40 by 40 circle, and takes the selected circle's 800-step color as its foreground.
+
+Radius: the `full` role. Each circle has equal width and height, so it is a true circle (`50%`) per the corner radius rule.
+
+Sizing and spacing (temporary raw values, not yet tokens): each circle is 40 by 40, and the gap between circles is 12. The row sizes to its content and has no fixed width. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
+
+States not yet designed: Figma defines only the resting selected and unselected look. There is no hover, focus, or pressed style yet. Because the user picks a color with the keyboard as well as the pointer, the Color picker keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision.
+
+### Field input
+
+The Field input is the standard single-line text field with a label and a hint. It is used for the Word and Aliases fields in the in-page save form and the Management form panel. In Figma it is the "Field Input" component.
+
+Anatomy: a vertical stack of three parts with a 6px gap, in this order: the label on top, the input box in the middle, and the hint below. The box holds the typed value on one line, left-aligned and vertically centered.
+
+Colors, from existing semantic tokens: the box background `--bg-secondary`, the box border a 1px solid `--border-primary`, the label and the value text `--text-primary`, and the hint text `--text-tertiary`.
+
+Typography: the label uses the body font (Poppins) at the `text-sm` size and `text-sm` line height, Medium weight, with letter spacing 0 (the shared field-label style noted under Typography). The value uses the Body Text style (body font, `text-sm`, Regular). The hint uses the body font at the `text-xs` size and `text-xs` line height, Regular (the shared hint style). Each of these stays on one line and is cut with an ellipsis if too long.
+
+Radius: the `medium` role on the box.
+
+Sizing and spacing (temporary raw values, not yet tokens): the box is 40 tall with 12 padding left and right, and the stack uses a 6px gap between the label, the box, and the hint. The field has no fixed width; it fills its container. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
+
+States not yet designed: Figma shows only the filled resting state. There is no focus, hover, disabled, or error style yet. Because the field is typed into, it keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision. The character limits on the value (Word 50, Definition 350) are behavior from PRD.md FR-3d, not a Figma style.
+
+### Multiline input
+
+The Multiline input is the multi-line version of the Field input, used for the Definition field in the in-page save form and the Management form panel. In Figma it is the "Multiple Line Input" component. It shares the Field input's three-part structure (label, box, hint), its colors, its typography, and its `medium` radius. It differs in three ways: the box is taller to hold several lines, the value text sits at the top of the box instead of vertically centered, and the box has padding on all four sides.
+
+Sizing and spacing (temporary raw values, not yet tokens): the box is 250 tall with 12 padding on all four sides, and the stack uses the same 6px gap between the label, the box, and the hint. The field has no fixed width; it fills its container. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
+
+States not yet designed: the same as the Field input. Figma shows only the filled resting state, with no focus, hover, disabled, or error style yet, and it keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md.
+
+### Management form panel
+
+The Management form panel is the right-side panel that holds the Add and Edit form. It replaces the earlier centered modal. In Figma it is the "Dialog" frame. It maps to PRD.md FR-17a, FR-18, FR-18a, and the Management form panel component entry, which own its behavior; this section owns its look. It is a composition of components already specced above, not a new control.
+
+Placement: the panel sits against the right edge of the management view, is full height, and keeps a 16px margin on all four edges. In the mockup its width is 400. It opens over the management view.
+
+Anatomy: a white surface in a vertical stack of three sections with a 32px gap between them, in this order: the header, the form, and the footer.
+
+1. Header: a row with the title on the left and the x-close icon on the right, spread to the full width. The title is "Add Word" in add mode and "Edit Word" in edit mode, in the Section Title style (heading font, `display-xs`). The x-close is a 24 by 24 icon in `--fg-primary`, using the x-close asset.
+2. Form: a vertical stack with a 24px gap between fields, in this order: Word (Field input), Definition (Multiline input), Aliases (Field input), and Color (Color picker).
+3. Footer: a row with an 8px gap, aligned to the bottom. In edit mode it holds the Save button and the delete button: Save is the Text Button Default variant and stretches to fill the remaining width, and delete is the Icon Button Destructive variant at its fixed 40 by 40 size, placed to the right of Save. In add mode the footer holds only the Save button, which fills the full width, and no delete button.
+
+Colors, from existing semantic tokens: the panel surface is `--bg-primary` (white). The title and the x-close take `--text-primary` and `--fg-primary`. The inner components carry their own tokens from their entries above.
+
+Radius: the `large` role on the panel surface.
+
+Sizing and spacing (temporary raw values, not yet tokens): the panel is 400 wide, with 24 padding left and right and 16 padding top and bottom, a 32px gap between the header, form, and footer, a 24px gap between form fields, and an 8px gap between the footer buttons. The 16px outer margin on all edges is the placement, not padding. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
+
+States and motion not yet designed: Figma shows the panel as a static frame, so there is no open or close motion (such as a slide-in from the right) defined yet; the build uses a simple, subtle entrance until Figma defines one. Close behavior (X or Escape, no Cancel, no backdrop close) is PRD.md behavior, not a Figma style. These gaps are tracked in NOTES.md.

@@ -37,6 +37,10 @@
   let activePopup = null;
   let activeDialog = null;
 
+  function normalizeColor(value) {
+    return window.GlowsaryColorPicker?.normalizeColor?.(value) || "purple";
+  }
+
   const storage = {
     get(keys) {
       return new Promise((resolve) => chrome.storage.local.get(keys, resolve));
@@ -64,6 +68,7 @@
   function normalizeEntry(entry) {
     return {
       ...entry,
+      color: normalizeColor(entry.color),
       aliases: normalizeAliasList(entry.aliases)
     };
   }
@@ -510,7 +515,7 @@
     };
   }
 
-  async function saveEntry(displayTerm, definition, aliasText = "") {
+  async function saveEntry(displayTerm, definition, aliasText = "", color) {
     const validation = validateEntry(displayTerm, definition, aliasText);
 
     if (validation.error) {
@@ -523,6 +528,7 @@
       displayTerm: validation.cleanTerm,
       definition: validation.cleanDefinition,
       aliases: validation.aliases,
+      color: normalizeColor(color),
       createdAt: Date.now()
     };
     const nextEntries = currentEntries.concat(nextEntry).sort((a, b) => a.displayTerm.localeCompare(b.displayTerm));
@@ -566,6 +572,10 @@
             <label for="glowsary-aliases">Alias</label>
             <input class="glowsary-input" id="glowsary-aliases" name="aliases" autocomplete="off" placeholder="versions, versioned" />
           </div>
+          <div class="glowsary-field">
+            <label id="glowsary-color-label">Color</label>
+            <div id="glowsary-color-picker" aria-labelledby="glowsary-color-label"></div>
+          </div>
           <div class="glowsary-error" role="alert"></div>
           <div class="glowsary-actions">
             <button class="glowsary-text-button glowsary-text-button-secondary" type="button" data-action="cancel"><span class="glowsary-text-button-label">Cancel</span></button>
@@ -579,7 +589,9 @@
     const termInput = backdrop.querySelector("#glowsary-term");
     const definitionInput = backdrop.querySelector("#glowsary-definition");
     const aliasInput = backdrop.querySelector("#glowsary-aliases");
+    const colorPicker = backdrop.querySelector("#glowsary-color-picker");
     const error = backdrop.querySelector(".glowsary-error");
+    const colorPickerController = window.GlowsaryColorPicker?.init?.(colorPicker, { classPrefix: "glowsary-color-picker" });
 
     termInput.value = collapseSpaces(rawTerm);
     definitionInput.value = "";
@@ -592,7 +604,7 @@
       error.textContent = "";
 
       try {
-        await saveEntry(termInput.value, definitionInput.value, aliasInput.value);
+        await saveEntry(termInput.value, definitionInput.value, aliasInput.value, colorPickerController?.getValue?.());
         closeDialog();
       } catch (saveError) {
         error.textContent = saveError.message;

@@ -47,6 +47,7 @@
         "tokens/semantic-typography-tokens.js",
         "domain-utils.js",
         "icon-button.js",
+        "color-picker.js",
         "content.js"
       ],
       "css": ["content.css"],

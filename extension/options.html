@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="icon-button.css" />
     <link rel="stylesheet" href="switch.css" />
     <link rel="stylesheet" href="tab-nav.css" />
+    <link rel="stylesheet" href="color-picker.css" />
     <link rel="stylesheet" href="options.css" />
   </head>
   <body>
@@ -123,6 +124,10 @@
               Alias
               <input id="alias-input" name="alias" autocomplete="off" placeholder="versions, versioned" />
             </label>
+            <div class="entry-form-field">
+              <span>Color</span>
+              <div id="color-picker" aria-label="Entry color"></div>
+            </div>
             <div class="form-message" id="form-message" role="alert"></div>
             <div class="form-actions">
               <button class="text-button text-button--secondary" id="cancel-editor" type="button"><span class="text-button__label">Cancel</span></button>
@@ -137,6 +142,7 @@
     <script src="domain-utils.js"></script>
     <script src="icon-button.js"></script>
     <script src="tab-nav.js"></script>
+    <script src="color-picker.js"></script>
     <script src="options.js"></script>
   </body>
 </html>

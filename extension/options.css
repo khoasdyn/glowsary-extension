@@ -211,7 +211,8 @@ button {
   margin-top: 14px;
 }
 
-.entry-form label {
+.entry-form label,
+.entry-form-field {
   display: grid;
   gap: 6px;
   color: var(--color-slate-700);

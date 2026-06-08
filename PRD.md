@@ -1,6 +1,6 @@
 ## Overview
 
-Glowsary is a Chrome extension that adds a personal vocabulary layer over the web. When a user reads English content and looks up a word or phrase, they save it with their own definition. After that, the saved word or phrase is highlighted everywhere it appears on the web, and the saved definition shows up in a small popup when the user hovers or clicks it.
+Glowsary is a Chrome extension that adds a personal vocabulary layer over the web. When a user reads English content and looks up a word or phrase, they save it with their own definition. After that, the saved word or phrase is highlighted everywhere it appears on the web, and the saved definition shows up in a small popup when the user hovers over it.
 
 The closest reference is Word Wise on a Kindle. The difference is that the highlights come from the user’s own saved words, not a fixed list, and the definition stays hidden until the user asks for it.
 
@@ -60,11 +60,10 @@ A self-directed English learner, often a non-native speaker, who reads English c
 
 ### Viewing a definition
 
-- FR-11: The user can reveal a saved word’s definition by hovering over a highlighted word or by clicking it.
+- FR-11: The user can reveal a saved word’s definition by hovering over a highlighted word. Hover is the only reveal trigger.
 - FR-11a: When the highlighted text matches more than one entry (FR-10b), the popup shows one definition at a time with pagination controls at the bottom of the card to move between the matching entries. Definitions are ordered newest first, so the most recently added entry is the first page. When only one entry matches, no pagination controls are shown.
 - FR-12: The definition appears in a small popup placed next to the word. When the highlighted text is an alias, the popup shows the entry’s definition only. It does not show the term or note that the word is an alias. From the reader’s view an alias behaves like any other saved word.
-- FR-13: A setting lets the user choose whether hover or click is the trigger. Both behaviors must be built.
-- FR-13a: The definition popup must be sticky so pagination works under both triggers. When the pointer moves from the highlighted word onto the popup, the popup stays open and its pagination controls stay clickable. It closes only when the pointer leaves both the word and the popup (hover mode) or when the user clicks elsewhere (click mode). This stops the popup from closing while the user reaches for a pagination control in hover mode.
+- FR-13: The definition popup must be sticky so pagination works. When the pointer moves from the highlighted word onto the popup, the popup stays open and its pagination controls stay clickable. It closes only when the pointer leaves both the word and the popup. This stops the popup from closing while the user reaches for a pagination control.
 
 ### Global on and off
 
@@ -77,19 +76,19 @@ A self-directed English learner, often a non-native speaker, who reads English c
 - FR-26: The user can keep a list of excluded sites. On an excluded site, highlighting is suppressed: no highlight underline and no definition popup appear, even when the global switch is on. Every other feature still works on that site, including the right-click “Add word” action, saving entries, and the management view. Saving a word on an excluded site succeeds but shows no highlight there, which overrides FR-5 for that site. Exclusion only hides the visual highlighting layer.
 - FR-27: A site is identified by a domain, and excluding a domain also covers all of its subdomains. Excluding “spotify.com” covers “open.spotify.com” and “accounts.spotify.com”. The user never lists subdomains separately.
 - FR-27a: Every excluded entry is stored as the whole-site domain, and the whole-site reduction handles multi-part domain endings correctly using a known public suffix list. So “open.spotify.com” reduces to “spotify.com”, “spotify.co.uk” reduces to “spotify.co.uk” and not “co.uk”, and “myname.github.io” stays “myname.github.io” and not all of “github.io”. The same reduction applies to every way a site is added, so the list never holds bare subdomains.
-- FR-28: The toolbar popup has an “Exclude this site” button that adds the current tab’s whole site (FR-27a) to the excluded list in one click. The button only adds. It does not pause, toggle, or delete. If the current site is already on the excluded list, whether active or paused, the click is blocked with a short note that the site is already on the list (FR-29a). The management view is the only place to pause, edit, or delete an excluded site (FR-30, FR-31).
+- FR-28: The toolbar popup has an “Exclude this site” button that adds the current tab’s whole site (FR-27a) to the excluded list in one click. The button only adds. It does not toggle or delete. If the current site is already on the excluded list, the click is blocked with a short note that the site is already on the list (FR-29a). The management view is the only place to edit or delete an excluded site (FR-30, FR-31).
 - FR-29: The management view provides an input to type a domain and exclude a site the user is not currently visiting. The input cleans messy text before saving, so forms like “https://www.spotify.com/playlist” or “SPOTIFY.com” are reduced to the whole-site domain “spotify.com” (FR-27a). The add succeeds only when the cleaned result is a valid domain.
-- FR-29a: Redundant adds are blocked. If the cleaned domain is already on the list, whether active or paused, the add is rejected with a short note that the site is already on the list. To resume a paused site, the user turns its on/off toggle back on in the management view (FR-30) rather than adding it again. This applies to the one-click button (FR-28), the manual add (FR-29), and inline edit (FR-31). Because every entry is reduced to a whole-site domain (FR-27a), two entries can never overlap by subdomain, so a duplicate is always an exact match.
-- FR-30: The management view lists all excluded sites. Each entry has its own on/off toggle and a delete button. The on/off toggle pauses exclusion without removing the entry: when off, the entry stays in the list but no longer excludes its site, so highlighting returns there; when on, exclusion is active. Delete removes the entry entirely. There is no separate edit button.
+- FR-29a: Redundant adds are blocked. If the cleaned domain is already on the list, the add is rejected with a short note that the site is already on the list. This applies to the one-click button (FR-28), the manual add (FR-29), and inline edit (FR-31). Because every entry is reduced to a whole-site domain (FR-27a), two entries can never overlap by subdomain, so a duplicate is always an exact match.
+- FR-30: The excluded sites manager has a single master on/off switch at the top that controls all excluded sites at once. When the master switch is off, exclusion is paused for the entire list: every site in the list allows highlighting again, but the list is preserved. When the master switch is on, all listed sites are active and highlighting is suppressed on them. Each entry has only a delete button. There is no per-site toggle and no separate edit button.
 - FR-31: The domain text of an excluded entry is edited inline in the list. The user types freely with no validation or error while typing. Validation runs only when the user commits the edit by pressing Enter or moving focus away from the field. On commit, the input is cleaned (FR-29) and checked for redundancy (FR-29a). If the result is not a valid domain or duplicates another entry, the change is rejected and the field reverts to its previous value.
-- FR-32: Adding, deleting, pausing, or re-enabling an excluded site applies live to all open tabs with no reload, the same way the global toggle does (FR-23). Excluding a site clears its highlights on all of its open tabs at once, and removing or pausing it restores highlights there.
+- FR-32: Adding or deleting an excluded site, or toggling the master switch, applies live to all open tabs with no reload, the same way the global switch does (FR-23). Excluding a site clears its highlights on all of its open tabs at once, and removing a site or turning the master switch off restores highlights there.
 - FR-33: The excluded sites list is stored locally with the rest of the data (FR-20). There is no account and no cross-device sync.
 
 ### Toolbar popup
 
 - FR-21: Clicking the Glowsary icon in the browser toolbar opens the toolbar popup, a small panel. It does not open the management view directly anymore.
-- FR-22: The toolbar popup contains the global highlighting toggle and a settings button. The toggle is the same global on/off as FR-14 and shares one state with the global highlighting toggle in the settings bar, so changing it in either place updates the other. When highlighting is on, the popup also shows the reveal trigger selector (Hover or Click), which is the same control as FR-13 and shares one state with the reveal trigger selector in the settings bar. When highlighting is off, the reveal trigger selector is hidden from the popup. The popup also has an “Exclude this site” button that adds the current site to the excluded list in one click (FR-28).
-- FR-23: Changing the global toggle or the reveal trigger in the popup applies live to all open pages running the extension, with no reload. Turning highlighting off clears all highlights on every open page at once (FR-16), and turning it on restores them (FR-15). Changing the reveal trigger applies to all open pages right away.
+- FR-22: The toolbar popup contains the global highlighting switch and a settings button. The switch is the same global on/off as FR-14 and shares one state with the global highlighting switch in the settings bar, so changing it in either place updates the other. The popup also has an “Exclude this site” button that adds the current site to the excluded list in one click (FR-28).
+- FR-23: Changing the global switch in the popup applies live to all open pages running the extension, with no reload. Turning highlighting off clears all highlights on every open page at once (FR-16), and turning it on restores them (FR-15).
 - FR-24: The settings button in the popup opens the management view as a full page in a new browser tab, and the popup closes. If a management view tab is already open, that existing tab is focused instead of opening a new one, so duplicate tabs do not pile up.
 - FR-25: The toolbar icon reflects the current global highlighting state. When highlighting is on, the icon shows its normal colored form with no badge. When highlighting is off, the icon switches to a grayscale form and a small "OFF" badge is shown at the same time, so the user can tell the on or off state at a glance without opening the popup.
 
@@ -127,7 +126,7 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Highlight underline** — The subtle underline rendered beneath a saved word or phrase on any web page. Styled to be unobtrusive and distinct from hyperlink underlines. Never applied inside interactive or navigational elements.
 
-**Definition popup** — The small floating panel that appears next to a highlighted word when the user hovers or clicks it (depending on the reveal trigger setting). Shows the saved definition for that entry. When several entries match the same text, it pages through them one at a time, newest first, using the definition pagination control. It is sticky: it stays open while the pointer is on the popup so the controls remain usable. Dismissed by moving away from both the word and the popup (hover mode) or clicking elsewhere (click mode).
+**Definition popup** — The small floating panel that appears next to a highlighted word when the user hovers over it. Shows the saved definition for that entry. When several entries match the same text, it pages through them one at a time, newest first, using the definition pagination control. It is sticky: it stays open while the pointer is on the popup so the controls remain usable. Dismissed by moving the pointer away from both the word and the popup.
 
 **Definition pagination control** — The controls at the bottom of the definition popup that move between the entries matching the same highlighted text. Only shown when more than one entry matches.
 
@@ -139,7 +138,7 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Context menu item** — The “Add word” action injected into the browser’s native right-click context menu when the user has text selected on a page.
 
-**Toolbar popup** — The small panel that opens when the user clicks the Glowsary icon in the browser toolbar. Contains the global highlighting toggle, the reveal trigger selector (shown only when highlighting is on), the “Exclude this site” button, and the settings button. It is the new entry point for the icon; it replaces opening the management view directly.
+**Toolbar popup** — The small panel that opens when the user clicks the Glowsary icon in the browser toolbar. Contains the global highlighting switch, the “Exclude this site” button, and the settings button. It is the entry point for the icon; it replaces opening the management view directly.
 
 **Exclude this site button** — The button inside the toolbar popup that adds the current tab’s whole site to the excluded sites list in one click. It only adds; it does not pause, edit, or delete. When the current site is already excluded, the add is blocked with a short note.
 
@@ -149,19 +148,17 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Management view** — The full-page view, opened in a browser tab from the toolbar popup's settings button, that lists all saved entries. Contains the settings bar, the search box, the sort control, the entry list, the Add new button, the Export button, the Import button, and the excluded sites manager.
 
-**Excluded sites manager** — The area of the management view that controls the excluded sites list. Contains the add excluded site input and the excluded sites list. It is the only place to add by typing, pause, edit, or delete excluded sites.
+**Excluded sites manager** — The area of the management view that controls the excluded sites list. Contains the master on/off switch that pauses or resumes all exclusions at once, the add excluded site input, and the excluded sites list. It is the only place to add by typing, edit, or delete excluded sites.
 
 **Add excluded site input** — The text input in the excluded sites manager where the user types a domain to exclude. Cleans messy input down to the whole-site domain on add and blocks redundant entries.
 
 **Excluded sites list** — The list of excluded sites inside the excluded sites manager. Each row is an excluded site row.
 
-**Excluded site row** — A single item in the excluded sites list. Shows one excluded domain as an inline-editable field, with its own on/off toggle to pause or resume exclusion and a delete button. It has no separate edit button; the domain is edited inline.
+**Excluded site row** — A single item in the excluded sites list. Shows one excluded domain as an inline-editable field, with a delete button. It has no per-site toggle, no separate edit button; the domain is edited inline.
 
-**Settings bar** — The row at the top of the management view that holds the global highlighting toggle and the reveal trigger selector (Hover / Click).
+**Settings bar** — The row at the top of the management view that holds the global highlighting switch.
 
-**Global highlighting toggle** — The on/off checkbox or switch inside the settings bar. Controls whether highlights appear on all web pages.
-
-**Reveal trigger selector** — The control inside the settings bar that lets the user choose between Hover and Click as the trigger for showing the definition popup.
+**Global highlighting switch** — The on/off switch inside the settings bar and the toolbar popup. Controls whether highlights appear on all web pages. The same state is shared between both locations.
 
 **Search box** — The text input in the management view that filters the entry list in real time by term.
 
@@ -187,8 +184,8 @@ This section names every distinct UI component in the extension. Future referenc
 4. The user selects the word or phrase, right-clicks, and chooses “Add word”.
 5. The in-page UI appears with the Word field pre-filled with the selected text. The user types the definition and clicks Save. If the text was already saved before, this still creates a new separate entry; there is no duplicate block.
 6. Every instance of that word or phrase on the current page is highlighted right away.
-7. Later, on the same site or any other site, the user hovers or clicks a highlighted instance and sees the saved definition in a popup. If the word has more than one saved entry, the popup pages through them, newest first.
-8. To change settings or manage words, the user clicks the toolbar icon to open the toolbar popup. From there they can toggle highlighting on or off, switch the reveal trigger, exclude the current site in one click, or click the settings button to open the management view in a new tab to edit or delete saved entries and manage the excluded sites list.
+7. Later, on the same site or any other site, the user hovers over a highlighted instance and sees the saved definition in a popup. If the word has more than one saved entry, the popup pages through them, newest first.
+8. To change settings or manage words, the user clicks the toolbar icon to open the toolbar popup. From there they can toggle highlighting on or off, exclude the current site in one click, or click the settings button to open the management view in a new tab to edit or delete saved entries and manage the excluded sites list.
 
 ## Data model
 
@@ -198,10 +195,10 @@ Each saved entry holds the word or phrase, the definition, any aliases, and a cr
 
 Storing a normalized lowercase form for both the term and each alias supports case-insensitive matching (FR-8) and case-insensitive grouping of entries that share the same text in the popup (FR-10b), while keeping the user’s original text for display in the list. An entry with no aliases stores an empty list.
 
-Each excluded site holds the whole-site domain (FR-27a), stored in a normalized lowercase form so site matching ignores case, and an on/off state that says whether exclusion is active or paused (FR-30). A suggested shape: domain (the normalized whole-site domain to match), enabled (true when exclusion is active, false when paused). A created timestamp may be kept for ordering the list.
+Each excluded site holds the whole-site domain (FR-27a), stored in a normalized lowercase form so site matching ignores case. A suggested shape: domain (the normalized whole-site domain to match), and a created timestamp for ordering the list. Whether all exclusions are active or paused is controlled by the master switch setting (FR-30), not by a per-site field.
 
 ## Settings
 
 1. Global highlighting switch (on or off).
-2. Reveal trigger (hover or click).
-3. Excluded sites list (the set of sites where highlighting is suppressed, each with its own on/off state).
+2. Excluded sites master switch (on or off): whether the excluded sites list is currently active. When off, all listed sites allow highlighting even though they remain in the list.
+3. Excluded sites list (the set of domains where highlighting is suppressed when the master switch is on).

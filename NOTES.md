@@ -6,6 +6,10 @@ How to read an item: the area it touches, what the mismatch or gap is, and its s
 
 ## Open
 
+4. Switch/toggle component has no spec in DESIGN.md or Figma. Three UI elements now use a switch: the global highlighting switch (in the popup and settings bar), and the excluded sites master switch. The corner radius section in DESIGN.md mentions the switch exists, but there is no component entry with tokens, sizing, or states. Area: DESIGN.md and Figma. Status: open, waiting on the user to design the switch component in Figma so Claude can add it to DESIGN.md before Codex builds it. For now, Codex may build a basic switch using existing tokens; the spec will refine it later.
+
+
+
 1. Text Button spacing and sizing have no tokens. The Text Button needs a fixed height (40), inner padding (20 left and right, 12 top and bottom), a gap between text and icon (8), and an icon size (20). None of these have tokens, because the spacing and sizing scale is not defined yet. Area: DESIGN.md and code tokens. Status: open, debt. The user chose to ship the button with these as temporary raw values for now (decision 2026-06-08). They must be swapped for tokens once a spacing and sizing scale is defined in Figma. The button is the place to revisit when that scale lands.
 2. Text Button has no interaction states. Figma defines only four static states (Default, Secondary, Destructive, Disabled). There is no hover, focus, or pressed state. Area: Figma and UI. Status: open, waiting on the user to design these states in Figma.
 3. Destructive Text Button variant has no background and no border. In Figma the Destructive state has a transparent background and no border, so it reads as plain red text and icon on the page. This may be intended, or it may need a border or a light red background. Area: Figma and UX. Status: open, waiting on a design decision from the user. Note: after the Text Button is applied to all buttons (decision 2026-06-08), the Delete buttons move from a solid red fill to this transparent red-text style, so Delete looks weaker. Revisit once the Destructive look is decided in Figma.

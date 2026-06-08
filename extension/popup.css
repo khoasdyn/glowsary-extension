@@ -91,11 +91,42 @@ h1 {
   gap: 10px;
 }
 
-.switch-row input {
+.switch-row input[type="checkbox"] {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  flex: 0 0 auto;
+  appearance: none;
+  background: var(--color-gray-300);
+  border: 1px solid var(--color-gray-300);
+  border-radius: 9999px;
+  cursor: pointer;
+  outline: none;
+}
+
+.switch-row input[type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
   width: 18px;
   height: 18px;
-  flex: 0 0 auto;
-  accent-color: var(--color-emerald-700);
+  background: var(--color-base-white);
+  border-radius: 50%;
+  transition: transform 120ms ease;
+}
+
+.switch-row input[type="checkbox"]:checked {
+  background: var(--color-emerald-700);
+  border-color: var(--color-emerald-700);
+}
+
+.switch-row input[type="checkbox"]:checked::before {
+  transform: translateX(18px);
+}
+
+.switch-row input[type="checkbox"]:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-emerald-600) 20%, var(--color-base-transparent));
 }
 
 .switch-row span {
@@ -105,44 +136,6 @@ h1 {
 
 .switch-row small {
   color: var(--color-neutral-500);
-}
-
-.trigger-group {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin: 0;
-  padding: 12px 0 0;
-  border: 0;
-  border-top: 1px solid var(--color-gray-300);
-}
-
-.trigger-group[hidden] {
-  display: none;
-}
-
-.trigger-group legend {
-  grid-column: 1 / -1;
-  margin-bottom: 2px;
-  color: var(--color-neutral-500);
-  font-size: var(--font-size-text-sm);
-  font-weight: var(--font-weight-medium);
-  line-height: var(--line-height-text-sm);
-}
-
-.trigger-group label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 34px;
-  padding: 0 10px;
-  background: var(--color-slate-50);
-  border: 1px solid var(--color-gray-300);
-  border-radius: 7px;
-}
-
-.trigger-group input {
-  accent-color: var(--color-emerald-700);
 }
 
 .exclude-panel {

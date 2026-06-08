@@ -29,18 +29,6 @@
             <small>Show saved words on webpages</small>
           </span>
         </label>
-
-        <fieldset class="trigger-group">
-          <legend>Reveal definition</legend>
-          <label>
-            <input type="radio" name="reveal-trigger" value="hover" />
-            Hover
-          </label>
-          <label>
-            <input type="radio" name="reveal-trigger" value="click" />
-            Click
-          </label>
-        </fieldset>
       </section>
 
       <section class="excluded-section" aria-labelledby="excluded-heading">
@@ -51,6 +39,13 @@
           </div>
           <span id="excluded-count">0 sites</span>
         </div>
+        <label class="switch-row excluded-master">
+          <input id="excluded-sites-enabled" type="checkbox" />
+          <span>
+            <strong>Use excluded sites list</strong>
+            <small>When off, highlighting runs everywhere.</small>
+          </span>
+        </label>
         <form class="excluded-form" id="excluded-form">
           <label class="excluded-field">
             Domain

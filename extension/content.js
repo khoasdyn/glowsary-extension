@@ -4,7 +4,8 @@
   const EXCLUDED_SITES_KEY = "glowsaryExcludedSites";
   const DEFAULT_SETTINGS = {
     highlightingEnabled: true,
-    revealTrigger: "hover"
+    excludedSitesEnabled: true,
+    managementSort: "latest"
   };
   const HIGHLIGHT_CLASS = "glowsary-highlight";
   const POPUP_CLASS = "glowsary-popup";
@@ -71,10 +72,19 @@
     return window.GlowsaryDomains?.normalizeExcludedSites?.(sites) || [];
   }
 
+  function normalizeSettings(rawSettings = {}) {
+    return {
+      highlightingEnabled: rawSettings.highlightingEnabled !== false,
+      excludedSitesEnabled: rawSettings.excludedSitesEnabled !== false,
+      managementSort: rawSettings.managementSort === "az" ? "az" : "latest"
+    };
+  }
+
   function isCurrentSiteExcluded() {
     return Boolean(
       currentSiteDomain &&
-        excludedSites.some((site) => site.enabled !== false && site.domain === currentSiteDomain)
+        settings.excludedSitesEnabled !== false &&
+        excludedSites.some((site) => site.domain === currentSiteDomain)
     );
   }
 
@@ -352,28 +362,11 @@
 
   function attachHighlightEvents(element) {
     element.addEventListener("mouseenter", () => {
-      if (settings.revealTrigger === "hover") {
-        showPopup(element);
-      }
+      showPopup(element);
     });
 
     element.addEventListener("mouseleave", () => {
-      if (settings.revealTrigger === "hover") {
-        schedulePopupDismiss();
-      }
-    });
-
-    element.addEventListener("click", (event) => {
-      if (settings.revealTrigger !== "click") {
-        return;
-      }
-
-      event.stopPropagation();
-      if (activePopup?.anchor === element) {
-        dismissPopup();
-      } else {
-        showPopup(element);
-      }
+      schedulePopupDismiss();
     });
   }
 
@@ -389,12 +382,10 @@
     document.documentElement.appendChild(popup);
     activePopup = { element: popup, anchor, pages, pageIndex: 0 };
 
-    if (settings.revealTrigger === "hover") {
-      popup.addEventListener("mouseenter", () => {
-        window.clearTimeout(popupCloseTimer);
-      });
-      popup.addEventListener("mouseleave", schedulePopupDismiss);
-    }
+    popup.addEventListener("mouseenter", () => {
+      window.clearTimeout(popupCloseTimer);
+    });
+    popup.addEventListener("mouseleave", schedulePopupDismiss);
 
     renderPopupPage();
     positionPopup(anchor, popup);
@@ -656,12 +647,17 @@
     });
 
     entries = Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY].map(normalizeEntry) : [];
-    settings = {
-      ...DEFAULT_SETTINGS,
-      ...(result[SETTINGS_KEY] || {})
-    };
+    settings = normalizeSettings(result[SETTINGS_KEY] || {});
     excludedSites = normalizeExcludedSites(result[EXCLUDED_SITES_KEY]);
     currentSiteDomain = await window.GlowsaryDomains?.getWholeSiteDomainFromInput?.(window.location.hostname);
+
+    if (JSON.stringify(result[SETTINGS_KEY] || {}) !== JSON.stringify(settings)) {
+      await storage.set({ [SETTINGS_KEY]: settings });
+    }
+
+    if (JSON.stringify(result[EXCLUDED_SITES_KEY] || []) !== JSON.stringify(excludedSites)) {
+      await storage.set({ [EXCLUDED_SITES_KEY]: excludedSites });
+    }
   }
 
   function bindChromeEvents() {
@@ -681,10 +677,7 @@
       }
 
       if (changes[SETTINGS_KEY]) {
-        settings = {
-          ...DEFAULT_SETTINGS,
-          ...(changes[SETTINGS_KEY].newValue || {})
-        };
+        settings = normalizeSettings(changes[SETTINGS_KEY].newValue || {});
       }
 
       if (changes[EXCLUDED_SITES_KEY]) {
@@ -693,12 +686,6 @@
 
       if (changes[ENTRIES_KEY] || changes[SETTINGS_KEY] || changes[EXCLUDED_SITES_KEY]) {
         refreshHighlights();
-      }
-    });
-
-    document.addEventListener("click", (event) => {
-      if (settings.revealTrigger === "click" && !event.target.closest?.(`.${HIGHLIGHT_CLASS}, .${POPUP_CLASS}`)) {
-        dismissPopup();
       }
     });
 

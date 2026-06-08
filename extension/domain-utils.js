@@ -155,7 +155,6 @@
 
     return {
       domain,
-      enabled: site?.enabled !== false,
       createdAt: Number(site?.createdAt) || Date.now()
     };
   }

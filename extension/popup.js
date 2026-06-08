@@ -2,7 +2,7 @@ const SETTINGS_KEY = "glowsarySettings";
 const EXCLUDED_SITES_KEY = "glowsaryExcludedSites";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
-  revealTrigger: "hover",
+  excludedSitesEnabled: true,
   managementSort: "latest"
 };
 
@@ -12,8 +12,6 @@ let currentSiteDomain = null;
 
 const elements = {
   highlightingEnabled: document.querySelector("#highlighting-enabled"),
-  triggerGroup: document.querySelector("#trigger-group"),
-  triggerInputs: Array.from(document.querySelectorAll("input[name='reveal-trigger']")),
   excludeSite: document.querySelector("#exclude-site"),
   excludeMessage: document.querySelector("#exclude-message"),
   openSettings: document.querySelector("#open-settings")
@@ -29,14 +27,7 @@ const storage = {
 };
 
 function renderSettings() {
-  const highlightingEnabled = Boolean(settings.highlightingEnabled);
-
-  elements.highlightingEnabled.checked = highlightingEnabled;
-  elements.triggerGroup.hidden = !highlightingEnabled;
-
-  for (const input of elements.triggerInputs) {
-    input.checked = input.value === settings.revealTrigger;
-  }
+  elements.highlightingEnabled.checked = Boolean(settings.highlightingEnabled);
 }
 
 function setExcludeMessage(message, kind = "error") {
@@ -48,11 +39,16 @@ function normalizeExcludedSites(sites = []) {
   return window.GlowsaryDomains?.normalizeExcludedSites?.(sites) || [];
 }
 
-async function saveSettings(nextSettings) {
-  settings = {
-    ...DEFAULT_SETTINGS,
-    ...nextSettings
+function normalizeSettings(rawSettings = {}) {
+  return {
+    highlightingEnabled: rawSettings.highlightingEnabled !== false,
+    excludedSitesEnabled: rawSettings.excludedSitesEnabled !== false,
+    managementSort: rawSettings.managementSort === "az" ? "az" : "latest"
   };
+}
+
+async function saveSettings(nextSettings) {
+  settings = normalizeSettings(nextSettings);
   await storage.set({ [SETTINGS_KEY]: settings });
   renderSettings();
 }
@@ -104,7 +100,6 @@ async function excludeCurrentSite() {
 
   const nextSites = excludedSites.concat({
     domain: currentSiteDomain,
-    enabled: true,
     createdAt: Date.now()
   });
 
@@ -121,17 +116,6 @@ function bindEvents() {
     });
   });
 
-  for (const input of elements.triggerInputs) {
-    input.addEventListener("change", () => {
-      if (input.checked) {
-        saveSettings({
-          ...settings,
-          revealTrigger: input.value
-        });
-      }
-    });
-  }
-
   elements.openSettings.addEventListener("click", openManagementView);
   elements.excludeSite.addEventListener("click", excludeCurrentSite);
 
@@ -141,10 +125,7 @@ function bindEvents() {
     }
 
     if (changes[SETTINGS_KEY]) {
-      settings = {
-        ...DEFAULT_SETTINGS,
-        ...(changes[SETTINGS_KEY].newValue || {})
-      };
+      settings = normalizeSettings(changes[SETTINGS_KEY].newValue || {});
       renderSettings();
     }
 
@@ -160,11 +141,16 @@ async function loadState() {
     [EXCLUDED_SITES_KEY]: []
   });
 
-  settings = {
-    ...DEFAULT_SETTINGS,
-    ...(result[SETTINGS_KEY] || {})
-  };
+  settings = normalizeSettings(result[SETTINGS_KEY] || {});
   excludedSites = normalizeExcludedSites(result[EXCLUDED_SITES_KEY]);
+
+  if (JSON.stringify(result[SETTINGS_KEY] || {}) !== JSON.stringify(settings)) {
+    await storage.set({ [SETTINGS_KEY]: settings });
+  }
+
+  if (JSON.stringify(result[EXCLUDED_SITES_KEY] || []) !== JSON.stringify(excludedSites)) {
+    await storage.set({ [EXCLUDED_SITES_KEY]: excludedSites });
+  }
 }
 
 async function init() {

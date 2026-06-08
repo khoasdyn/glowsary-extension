@@ -1,5 +1,6 @@
 ## 2026-06-08
 
+- Removed the click reveal trigger, added the excluded sites master switch, and changed popup highlighting control to a switch.
 - Added the reusable Text Button style across popup, management, and in-page buttons, including the temporary raw sizing values tracked in NOTES.md.
 - Added typography token files and mapped extension UI text styles to the shared Figma type scale.
 - Moved color token files into `extension/tokens` and updated extension load paths without changing token values.

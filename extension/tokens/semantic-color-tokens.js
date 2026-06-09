@@ -3,11 +3,11 @@
     addNew: {
       "--wc-bg-alias-chip": "--color-gray-50",
       "--wc-bg-card": "--color-gray-100",
-      "--wc-border": "--color-gray-200",
-      "--wc-subtext": "--color-gray-600",
+      "--wc-border": "--color-gray-300",
+      "--wc-subtext": "--color-gray-500",
       "--wc-underline": "--color-gray-600",
       "--wc-underline-hover": "--color-gray-800",
-      "--wc-word-text": "--color-gray-600"
+      "--wc-word-text": "--color-gray-500"
     },
     purple: {
       "--wc-bg-alias-chip": "--color-purple-50",

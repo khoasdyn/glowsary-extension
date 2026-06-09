@@ -675,16 +675,15 @@ function createEntryCard(entry) {
 
 function renderEntries() {
   const visibleEntries = getVisibleEntries();
+  const hasEntries = entries.length > 0;
+  const hasSearchMatches = visibleEntries.length > 0;
 
   elements.entryList.replaceChildren();
+  elements.entryList.classList.toggle("entry-list--empty", !hasEntries);
   elements.entryList.append(createAddEntryCard());
   elements.entryCount.textContent = String(entries.length);
-  elements.emptyState.hidden = visibleEntries.length > 0;
-  elements.emptyState.textContent = entries.length === 0 ? "No words saved yet." : "No matching words.";
-
-  if (visibleEntries.length === 0) {
-    elements.entryList.append(elements.emptyState);
-  }
+  elements.emptyState.hidden = !hasEntries || hasSearchMatches;
+  elements.emptyState.textContent = "No matching words.";
 
   for (const entry of visibleEntries) {
     elements.entryList.append(createEntryCard(entry));

@@ -538,14 +538,23 @@ button {
 }
 
 .grid-empty-state {
-  grid-column: 2 / -1;
-  margin-top: 0;
+  margin-top: 12px;
+  padding: 0;
+  color: var(--text-tertiary);
+  background: var(--color-base-transparent);
+  border: 0;
+  border-radius: 0;
+  text-align: left;
 }
 
 .entry-list {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
+}
+
+.entry-list--empty .entry-card--add {
+  grid-column: 1 / -1;
 }
 
 .entry-card {
@@ -716,10 +725,6 @@ button {
 
   .entry-list {
     grid-template-columns: 1fr;
-  }
-
-  .grid-empty-state {
-    grid-column: 1;
   }
 
   .home-title-row {

@@ -391,6 +391,10 @@ button {
   margin-top: 32px;
 }
 
+.excluded-list[hidden] {
+  display: none;
+}
+
 .excluded-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -522,19 +526,6 @@ button {
   border: 1px dashed var(--color-gray-300);
   border-radius: 8px;
   text-align: center;
-}
-
-.excluded-empty-state {
-  display: grid;
-  place-items: center;
-  min-height: 64px;
-  margin-top: 32px;
-  background: var(--color-base-transparent);
-  border: 0;
-}
-
-.excluded-empty-state[hidden] {
-  display: none;
 }
 
 .grid-empty-state {

@@ -51,7 +51,6 @@ const elements = {
   emptyState: document.querySelector("#empty-state"),
   entryList: document.querySelector("#entry-list"),
   excludedCount: document.querySelector("#excluded-count"),
-  excludedEmpty: document.querySelector("#excluded-empty"),
   excludedList: document.querySelector("#excluded-list"),
   toast: document.querySelector("#toast")
 };
@@ -736,7 +735,7 @@ function renderExcludedSites() {
 
   elements.excludedList.replaceChildren();
   elements.excludedCount.textContent = String(visibleSites.length);
-  elements.excludedEmpty.hidden = visibleSites.length > 0;
+  elements.excludedList.hidden = visibleSites.length === 0;
 
   for (const site of visibleSites) {
     const row = document.createElement("div");

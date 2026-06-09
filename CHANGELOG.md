@@ -1,5 +1,6 @@
 ## 2026-06-09
 
+- Bumped the extension manifest version to 1.2.0.
 - Hid the Excluded Sites list container when there are no excluded sites.
 - Made the empty saved-word grid show one full-width Add New Word card, moved search misses to plain text below the grid, and corrected the Add New card gray tokens.
 - Adjusted the Add Site dialog so empty fields show no validation error until the user types an invalid site.

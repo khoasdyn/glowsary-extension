@@ -1,5 +1,7 @@
 ## 2026-06-09
 
+- Fixed the toolbar popup text block height so the switch sits at the intended 32px gap.
+- Replaced the toolbar popup footer controls with one full-width "Go To App" button and added the share-03 icon asset.
 - Aligned in-page Save form typography tokens with the prefixed bundled font names.
 - Made saved-word highlight underlines dashed and tinted from each entry's Word Card color, including newest-entry color for shared underlines.
 - Loaded in-page Save form fonts from extension-read bytes so strict page CSP cannot block them.

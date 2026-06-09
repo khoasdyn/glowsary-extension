@@ -1,5 +1,4 @@
 const SETTINGS_KEY = "glowsarySettings";
-const EXCLUDED_SITES_KEY = "glowsaryExcludedSites";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
   excludedSitesEnabled: true,
@@ -7,15 +6,12 @@ const DEFAULT_SETTINGS = {
 };
 
 let settings = { ...DEFAULT_SETTINGS };
-let excludedSites = [];
-let currentSiteDomain = null;
 
 const elements = {
   statusTitle: document.querySelector("#popup-status-title"),
   statusSubtitle: document.querySelector("#popup-status-subtitle"),
   highlightingEnabled: document.querySelector("#highlighting-enabled"),
-  excludeSite: document.querySelector("#exclude-site"),
-  openSettings: document.querySelector("#open-settings")
+  goToApp: document.querySelector("#go-to-app")
 };
 
 const storage = {
@@ -36,10 +32,6 @@ function renderSettings() {
   elements.statusSubtitle.textContent = isEnabled ? "Show saved words on webpages" : "Saved words are hidden";
 }
 
-function normalizeExcludedSites(sites = []) {
-  return window.GlowsaryDomains?.normalizeExcludedSites?.(sites) || [];
-}
-
 function normalizeSettings(rawSettings = {}) {
   return {
     highlightingEnabled: rawSettings.highlightingEnabled !== false,
@@ -48,22 +40,9 @@ function normalizeSettings(rawSettings = {}) {
   };
 }
 
-function isCurrentSiteExcluded() {
-  return !currentSiteDomain || excludedSites.some((site) => site.domain === currentSiteDomain);
-}
-
-function renderExcludeButton() {
-  const isExcluded = isCurrentSiteExcluded();
-  const label = elements.excludeSite.querySelector(".text-button__label");
-
-  label.textContent = isExcluded ? "This site is excluded" : "Exclude this site";
-  elements.excludeSite.disabled = isExcluded;
-  elements.excludeSite.classList.toggle("is-excluded", isExcluded);
-}
-
-async function renderSettingsButtonIcon() {
+async function renderGoToAppIcon() {
   try {
-    const response = await fetch(chrome.runtime.getURL("assets/settings-02.svg"));
+    const response = await fetch(chrome.runtime.getURL("assets/share-03.svg"));
     const svgText = await response.text();
     const template = document.createElement("template");
 
@@ -73,9 +52,9 @@ async function renderSettingsButtonIcon() {
     icon.querySelectorAll("[stroke]").forEach((node) => node.setAttribute("stroke", "currentColor"));
     icon.querySelectorAll("[fill]:not([fill='none'])").forEach((node) => node.setAttribute("fill", "currentColor"));
     icon.setAttribute("aria-hidden", "true");
-    elements.openSettings.replaceChildren(icon);
+    elements.goToApp.append(icon);
   } catch {
-    elements.openSettings.textContent = "";
+    return;
   }
 }
 
@@ -105,35 +84,6 @@ async function openManagementView() {
   window.close();
 }
 
-async function loadCurrentSiteDomain() {
-  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-  const activeTab = tabs[0];
-
-  currentSiteDomain = await window.GlowsaryDomains?.getWholeSiteDomainFromInput?.(activeTab?.url || "");
-  renderExcludeButton();
-}
-
-async function excludeCurrentSite() {
-  if (!currentSiteDomain) {
-    renderExcludeButton();
-    return;
-  }
-
-  if (excludedSites.some((site) => site.domain === currentSiteDomain)) {
-    renderExcludeButton();
-    return;
-  }
-
-  const nextSites = excludedSites.concat({
-    domain: currentSiteDomain,
-    createdAt: Date.now()
-  });
-
-  excludedSites = nextSites;
-  await storage.set({ [EXCLUDED_SITES_KEY]: nextSites });
-  renderExcludeButton();
-}
-
 function bindEvents() {
   elements.highlightingEnabled.addEventListener("change", () => {
     saveSettings({
@@ -142,8 +92,7 @@ function bindEvents() {
     });
   });
 
-  elements.openSettings.addEventListener("click", openManagementView);
-  elements.excludeSite.addEventListener("click", excludeCurrentSite);
+  elements.goToApp.addEventListener("click", openManagementView);
 
   chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName !== "local") {
@@ -154,38 +103,25 @@ function bindEvents() {
       settings = normalizeSettings(changes[SETTINGS_KEY].newValue || {});
       renderSettings();
     }
-
-    if (changes[EXCLUDED_SITES_KEY]) {
-      excludedSites = normalizeExcludedSites(changes[EXCLUDED_SITES_KEY].newValue);
-      renderExcludeButton();
-    }
   });
 }
 
 async function loadState() {
   const result = await storage.get({
-    [SETTINGS_KEY]: DEFAULT_SETTINGS,
-    [EXCLUDED_SITES_KEY]: []
+    [SETTINGS_KEY]: DEFAULT_SETTINGS
   });
 
   settings = normalizeSettings(result[SETTINGS_KEY] || {});
-  excludedSites = normalizeExcludedSites(result[EXCLUDED_SITES_KEY]);
 
   if (JSON.stringify(result[SETTINGS_KEY] || {}) !== JSON.stringify(settings)) {
     await storage.set({ [SETTINGS_KEY]: settings });
   }
-
-  if (JSON.stringify(result[EXCLUDED_SITES_KEY] || []) !== JSON.stringify(excludedSites)) {
-    await storage.set({ [EXCLUDED_SITES_KEY]: excludedSites });
-  }
 }
 
 async function init() {
-  await renderSettingsButtonIcon();
+  await renderGoToAppIcon();
   await loadState();
-  await loadCurrentSiteDomain();
   renderSettings();
-  renderExcludeButton();
   bindEvents();
 }
 

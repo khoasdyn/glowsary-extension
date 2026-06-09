@@ -91,7 +91,7 @@ button {
 
 .popup-status {
   display: flex;
-  min-height: calc(var(--text-style-card-title-line-height) + 4px + var(--text-style-body-text-line-height) + var(--text-style-body-text-line-height));
+  min-height: calc(var(--text-style-card-title-line-height) + 4px + var(--text-style-body-text-line-height));
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
@@ -128,19 +128,8 @@ button {
   height: 40px;
   flex: 0 0 40px;
   align-items: center;
-  gap: 8px;
 }
 
-.popup-exclude-button {
-  flex: 1 1 auto;
-}
-
-.popup-exclude-button.is-excluded,
-.popup-exclude-button.is-excluded:disabled {
-  --text-button-bg: var(--color-base-transparent);
-  --text-button-label: var(--text-primary);
-  --text-button-icon: var(--fg-primary);
-
-  cursor: default;
-  pointer-events: none;
+.popup-app-button {
+  width: 100%;
 }

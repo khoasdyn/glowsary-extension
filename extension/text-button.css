@@ -12,7 +12,7 @@
   color: var(--text-button-label);
   background: var(--text-button-bg);
   border: 0;
-  border-radius: 9999px;
+  border-radius: var(--cta);
   box-shadow: none;
   appearance: none;
   cursor: pointer;

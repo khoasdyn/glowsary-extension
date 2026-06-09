@@ -285,17 +285,11 @@ Text block: flex column, items centered, 4px gap between title and subtitle.
 
 Switch: the Switch component (see Switch entry), centered.
 
-Footer: flex row, full width, 8px gap.
-1. Exclude button: flex 1 (takes remaining width), height 40px, 20px padding left and right, fully rounded (`full` role). Two states:
-   - Default (site not excluded): Text Button Default variant — `--bg-primary-solid` background, `--text-white` text, label "Exclude this site".
-   - Excluded (site already on the list): no background, `--text-primary` text, label "This site is excluded", non-interactive. This is a read-only display, not a Text Button variant.
-2. Settings button: Icon Button Secondary variant (see Icon Button entry), fixed 40 by 40, settings-02 icon.
+Footer: a single full-width "Go To App" button. Text Button Default variant (see Text Button entry) — `--bg-primary-solid` background, `--text-white` text and icon, label "Go To App", trailing share-03 icon (20 by 20). Clicking it opens the management view as a full page in a new browser tab; if a management view tab is already open, that tab is focused instead (same behavior as the old Settings button, FR-24). The share-03 icon asset lives in `extension/assets/share-03.svg`.
 
-The switch state and the exclude state are independent. The title and subtitle reflect the global switch state; the exclude button reflects whether the current site is on the excluded list. Both can change at the same time without affecting each other.
+Sizing and spacing (temporary raw values, not yet tokens): container 300 by 400, padding 24 left and right and 16 top and bottom, main content area height 328, gap 32 between text block and switch, text block gap 4, footer height 40. Replace with tokens once the spacing and sizing scale is defined.
 
-Sizing and spacing (temporary raw values, not yet tokens): container 300 by 400, padding 24 left and right and 16 top and bottom, main content area height 328, gap 32 between text block and switch, text block gap 4, footer height 40, footer gap 8, exclude button padding 20 left and right. Replace with tokens once the spacing and sizing scale is defined.
-
-States not yet designed: Figma defines only the two combined states. There is no hover or focus style on the exclude button or the container. Because the settings Icon Button is interactive, it keeps a visible keyboard focus indicator until Figma defines one, tracked under item 9 in NOTES.md.
+States not yet designed: Figma defines only the two switch states (on and off). There is no hover or focus style on the "Go To App" button. Because the button is interactive, it keeps a visible keyboard focus indicator until Figma defines one.
 
 ### Word Card
 

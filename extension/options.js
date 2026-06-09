@@ -15,6 +15,11 @@ let searchQuery = "";
 let activeManagementTab = "home";
 let entryColorPicker = null;
 
+const entryForm = window.GlowsaryEntryForm?.render?.(document.querySelector("#entry-form-mount"), {
+  includeDelete: true,
+  mode: "add"
+});
+
 const elements = {
   managementTabNav: document.querySelector("#management-tab-nav"),
   managementTabPanels: Array.from(document.querySelectorAll("[data-tab-panel]")),
@@ -364,7 +369,7 @@ function showEditor(entry = null) {
   elements.definitionInput.value = entry?.definition || "";
   elements.aliasInput.value = entry ? formatAliases(entry.aliases) : "";
   entryColorPicker?.setValue(entry?.color);
-  elements.deleteEntryFromPanel.hidden = !entry;
+  entryForm?.setMode(entry ? "edit" : "add");
   setTermHint();
   setDefinitionHint();
   setAliasHint();
@@ -380,7 +385,7 @@ function hideEditor() {
   editingEntry = null;
   elements.form.reset();
   entryColorPicker?.setValue();
-  elements.deleteEntryFromPanel.hidden = true;
+  entryForm?.setMode("add");
   setTermHint();
   setDefinitionHint();
   setAliasHint();

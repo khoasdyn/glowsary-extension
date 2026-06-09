@@ -1,5 +1,7 @@
 ## 2026-06-09
 
+- Fixed the in-page Save form manifest asset access, full-height overlay layout, local fonts, and Figma-matched spacing.
+- Centralized the Save form and Management form panel fields into one shared entry form component and removed the Save form Cancel button.
 - Corrected radius token values and fixed highlight popup sizing, clipping, padding, and long-word wrapping.
 - Applied Word Card tokens to the color picker, saved-word grid cards, Add New Word card, and hover definition popup.
 - Added radius tokens and scoped Word Card color mode tokens for saved-word cards.

@@ -1,0 +1,114 @@
+.entry-form,
+.glowsary-entry-form {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 32px;
+  min-height: 0;
+  margin-top: 32px;
+  box-sizing: border-box;
+}
+
+.entry-form-fields,
+.glowsary-entry-form-fields {
+  display: grid;
+  align-content: start;
+  gap: 24px;
+  min-height: 0;
+  overflow: auto;
+}
+
+.field-input,
+.glowsary-field-input {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.field-input__label,
+.glowsary-field-input__label {
+  min-width: 0;
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-text-sm);
+  letter-spacing: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.field-input__control,
+.glowsary-field-input__control {
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  min-width: 0;
+  padding: 0 12px;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--box);
+  font-family: var(--text-style-body-text-font-family);
+  font-size: var(--text-style-body-text-font-size);
+  font-weight: var(--text-style-body-text-font-weight);
+  line-height: var(--text-style-body-text-line-height);
+  letter-spacing: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  appearance: none;
+}
+
+.field-input__control:focus-visible,
+.glowsary-field-input__control:focus-visible {
+  outline: auto;
+}
+
+.field-input__hint,
+.glowsary-field-input__hint {
+  min-width: 0;
+  margin: 0;
+  color: var(--text-tertiary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-text-xs);
+  letter-spacing: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.field-input__hint.is-error,
+.glowsary-field-input__hint.is-error {
+  color: var(--text-error-primary);
+}
+
+.multiline-input__control,
+.glowsary-multiline-input__control {
+  height: 250px;
+  padding: 12px;
+  resize: none;
+  white-space: pre-wrap;
+}
+
+.form-actions,
+.glowsary-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-actions .text-button,
+.glowsary-form-actions .glowsary-text-button {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.icon-button[hidden],
+.glowsary-icon-button[hidden] {
+  display: none;
+}

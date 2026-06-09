@@ -558,49 +558,41 @@
     backdrop.innerHTML = `
       <section class="glowsary-dialog" role="dialog" aria-modal="true" aria-labelledby="glowsary-dialog-title">
         <div class="glowsary-dialog-header">
-          <h2 class="glowsary-dialog-title" id="glowsary-dialog-title">Add word</h2>
+          <h2 class="glowsary-dialog-title" id="glowsary-dialog-title">Add Word</h2>
           <button class="glowsary-dialog-close" type="button" aria-label="Close">&times;</button>
         </div>
-        <form class="glowsary-form">
-          <div class="glowsary-field">
-            <label for="glowsary-term">Word</label>
-            <input class="glowsary-input" id="glowsary-term" name="term" autocomplete="off" />
-          </div>
-          <div class="glowsary-field">
-            <label for="glowsary-definition">Definition</label>
-            <textarea class="glowsary-textarea" id="glowsary-definition" name="definition"></textarea>
-          </div>
-          <div class="glowsary-field">
-            <label for="glowsary-aliases">Alias</label>
-            <input class="glowsary-input" id="glowsary-aliases" name="aliases" autocomplete="off" placeholder="versions, versioned" />
-          </div>
-          <div class="glowsary-field">
-            <label id="glowsary-color-label">Color</label>
-            <div id="glowsary-color-picker" aria-labelledby="glowsary-color-label"></div>
-          </div>
-          <div class="glowsary-error" role="alert"></div>
-          <div class="glowsary-actions">
-            <button class="glowsary-text-button glowsary-text-button-secondary" type="button" data-action="cancel"><span class="glowsary-text-button-label">Cancel</span></button>
-            <button class="glowsary-text-button glowsary-text-button-default" type="submit"><span class="glowsary-text-button-label">Save</span></button>
-          </div>
-        </form>
+        <div id="glowsary-entry-form-mount"></div>
+        <div class="glowsary-error" role="alert"></div>
       </section>
     `;
 
-    const form = backdrop.querySelector("form");
-    const termInput = backdrop.querySelector("#glowsary-term");
-    const definitionInput = backdrop.querySelector("#glowsary-definition");
-    const aliasInput = backdrop.querySelector("#glowsary-aliases");
-    const colorPicker = backdrop.querySelector("#glowsary-color-picker");
+    const formParts = window.GlowsaryEntryForm?.render?.(backdrop.querySelector("#glowsary-entry-form-mount"), {
+      classPrefix: "glowsary",
+      ids: {
+        form: "glowsary-entry-form",
+        term: "glowsary-term",
+        termHint: "glowsary-term-hint",
+        definition: "glowsary-definition",
+        definitionHint: "glowsary-definition-hint",
+        alias: "glowsary-aliases",
+        aliasHint: "glowsary-alias-hint",
+        color: "glowsary-color-picker",
+        save: "glowsary-save-entry"
+      },
+      values: {
+        term: collapseSpaces(rawTerm)
+      }
+    });
+
+    const form = formParts.form;
+    const termInput = formParts.termInput;
+    const definitionInput = formParts.definitionInput;
+    const aliasInput = formParts.aliasInput;
+    const colorPicker = formParts.colorPicker;
     const error = backdrop.querySelector(".glowsary-error");
     const colorPickerController = window.GlowsaryColorPicker?.init?.(colorPicker, { classPrefix: "glowsary-color-picker" });
 
-    termInput.value = collapseSpaces(rawTerm);
-    definitionInput.value = "";
-    aliasInput.value = "";
-
     backdrop.querySelector(".glowsary-dialog-close").addEventListener("click", closeDialog);
-    backdrop.querySelector("[data-action='cancel']").addEventListener("click", closeDialog);
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       error.textContent = "";

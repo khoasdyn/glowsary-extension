@@ -1,7 +1,6 @@
 const SETTINGS_KEY = "glowsarySettings";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
-  excludedSitesEnabled: true,
   managementSort: "latest"
 };
 
@@ -35,7 +34,6 @@ function renderSettings() {
 function normalizeSettings(rawSettings = {}) {
   return {
     highlightingEnabled: rawSettings.highlightingEnabled !== false,
-    excludedSitesEnabled: rawSettings.excludedSitesEnabled !== false,
     managementSort: rawSettings.managementSort === "az" ? "az" : "latest"
   };
 }

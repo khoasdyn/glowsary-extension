@@ -12,7 +12,6 @@
     <script src="tokens/radius-tokens.js"></script>
     <link rel="stylesheet" href="text-button.css" />
     <link rel="stylesheet" href="icon-button.css" />
-    <link rel="stylesheet" href="switch.css" />
     <link rel="stylesheet" href="tab-nav.css" />
     <link rel="stylesheet" href="color-picker.css" />
     <link rel="stylesheet" href="entry-form.css" />
@@ -41,10 +40,6 @@
             <div class="home-title-group">
               <div class="home-title-row">
                 <h2 id="list-heading">Saved Words (<span id="entry-count">0</span>)</h2>
-                <label class="switch-row home-highlighting-switch" aria-label="Highlighting">
-                  <input id="highlighting-enabled" type="checkbox" />
-                  <span class="home-highlighting-switch__label">Highlighting</span>
-                </label>
               </div>
               <p>Your saved words are highlighted across every site you visit</p>
             </div>
@@ -73,13 +68,13 @@
             <div class="settings-section-title-group">
               <div class="settings-section-title-row">
                 <h2 id="excluded-heading">Excluded Sites (<span id="excluded-count">0</span>)</h2>
-                <label class="switch-row excluded-master" aria-label="Use excluded sites list">
-                  <input id="excluded-sites-enabled" type="checkbox" />
-                </label>
               </div>
               <p>Pause highlighting on sites where saved words are noise.</p>
             </div>
           </div>
+          <button class="text-button text-button--default excluded-add-button" id="add-excluded-site" type="button">
+            <span class="text-button__label">Add New</span>
+          </button>
           <div class="empty-state excluded-empty-state" id="excluded-empty">No sites excluded yet.</div>
           <div class="excluded-list" id="excluded-list"></div>
         </section>
@@ -113,6 +108,31 @@
             </button>
           </div>
           <div id="entry-form-mount"></div>
+        </section>
+      </div>
+
+      <div class="site-dialog-layer" id="site-dialog" hidden>
+        <section class="site-dialog-panel" role="dialog" aria-modal="true" aria-labelledby="site-dialog-title">
+          <div class="panel-header">
+            <h2 id="site-dialog-title">Add Site</h2>
+            <button class="editor-close-button" id="close-site-dialog" type="button" aria-label="Close dialog" title="Close dialog">
+              <span class="editor-close-button__icon" aria-hidden="true"></span>
+            </button>
+          </div>
+          <form class="site-dialog-form" id="site-dialog-form">
+            <div class="site-dialog-fields">
+              <label class="field-input">
+                <span class="field-input__label">Site</span>
+                <input class="field-input__control" id="site-input" name="site" type="text" autocomplete="off" placeholder="spotify.com" />
+                <p class="field-input__hint" id="site-hint"></p>
+              </label>
+            </div>
+            <div class="form-actions">
+              <button class="text-button text-button--default" id="save-site" type="submit" disabled>
+                <span class="text-button__label">Save</span>
+              </button>
+            </div>
+          </form>
         </section>
       </div>
     </main>

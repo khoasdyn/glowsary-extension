@@ -4,7 +4,6 @@ const CONTEXT_MENU_ID = "glowsary-create-note";
 const SETTINGS_KEY = "glowsarySettings";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
-  excludedSitesEnabled: true,
   managementSort: "latest"
 };
 const ON_ICON_PATHS = {

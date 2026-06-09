@@ -4,7 +4,6 @@
   const EXCLUDED_SITES_KEY = "glowsaryExcludedSites";
   const DEFAULT_SETTINGS = {
     highlightingEnabled: true,
-    excludedSitesEnabled: true,
     managementSort: "latest"
   };
   const HIGHLIGHT_CLASS = "glowsary-highlight";
@@ -157,10 +156,30 @@
     return window.GlowsaryDomains?.normalizeExcludedSites?.(sites) || [];
   }
 
+  async function normalizeExcludedSitesToWholeSiteDomains(sites = []) {
+    const seen = new Set();
+    const normalizedSites = [];
+
+    for (const site of normalizeExcludedSites(sites)) {
+      const domain = await window.GlowsaryDomains?.getWholeSiteDomainFromInput?.(site.domain);
+
+      if (!domain || seen.has(domain)) {
+        continue;
+      }
+
+      seen.add(domain);
+      normalizedSites.push({
+        ...site,
+        domain
+      });
+    }
+
+    return normalizedSites;
+  }
+
   function normalizeSettings(rawSettings = {}) {
     return {
       highlightingEnabled: rawSettings.highlightingEnabled !== false,
-      excludedSitesEnabled: rawSettings.excludedSitesEnabled !== false,
       managementSort: rawSettings.managementSort === "az" ? "az" : "latest"
     };
   }
@@ -168,7 +187,6 @@
   function isCurrentSiteExcluded() {
     return Boolean(
       currentSiteDomain &&
-        settings.excludedSitesEnabled !== false &&
         excludedSites.some((site) => site.domain === currentSiteDomain)
     );
   }
@@ -842,7 +860,7 @@
 
     entries = Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY].map(normalizeEntry) : [];
     settings = normalizeSettings(result[SETTINGS_KEY] || {});
-    excludedSites = normalizeExcludedSites(result[EXCLUDED_SITES_KEY]);
+    excludedSites = await normalizeExcludedSitesToWholeSiteDomains(result[EXCLUDED_SITES_KEY]);
     currentSiteDomain = await window.GlowsaryDomains?.getWholeSiteDomainFromInput?.(window.location.hostname);
 
     if (JSON.stringify(result[SETTINGS_KEY] || {}) !== JSON.stringify(settings)) {

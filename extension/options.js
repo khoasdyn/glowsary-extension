@@ -3,7 +3,6 @@ const SETTINGS_KEY = "glowsarySettings";
 const EXCLUDED_SITES_KEY = "glowsaryExcludedSites";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
-  excludedSitesEnabled: true,
   managementSort: "latest"
 };
 
@@ -23,11 +22,15 @@ const entryForm = window.GlowsaryEntryForm?.render?.(document.querySelector("#en
 const elements = {
   managementTabNav: document.querySelector("#management-tab-nav"),
   managementTabPanels: Array.from(document.querySelectorAll("[data-tab-panel]")),
-  highlightingEnabled: document.querySelector("#highlighting-enabled"),
-  excludedSitesEnabled: document.querySelector("#excluded-sites-enabled"),
   editorPanel: document.querySelector("#editor-panel"),
   editorTitle: document.querySelector("#editor-title"),
   closeEditor: document.querySelector("#close-editor"),
+  siteDialog: document.querySelector("#site-dialog"),
+  closeSiteDialog: document.querySelector("#close-site-dialog"),
+  siteDialogForm: document.querySelector("#site-dialog-form"),
+  siteInput: document.querySelector("#site-input"),
+  siteHint: document.querySelector("#site-hint"),
+  saveSite: document.querySelector("#save-site"),
   deleteEntryFromPanel: document.querySelector("#delete-entry-from-panel"),
   form: document.querySelector("#entry-form"),
   termInput: document.querySelector("#term-input"),
@@ -42,6 +45,7 @@ const elements = {
   exportEntries: document.querySelector("#export-entries"),
   importEntries: document.querySelector("#import-entries"),
   importFile: document.querySelector("#import-file"),
+  addExcludedSite: document.querySelector("#add-excluded-site"),
   searchInput: document.querySelector("#search-input"),
   sortSelect: document.querySelector("#sort-select"),
   emptyState: document.querySelector("#empty-state"),
@@ -88,10 +92,30 @@ function normalizeExcludedSites(sites = []) {
   return window.GlowsaryDomains?.normalizeExcludedSites?.(sites) || [];
 }
 
+async function normalizeExcludedSitesToWholeSiteDomains(sites = []) {
+  const seen = new Set();
+  const normalizedSites = [];
+
+  for (const site of normalizeExcludedSites(sites)) {
+    const domain = await window.GlowsaryDomains?.getWholeSiteDomainFromInput?.(site.domain);
+
+    if (!domain || seen.has(domain)) {
+      continue;
+    }
+
+    seen.add(domain);
+    normalizedSites.push({
+      ...site,
+      domain
+    });
+  }
+
+  return normalizedSites;
+}
+
 function normalizeSettings(rawSettings = {}) {
   return {
     highlightingEnabled: rawSettings.highlightingEnabled !== false,
-    excludedSitesEnabled: rawSettings.excludedSitesEnabled !== false,
     managementSort: rawSettings.managementSort === "az" ? "az" : "latest"
   };
 }
@@ -375,13 +399,13 @@ function showEditor(entry = null) {
   setAliasHint();
   syncEntrySaveState();
   elements.editorPanel.hidden = false;
-  document.body.classList.add("modal-open");
+  syncModalOpenState();
   elements.termInput.focus();
 }
 
 function hideEditor() {
   elements.editorPanel.hidden = true;
-  document.body.classList.remove("modal-open");
+  syncModalOpenState();
   editingEntry = null;
   elements.form.reset();
   entryColorPicker?.setValue();
@@ -390,6 +414,25 @@ function hideEditor() {
   setDefinitionHint();
   setAliasHint();
   syncEntrySaveState();
+}
+
+function syncModalOpenState() {
+  document.body.classList.toggle("modal-open", !elements.editorPanel.hidden || !elements.siteDialog.hidden);
+}
+
+function showSiteDialog() {
+  elements.siteDialog.hidden = false;
+  elements.siteInput.value = "";
+  syncSiteSaveState();
+  syncModalOpenState();
+  elements.siteInput.focus();
+}
+
+function hideSiteDialog() {
+  elements.siteDialog.hidden = true;
+  elements.siteDialogForm.reset();
+  syncSiteSaveState();
+  syncModalOpenState();
 }
 
 async function saveEntries(nextEntries) {
@@ -408,9 +451,13 @@ async function saveSettings(nextSettings) {
 }
 
 async function saveExcludedSites(nextSites) {
-  excludedSites = normalizeExcludedSites(nextSites);
+  excludedSites = await normalizeExcludedSitesToWholeSiteDomains(nextSites);
   await storage.set({ [EXCLUDED_SITES_KEY]: excludedSites });
   renderExcludedSites();
+}
+
+async function getSiteInputDomain() {
+  return window.GlowsaryDomains?.getWholeSiteDomainFromInput?.(elements.siteInput.value) || null;
 }
 
 async function saveEntry() {
@@ -541,8 +588,6 @@ async function importEntriesFromFile(file) {
 }
 
 function renderSettings() {
-  elements.highlightingEnabled.checked = Boolean(settings.highlightingEnabled);
-  elements.excludedSitesEnabled.checked = settings.excludedSitesEnabled !== false;
   elements.sortSelect.value = settings.managementSort === "az" ? "az" : "latest";
 }
 
@@ -646,15 +691,45 @@ function renderEntries() {
   }
 }
 
-async function toggleExcludedSitesEnabled(enabled) {
-  await saveSettings({
-    ...settings,
-    excludedSitesEnabled: enabled
-  });
-}
-
 async function deleteExcludedSite(targetSite) {
   await saveExcludedSites(excludedSites.filter((site) => site !== targetSite));
+}
+
+let siteValidationRequest = 0;
+
+async function syncSiteSaveState() {
+  const requestId = ++siteValidationRequest;
+  const domain = await getSiteInputDomain();
+
+  if (requestId !== siteValidationRequest) {
+    return null;
+  }
+
+  const isValid = Boolean(domain);
+  const hasValue = Boolean(elements.siteInput.value.trim());
+
+  elements.saveSite.disabled = !isValid;
+  elements.siteHint.textContent = !isValid && hasValue ? "Please enter valid URL" : "";
+  elements.siteHint.classList.toggle("is-error", !isValid && hasValue);
+
+  return domain;
+}
+
+async function saveExcludedSiteFromDialog() {
+  const domain = await syncSiteSaveState();
+
+  if (!domain) {
+    return;
+  }
+
+  if (!excludedSites.some((site) => site.domain === domain)) {
+    await saveExcludedSites(excludedSites.concat({
+      domain,
+      createdAt: Date.now()
+    }));
+  }
+
+  hideSiteDialog();
 }
 
 function renderExcludedSites() {
@@ -697,12 +772,23 @@ function bindEvents() {
     }
   });
   elements.closeEditor.addEventListener("click", hideEditor);
+  elements.closeSiteDialog.addEventListener("click", hideSiteDialog);
+  elements.siteInput.addEventListener("input", syncSiteSaveState);
+  elements.siteDialogForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    saveExcludedSiteFromDialog();
+  });
   elements.deleteEntryFromPanel.addEventListener("click", () => {
     if (editingEntry) {
       deleteEntry(editingEntry);
     }
   });
   document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !elements.siteDialog.hidden) {
+      hideSiteDialog();
+      return;
+    }
+
     if (event.key === "Escape" && !elements.editorPanel.hidden) {
       hideEditor();
     }
@@ -726,16 +812,7 @@ function bindEvents() {
     renderEntries();
   });
 
-  elements.highlightingEnabled.addEventListener("change", () => {
-    saveSettings({
-      ...settings,
-      highlightingEnabled: elements.highlightingEnabled.checked
-    });
-  });
-
-  elements.excludedSitesEnabled.addEventListener("change", () => {
-    toggleExcludedSitesEnabled(elements.excludedSitesEnabled.checked);
-  });
+  elements.addExcludedSite.addEventListener("click", showSiteDialog);
 
   chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName !== "local") {
@@ -769,7 +846,7 @@ async function loadState() {
 
   entries = Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY].map(normalizeEntry) : [];
   settings = normalizeSettings(result[SETTINGS_KEY] || {});
-  excludedSites = normalizeExcludedSites(result[EXCLUDED_SITES_KEY]);
+  excludedSites = await normalizeExcludedSitesToWholeSiteDomains(result[EXCLUDED_SITES_KEY]);
 
   if (JSON.stringify(result[SETTINGS_KEY] || {}) !== JSON.stringify(settings)) {
     await storage.set({ [SETTINGS_KEY]: settings });

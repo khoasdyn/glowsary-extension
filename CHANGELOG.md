@@ -1,5 +1,7 @@
 ## 2026-06-09
 
+- Adjusted the Add Site dialog so empty fields show no validation error until the user types an invalid site.
+- Removed the management-view highlight and excluded-sites switches, added the Add Site dialog, and made listed exclusions always active.
 - Fixed the toolbar popup text block height so the switch sits at the intended 32px gap.
 - Replaced the toolbar popup footer controls with one full-width "Go To App" button and added the share-03 icon asset.
 - Aligned in-page Save form typography tokens with the prefixed bundled font names.

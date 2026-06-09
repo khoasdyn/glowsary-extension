@@ -69,7 +69,7 @@ A self-directed English learner, often a non-native speaker, who reads English c
 
 ### Global on and off
 
-- FR-14: The extension has a single global on/off switch that controls all highlighting.
+- FR-14: The extension has a single global on/off switch that controls all highlighting. This switch lives only in the toolbar popup (FR-22). The management view has no copy of it.
 - FR-15: When the switch is on, saved words are highlighted on every website that is not on the excluded sites list (see FR-26).
 - FR-16: When the switch is off, no highlighting appears on any website. Saving and managing words still work.
 
@@ -78,16 +78,17 @@ A self-directed English learner, often a non-native speaker, who reads English c
 - FR-26: The user can keep a list of excluded sites. On an excluded site, highlighting is suppressed: no highlight underline and no definition popup appear, even when the global switch is on. Every other feature still works on that site, including the right-click “Add word” action, saving entries, and the management view. Saving a word on an excluded site succeeds but shows no highlight there, which overrides FR-5 for that site. Exclusion only hides the visual highlighting layer.
 - FR-27: A site is identified by a domain, and excluding a domain also covers all of its subdomains. Excluding “spotify.com” covers “open.spotify.com” and “accounts.spotify.com”. The user never lists subdomains separately.
 - FR-27a: Every excluded entry is stored as the whole-site domain, and the whole-site reduction handles multi-part domain endings correctly using a known public suffix list. So “open.spotify.com” reduces to “spotify.com”, “spotify.co.uk” reduces to “spotify.co.uk” and not “co.uk”, and “myname.github.io” stays “myname.github.io” and not all of “github.io”. The same reduction applies to every way a site is added, so the list never holds bare subdomains.
-- FR-28: The Settings tab of the management view has an “Exclude this site” button that adds the current tab’s whole site (FR-27a) to the excluded list in one click. The button only adds. It does not toggle or delete. If the current site is already on the excluded list, the click is blocked with a short note that the site is already on the list (FR-29a). The management view is the only place to delete an excluded site (FR-30).
-- FR-29a: Redundant adds are blocked. If the cleaned domain is already on the list, the add via the Settings tab button (FR-28) is rejected with a short note that the site is already on the list. Because every entry is reduced to a whole-site domain (FR-27a), two entries can never overlap by subdomain, so a duplicate is always an exact match.
-- FR-30: The excluded sites manager has a single master on/off switch placed inline with the section heading that controls all excluded sites at once. When the master switch is off, exclusion is paused for the entire list: every site in the list allows highlighting again, but the list is preserved. When the master switch is on, all listed sites are active and highlighting is suppressed on them. Each entry has only a delete button. There is no per-site toggle and no edit.
-- FR-32: Adding or deleting an excluded site, or toggling the master switch, applies live to all open tabs with no reload, the same way the global switch does (FR-23). Excluding a site clears its highlights on all of its open tabs at once, and removing a site or turning the master switch off restores highlights there.
+- FR-28: The Settings tab of the management view has an “Add New” button that opens the Add Site dialog (FR-28a). This is the only way to add an excluded site. There is no longer a one-click “exclude the current site” action anywhere, including the toolbar popup. The management view is the only place to delete an excluded site (FR-30).
+- FR-28a: The Add Site dialog has a single “Site” field where the user types a site to exclude. The user can type either a full URL (for example “https://open.spotify.com/playlist”) or a bare domain (for example “spotify.com”). On save, the typed value is reduced to its whole-site domain (FR-27a) and added to the list. When the dialog first opens, the field is empty and shows a placeholder, with no error message; the Save button is disabled. The inline “Please enter valid URL” message appears only after the user has typed a value that is not a valid URL or domain. While the field is empty, no error is shown. The Save button stays disabled while the value is empty or not valid, and enables once the value is a valid URL or domain. The dialog has only this one field, a title, an X close, and the Save button. There is no color, alias, or any other field, and there is no edit mode, since an excluded site has nothing to edit (FR-30). The dialog is closed by the X.
+- FR-29a: Saving a duplicate does nothing. If the cleaned whole-site domain (FR-27a) is already on the list, pressing Save adds no second entry and shows no error: the dialog closes as a normal save and the list is unchanged. Because every entry is reduced to a whole-site domain (FR-27a), two entries can never overlap by subdomain, so a duplicate is always an exact match.
+- FR-30: The excluded sites manager shows the list of excluded sites and the “Add New” button (FR-28). Every site in the list is always active: highlighting is always suppressed on each listed site whenever the global switch is on. There is no master on/off switch and no per-site toggle. The only way to stop excluding a site is to delete it from the list. Each entry has only a delete button. There is no edit.
+- FR-32: Adding or deleting an excluded site applies live to all open tabs with no reload, the same way the global switch does (FR-23). Adding a site clears its highlights on all of its open tabs at once, and deleting a site restores highlights there.
 - FR-33: The excluded sites list is stored locally with the rest of the data (FR-20). There is no account and no cross-device sync.
 
 ### Toolbar popup
 
 - FR-21: Clicking the Glowsary icon in the browser toolbar opens the toolbar popup, a small panel. It does not open the management view directly anymore.
-- FR-22: The toolbar popup contains the global highlighting switch and a “Go To App” button. The switch is the same global on/off as FR-14 and shares one state with the global highlighting switch in the management view, so changing it in either place updates the other.
+- FR-22: The toolbar popup contains the global highlighting switch and a “Go To App” button. This switch is the single global on/off (FR-14) and is the only place to turn highlighting on or off. The management view no longer has its own copy of the switch.
 - FR-23: Changing the global switch in the popup applies live to all open pages running the extension, with no reload. Turning highlighting off clears all highlights on every open page at once (FR-16), and turning it on restores them (FR-15).
 - FR-24: The "Go To App" button in the popup opens the management view as a full page in a new browser tab, and the popup closes. If a management view tab is already open, that existing tab is focused instead of opening a new one, so duplicate tabs do not pile up.
 - FR-25: The toolbar icon reflects the current global highlighting state. When highlighting is on, the icon shows its normal colored form with no badge. When highlighting is off, the icon switches to a grayscale form and a small "OFF" badge is shown at the same time, so the user can tell the on or off state at a glance without opening the popup.
@@ -95,8 +96,8 @@ A self-directed English learner, often a non-native speaker, who reads English c
 ### Management view layout
 
 - FR-38: The management view is split into two tabs, Home and Settings, under a shared header. The shared header shows a single centered title, "Welcome to Glowsary!", with no subtitle, and stays visible on both tabs. A tab nav sits directly below the centered title and switches between Home and Settings.
-- FR-39: The Home tab holds everything for managing saved words. At the top is a section heading that shows the word count as "Saved Words (N)" with the global highlighting switch placed inline to the right of the heading text. Below the heading is a subtitle line that reads "Your saved words are highlighted across every site you visit". Below the subtitle sit the search box and sort control. Below those is the word card grid, which shows all saved word cards and always has the "Add New Word" card as its first item.
-- FR-40: The Settings tab holds the excluded sites manager and the Backup Data section. The excluded sites manager has the master on/off switch inline with its heading, an "Exclude this site" button that adds the current site to the excluded list in one click (FR-28), and the excluded sites list. Deletion is the only action on items in the list. The Backup Data section has the Import button and the Export button.
+- FR-39: The Home tab holds everything for managing saved words. At the top is a section heading that shows the word count as "Saved Words (N)". There is no switch on this heading. Below the heading is a subtitle line that reads "Your saved words are highlighted across every site you visit". Below the subtitle sit the search box and sort control. Below those is the word card grid, which shows all saved word cards and always has the "Add New Word" card as its first item.
+- FR-40: The Settings tab holds the excluded sites manager and the Backup Data section. The excluded sites manager has its section heading "Excluded Sites (N)", a subtitle line, an "Add New" button that opens the Add Site dialog (FR-28), and the excluded sites list. There is no master on/off switch on the heading. Deletion is the only action on items in the list. The Backup Data section has the Import button and the Export button.
 - FR-41: The management view always opens on the Home tab.
 - FR-42: The word card grid uses four columns. Each card has a fixed height. When the definition text is too long to fit in the card, it is truncated with an ellipsis. The full definition is only visible inside the Management form panel.
 - FR-43: Each word card shows three pieces of content: the term at the top, the definition below it, and any aliases as small pills at the bottom. If an entry has no aliases, the alias area is empty. Switching between tabs does not reload the page and does not change or lose any saved word, excluded site, search text, or sort choice. It only changes which tab is shown.
@@ -152,9 +153,11 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Context menu item** — The “Add word” action injected into the browser’s native right-click context menu when the user has text selected on a page.
 
-**Toolbar popup** — The small panel that opens when the user clicks the Glowsary icon in the browser toolbar. Contains the global highlighting switch and the “Go To App” button. It is the entry point for the icon; it replaces opening the management view directly.
+**Toolbar popup** — The small panel that opens when the user clicks the Glowsary icon in the browser toolbar. Contains the global highlighting switch and the “Go To App” button. It is the only place to turn highlighting on or off. It is the entry point for the icon; it replaces opening the management view directly.
 
-**Exclude this site button** — The button inside the excluded sites manager on the Settings tab that adds the current tab’s whole site to the excluded sites list in one click. It only adds; it does not pause, edit, or delete. When the current site is already excluded, the add is blocked with a short note.
+**Add New button** — The button inside the excluded sites manager on the Settings tab that opens the Add Site dialog. It is the only way to add an excluded site.
+
+**Add Site dialog** — The right-side panel that opens from the Add New button. It has one "Site" field, a title, an X close, and a Save button. The user types a full URL or a bare domain, which is reduced to its whole-site domain (FR-27a) on save. An invalid value shows an inline "Please enter valid URL" message and keeps Save disabled. Saving a domain that is already on the list does nothing and closes the dialog. There is no edit mode and no field other than "Site".
 
 **Go To App button** — The button inside the toolbar popup that opens the management view as a full page in a new browser tab and closes the popup. If a management view tab is already open, it focuses that tab instead of opening a new one. It is a text button labeled "Go To App" with a trailing share-03 icon.
 
@@ -164,21 +167,21 @@ This section names every distinct UI component in the extension. Future referenc
 
 **Tab nav** — The navigation control below the shared header of the management view that switches between the Home tab and the Settings tab.
 
-**Home tab** — The default tab of the management view. Holds the tools for managing saved words: the "Saved Words (N)" heading with the global highlighting switch inline, the subtitle line, the search box, the sort control, and the entry grid.
+**Home tab** — The default tab of the management view. Holds the tools for managing saved words: the "Saved Words (N)" heading, the subtitle line, the search box, the sort control, and the entry grid. The heading has no switch.
 
-**Settings tab** — The tab of the management view that holds the excluded sites manager and the Backup Data section. The excluded sites manager has the master on/off switch and the excluded sites list. The Backup Data section has the Import button and the Export button.
+**Settings tab** — The tab of the management view that holds the excluded sites manager and the Backup Data section. The excluded sites manager has the "Excluded Sites (N)" heading, a subtitle line, the Add New button, and the excluded sites list. The Backup Data section has the Import button and the Export button.
 
 **Shared header** — The top area of the management view, above the tab nav, that shows a single centered title, "Welcome to Glowsary!", with no subtitle. It stays visible on both the Home tab and the Settings tab.
 
-**Excluded sites manager** — The area of the management view that controls the excluded sites list. Contains the master on/off switch (inline with the section heading) that pauses or resumes all exclusions at once, and the excluded sites list. Sites are added only via the toolbar popup (FR-28). The management view is the only place to delete an excluded site.
+**Excluded sites manager** — The area of the management view that controls the excluded sites list. Contains the "Excluded Sites (N)" heading, a subtitle line, the Add New button, and the excluded sites list. There is no master on/off switch: every listed site is always active. Sites are added via the Add Site dialog (FR-28). The management view is the only place to delete an excluded site.
 
 **Excluded sites list** — The 2-column grid of excluded site items inside the excluded sites manager. Each item is an excluded site item.
 
 **Excluded site item** — A single item in the excluded sites list. Shows one excluded domain with a delete button. There is no per-site toggle and no edit.
 
-**Highlighting bar** — Retired. The global highlighting switch is no longer in a separate bar row. It is now inline to the right of the "Saved Words (N)" heading on the Home tab.
+**Highlighting bar** — Retired. The global highlighting switch is not in the management view at all. It lives only in the toolbar popup.
 
-**Global highlighting switch** — The on/off switch that controls whether highlights appear on all web pages. It appears inline with the "Saved Words (N)" heading on the Home tab, and also inside the toolbar popup. The same state is shared between both locations.
+**Global highlighting switch** — The on/off switch that controls whether highlights appear on all web pages. It lives only inside the toolbar popup. The management view has no copy of it.
 
 **Search box** — The text input in the management view that filters the entry list in real time by term.
 
@@ -215,10 +218,9 @@ Each saved entry holds the word or phrase, the definition, any aliases, a color,
 
 Storing a normalized lowercase form for both the term and each alias supports case-insensitive matching (FR-8) and case-insensitive grouping of entries that share the same text in the popup (FR-10b), while keeping the user’s original text for display in the list. An entry with no aliases stores an empty list.
 
-Each excluded site holds the whole-site domain (FR-27a), stored in a normalized lowercase form so site matching ignores case. A suggested shape: domain (the normalized whole-site domain to match), and a created timestamp for ordering the list. Whether all exclusions are active or paused is controlled by the master switch setting (FR-30), not by a per-site field.
+Each excluded site holds the whole-site domain (FR-27a), stored in a normalized lowercase form so site matching ignores case. A suggested shape: domain (the normalized whole-site domain to match), and a created timestamp for ordering the list. Every listed site is always active (FR-30); there is no master switch and no per-site active field.
 
 ## Settings
 
-1. Global highlighting switch (on or off).
-2. Excluded sites master switch (on or off): whether the excluded sites list is currently active. When off, all listed sites allow highlighting even though they remain in the list.
-3. Excluded sites list (the set of domains where highlighting is suppressed when the master switch is on).
+1. Global highlighting switch (on or off). Lives only in the toolbar popup (FR-22).
+2. Excluded sites list (the set of domains where highlighting is suppressed when the global switch is on). Every listed site is always active; there is no master switch (FR-30).

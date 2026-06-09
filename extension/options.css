@@ -167,7 +167,8 @@ button {
   mask-image: url("assets/trash-03.svg");
 }
 
-.editor-layer {
+.editor-layer,
+.site-dialog-layer {
   position: fixed;
   inset: 0;
   z-index: 10;
@@ -178,11 +179,13 @@ button {
   pointer-events: auto;
 }
 
-.editor-layer[hidden] {
+.editor-layer[hidden],
+.site-dialog-layer[hidden] {
   display: none;
 }
 
-.editor-panel {
+.editor-panel,
+.site-dialog-panel {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   width: min(400px, calc(100vw - 32px));
@@ -194,10 +197,25 @@ button {
   animation: editor-panel-enter 140ms ease-out;
 }
 
-#entry-form-mount {
+#entry-form-mount,
+.site-dialog-form {
   display: flex;
   min-height: 0;
   margin-top: 32px;
+}
+
+.site-dialog-form {
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.site-dialog-fields {
+  display: grid;
+  align-content: start;
+  gap: 24px;
+  min-height: 0;
+  overflow: auto;
 }
 
 .panel-header,
@@ -286,20 +304,6 @@ button {
   line-height: var(--text-style-subtitle-page-line-height);
 }
 
-.home-highlighting-switch {
-  flex: 0 0 auto;
-}
-
-.home-highlighting-switch__label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 #entry-count {
   color: inherit;
   font: inherit;
@@ -371,13 +375,13 @@ button {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--bg-primary-solid) 16%, var(--color-base-transparent));
 }
 
-.excluded-master {
-  flex: 0 0 auto;
-}
-
 #excluded-count {
   color: inherit;
   font: inherit;
+}
+
+.excluded-add-button {
+  margin-top: 20px;
 }
 
 .excluded-list {
@@ -731,7 +735,8 @@ button {
     justify-content: flex-start;
   }
 
-  .editor-panel {
+  .editor-panel,
+  .site-dialog-panel {
     width: min(400px, calc(100vw - 32px));
   }
 }

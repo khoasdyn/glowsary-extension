@@ -137,7 +137,7 @@ States not yet designed: there is no hover, focus, or pressed style in Figma yet
 
 ### Switch
 
-The Switch is the pill on/off toggle. It is used for the global highlighting switch (in the toolbar popup and the settings bar, sharing one state) and for the excluded sites master switch. In Figma the component exposes one boolean property, Active, with two states: off (Active=No) and on (Active=Yes).
+The Switch is the pill on/off toggle. It is used only for the global highlighting switch in the toolbar popup. The management view no longer uses it: the global switch is not in the management view (PRD.md FR-22), and the excluded sites master switch was removed (PRD.md FR-30). In Figma the component exposes one boolean property, Active, with two states: off (Active=No) and on (Active=Yes).
 
 Anatomy: a rounded pill track with a round white knob inside. The knob sits against the left edge when off and slides to the right edge when on. The knob position is what shows the state.
 
@@ -237,7 +237,9 @@ Radius: `--box` on the input box.
 
 Sizing and spacing (temporary raw values, not yet tokens): the box is 40 tall with 12 padding left and right, and the stack uses a 6px gap between the label, the box, and the hint. The field has no fixed width; it fills its container. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
-States not yet designed: Figma shows only the filled resting state. There is no focus, hover, disabled, or error style yet. Because the field is typed into, it keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision. The character limits on the value (Word 50, Definition 350) are behavior from PRD.md FR-3d, not a Figma style.
+Error message: Figma defines an error message for the field, shown in the Add Site dialog (see Add Site dialog). The hint slot below the box shows the message text in `--text-error-primary` using the same hint typography (body font, `text-xs`, Regular). The box border and background do not change in the mockup; only the message color marks the error. The error message is not shown while the field is empty; it appears only after the user types an invalid value (see Add Site dialog). This is the only error treatment defined so far.
+
+States not yet designed: beyond the error message above, Figma shows only the filled resting state. There is no focus, hover, or disabled style yet. Because the field is typed into, it keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision. The character limits on the value (Word 50, Definition 350) are behavior from PRD.md FR-3d, not a Figma style.
 
 ### Multiline input
 
@@ -269,9 +271,27 @@ Sizing and spacing (temporary raw values, not yet tokens): the panel is 400 wide
 
 States and motion not yet designed: Figma shows the panel as a static frame, so there is no open or close motion (such as a slide-in from the right) defined yet; the build uses a simple, subtle entrance until Figma defines one. Close behavior (X or Escape, no Cancel, no backdrop close) is PRD.md behavior, not a Figma style. These gaps are tracked in NOTES.md.
 
+### Add Site dialog
+
+The Add Site dialog is the right-side panel for adding one excluded site. It maps to PRD.md FR-28, FR-28a, FR-29a, and the Add Site dialog glossary entry, which own its behavior; this section owns its look. It is the same right-side panel as the Management form panel, with a much simpler form: one field instead of four, and no delete button. It is a composition of components already specced above, not a new control.
+
+Placement, overlay, surface, and radius: the same as the Management form panel. It is a right-side drawer with a 16px gap from the top, right, and bottom of the viewport, full height minus those gaps, over a black 40% overlay that does not close on click. The surface is `--bg-primary` (white) with `--card-lg` radius. Width follows the Management form panel.
+
+Anatomy: a vertical stack of three sections in this order: the header, the form, and the footer, with the same gaps as the Management form panel.
+
+1. Header: a row with the title on the left and the x-close icon on the right, spread to full width. The title is "Add Site" in the Section Title style (heading font, `display-xs`). There is no "Edit Site" title, because there is no edit mode (PRD.md FR-30). The x-close is a 24 by 24 icon in `--fg-primary`, using the x-close asset.
+2. Form: a single field, "Site" (Field input, see Field input entry). The label is "Site". The user types a full URL or a bare domain. On open the field is empty and shows a placeholder, with no error message. The error message "Please enter valid URL" appears in the hint slot, in `--text-error-primary` (see the Field input error message note), only after the user has typed a value that is not a valid URL or domain; an empty field shows no error. The Figma frame captures this error state, not the opening state. There is no Definition, Aliases, or Color field.
+3. Footer: a single full-width Save button. It uses the Text Button Default variant when the value is valid, and the Text Button Disabled variant when the value is empty or not valid. There is no delete button in this dialog.
+
+Colors, from existing semantic tokens: the same as the Management form panel. The panel surface is `--bg-primary` (white); the title and x-close take `--text-primary` and `--fg-primary`; the inner components carry their own tokens from their entries above.
+
+Behavior owned by PRD.md: the typed value is reduced to its whole-site domain on save (FR-27a), saving a domain already on the list does nothing and closes the dialog (FR-29a), and the dialog is closed by the X. These are behavior, not Figma styles.
+
+States and motion not yet designed: the same as the Management form panel. Figma shows the dialog as a static frame with the field in its error state and the Save button disabled; the open and close motion is not defined yet, and the build uses the same subtle entrance as the Management form panel. These gaps are tracked in NOTES.md.
+
 ### Toolbar Popup
 
-The Toolbar Popup is the small panel that opens when the user clicks the Glowsary icon in the browser toolbar. It maps to PRD.md FR-21, FR-22, FR-23, FR-24, FR-28. In Figma it is the "Extension Popup" frame (node 26:1076). The Figma shows two combined states — active (global switch on, site not excluded) and inactive (global switch off, site excluded) — but in the build these are two independent axes: the switch state and the exclude state.
+The Toolbar Popup is the small panel that opens when the user clicks the Glowsary icon in the browser toolbar. It maps to PRD.md FR-21, FR-22, FR-23, FR-24. In Figma it is the "Extension Popup" frame (node 26:1076). The Figma shows two combined states — active (global switch on, site not excluded) and inactive (global switch off, site excluded) — but in the build these are two independent axes: the switch state and the exclude state.
 
 Container: a white card, 300px wide, 400px tall (min and max), 24px padding left and right, 16px padding top and bottom. Background `--bg-primary` (white). Radius: `--card-lg`. No border or shadow on the container itself.
 

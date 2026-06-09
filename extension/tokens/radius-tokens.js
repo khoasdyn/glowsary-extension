@@ -2,8 +2,9 @@
   const radii = {
     cta: "9999px",
     box: "12px",
-    "card-sm": "12px",
-    "card-md": "24px"
+    "card-sm": "4px",
+    "card-md": "12px",
+    "card-lg": "24px"
   };
 
   function freezeDeep(value) {
@@ -20,7 +21,7 @@
   }
 
   function cssVariableName(name) {
-    return `--radius-${name}`;
+    return `--${name}`;
   }
 
   function cssVariable(name) {

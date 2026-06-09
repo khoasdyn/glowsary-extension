@@ -424,6 +424,8 @@
     const page = pages[activePopup.pageIndex] || pages[0];
     const title = element.querySelector("strong");
     const definition = element.querySelector(".glowsary-popup-definition");
+    const color = globalThis.GlowsaryColorPicker?.normalizeColor?.(page.entry?.color) || "purple";
+    globalThis.GlowsarySemanticColorTokens?.applyWordCardMode?.(element, color);
     title.textContent = page.displayTerm || anchor.textContent || "";
     title.hidden = Boolean(page.isAlias);
     definition.textContent = page.definition || "";

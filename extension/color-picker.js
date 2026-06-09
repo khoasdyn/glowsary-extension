@@ -1,9 +1,9 @@
 (function registerGlowsaryColorPicker(root) {
   const COLORS = Object.freeze([
-    { value: "purple", fill: "--color-purple-200", check: "--color-purple-800", label: "Purple" },
-    { value: "green", fill: "--color-green-200", check: "--color-green-800", label: "Green" },
-    { value: "blue", fill: "--color-blue-200", check: "--color-blue-800", label: "Blue" },
-    { value: "yellow", fill: "--color-yellow-200", check: "--color-yellow-800", label: "Yellow" }
+    { value: "purple", label: "Purple" },
+    { value: "yellow", label: "Yellow" },
+    { value: "green", label: "Green" },
+    { value: "blue", label: "Blue" }
   ]);
   const DEFAULT_COLOR = COLORS[0].value;
   const COLOR_VALUES = new Set(COLORS.map((color) => color.value));
@@ -18,20 +18,9 @@
   }
 
   function createCheckIcon(classPrefix) {
-    const icon = root.document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    icon.setAttribute("class", `${classPrefix}__check`);
-    icon.setAttribute("viewBox", "0 0 20 20");
+    const icon = root.document.createElement("span");
+    icon.className = `${classPrefix}__check`;
     icon.setAttribute("aria-hidden", "true");
-    icon.setAttribute("focusable", "false");
-
-    const path = root.document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute("d", "M16.6666 5L7.49998 14.1667L3.33331 10");
-    path.setAttribute("fill", "none");
-    path.setAttribute("stroke", "currentColor");
-    path.setAttribute("stroke-width", "2");
-    path.setAttribute("stroke-linecap", "round");
-    path.setAttribute("stroke-linejoin", "round");
-    icon.append(path);
 
     return icon;
   }
@@ -83,10 +72,9 @@
       button.type = "button";
       button.className = `${classPrefix}__option`;
       button.dataset.colorPickerValue = color.value;
-      button.style.setProperty("--color-picker-fill", `var(${color.fill})`);
-      button.style.setProperty("--color-picker-check", `var(${color.check})`);
       button.setAttribute("role", "radio");
       button.setAttribute("aria-label", color.label);
+      root.GlowsarySemanticColorTokens?.applyWordCardMode?.(button, color.value);
       button.append(createCheckIcon(classPrefix));
 
       button.addEventListener("click", () => updateSelection(colorPicker, color.value, true));

@@ -1,5 +1,7 @@
 ## 2026-06-09
 
+- Corrected radius token values and fixed highlight popup sizing, clipping, padding, and long-word wrapping.
+- Applied Word Card tokens to the color picker, saved-word grid cards, Add New Word card, and hover definition popup.
 - Added radius tokens and scoped Word Card color mode tokens for saved-word cards.
 - Fixed the excluded-sites master switch placement so it sits next to the Settings heading.
 - Revamped the Settings tab with an inline excluded-sites switch, delete-only site grid, and Backup Data import/export cards.

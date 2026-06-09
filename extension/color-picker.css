@@ -12,10 +12,10 @@
   width: 40px;
   height: 40px;
   padding: 0;
-  color: var(--color-picker-check);
-  background: var(--color-picker-fill);
-  border: 0;
-  border-radius: 50%;
+  color: var(--wc-subtext);
+  background: var(--wc-bg-card);
+  border: 1px solid var(--wc-border);
+  border-radius: var(--cta);
   appearance: none;
   cursor: pointer;
 }
@@ -27,13 +27,12 @@
 .color-picker__check {
   width: 20px;
   height: 20px;
+  background: currentColor;
+  -webkit-mask: url("assets/check.svg") center / contain no-repeat;
+  mask: url("assets/check.svg") center / contain no-repeat;
   display: none;
 }
 
 .color-picker__option.is-selected .color-picker__check {
   display: block;
-}
-
-.color-picker__option.is-selected {
-  border: 1px solid var(--color-picker-check);
 }

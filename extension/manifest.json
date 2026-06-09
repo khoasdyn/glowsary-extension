@@ -30,6 +30,7 @@
       "resources": [
         "public_suffix_list.dat",
         "assets/check.svg",
+        "assets/x-close.svg",
         "fonts/Copse/Copse-Regular.ttf",
         "fonts/Poppins/Poppins-Regular.ttf",
         "fonts/Poppins/Poppins-Medium.ttf",

@@ -559,7 +559,9 @@
       <section class="glowsary-dialog" role="dialog" aria-modal="true" aria-labelledby="glowsary-dialog-title">
         <div class="glowsary-dialog-header">
           <h2 class="glowsary-dialog-title" id="glowsary-dialog-title">Add Word</h2>
-          <button class="glowsary-dialog-close" type="button" aria-label="Close">&times;</button>
+          <button class="glowsary-dialog-close" type="button" aria-label="Close">
+            <span class="glowsary-dialog-close__icon" aria-hidden="true"></span>
+          </button>
         </div>
         <div id="glowsary-entry-form-mount"></div>
         <div class="glowsary-error" role="alert"></div>
@@ -589,10 +591,16 @@
     const definitionInput = formParts.definitionInput;
     const aliasInput = formParts.aliasInput;
     const colorPicker = formParts.colorPicker;
+    const saveButton = formParts.saveButton;
     const error = backdrop.querySelector(".glowsary-error");
     const colorPickerController = window.GlowsaryColorPicker?.init?.(colorPicker, { classPrefix: "glowsary-color-picker" });
+    const syncSaveState = () => {
+      saveButton.disabled = !(termInput.value.trim() && definitionInput.value.trim());
+    };
 
     backdrop.querySelector(".glowsary-dialog-close").addEventListener("click", closeDialog);
+    termInput.addEventListener("input", syncSaveState);
+    definitionInput.addEventListener("input", syncSaveState);
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       error.textContent = "";
@@ -604,6 +612,7 @@
         error.textContent = saveError.message;
       }
     });
+    syncSaveState();
 
     document.documentElement.appendChild(backdrop);
     activeDialog = backdrop;

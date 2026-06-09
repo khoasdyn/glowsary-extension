@@ -296,12 +296,12 @@ function hasRequiredEntryFields() {
 }
 
 function setTermHint(message = null) {
-  elements.termHint.textContent = message || "Max 50 characters";
+  elements.termHint.textContent = message || "Maximum 50 characters";
   elements.termHint.classList.toggle("is-error", Boolean(message));
 }
 
 function setDefinitionHint(message = null) {
-  elements.definitionHint.textContent = message || "Max 350 characters";
+  elements.definitionHint.textContent = message || "Maximum 350 characters";
   elements.definitionHint.classList.toggle("is-error", Boolean(message));
 }
 

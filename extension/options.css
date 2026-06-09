@@ -194,6 +194,12 @@ button {
   animation: editor-panel-enter 140ms ease-out;
 }
 
+#entry-form-mount {
+  display: flex;
+  min-height: 0;
+  margin-top: 32px;
+}
+
 .panel-header,
 .list-heading-row,
 .settings-section-title-row {

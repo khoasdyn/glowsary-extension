@@ -91,7 +91,7 @@
       maxLength: 50,
       placeholder: "Enter a word or term",
       label: "Word",
-      hint: "Max 50 characters",
+      hint: "Maximum 50 characters",
       hintId: ids.termHint,
       value: values.term
     }, prefix);
@@ -105,7 +105,7 @@
       maxLength: 350,
       placeholder: "Describe what this word means",
       label: "Definition",
-      hint: "Max 350 characters",
+      hint: "Maximum 350 characters",
       hintId: ids.definitionHint,
       value: values.definition
     }, prefix);

@@ -1,3 +1,8 @@
+## 2026-06-09
+
+- Shortened the toolbar popup inactive subtitle and reserved text height so the switch stays in place.
+- Rebuilt the toolbar popup as the 300 by 400 white card with status copy, shared switch, exclude button state, and settings icon button.
+
 ## 2026-06-08
 
 - Rebuilt the management Home tab as a Saved Words header with inline highlighting switch and a clickable word card grid.

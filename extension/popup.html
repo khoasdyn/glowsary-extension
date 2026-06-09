@@ -16,24 +16,23 @@
   </head>
   <body>
     <main class="popup-shell">
-      <header class="popup-header">
-        <h1>Glowsary</h1>
-      </header>
+      <section class="popup-main" aria-live="polite">
+        <div class="popup-status">
+          <h1 class="popup-status__title" id="popup-status-title">Extension is active</h1>
+          <p class="popup-status__subtitle" id="popup-status-subtitle">Show saved words on webpages</p>
+        </div>
 
-      <label class="switch-row">
-        <input id="highlighting-enabled" type="checkbox" />
-        <span>
-          <strong>Highlighting</strong>
-          <small>Show saved words on webpages</small>
-        </span>
-      </label>
-
-      <section class="exclude-panel" aria-label="Excluded site">
-        <button class="text-button text-button--secondary" id="exclude-site" type="button"><span class="text-button__label">Exclude this site</span></button>
-        <div class="popup-message" id="exclude-message" role="status"></div>
+        <label class="switch-row popup-switch" aria-label="Highlighting">
+          <input id="highlighting-enabled" type="checkbox" />
+        </label>
       </section>
 
-      <button class="text-button text-button--default" id="open-settings" type="button"><span class="text-button__label">Settings</span></button>
+      <footer class="popup-footer">
+        <button class="text-button text-button--default popup-exclude-button" id="exclude-site" type="button">
+          <span class="text-button__label">Exclude this site</span>
+        </button>
+        <button class="icon-button icon-button--secondary" id="open-settings" type="button" aria-label="Open settings" title="Open settings"></button>
+      </footer>
     </main>
 
     <script src="domain-utils.js"></script>

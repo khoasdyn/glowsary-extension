@@ -11,9 +11,10 @@ let excludedSites = [];
 let currentSiteDomain = null;
 
 const elements = {
+  statusTitle: document.querySelector("#popup-status-title"),
+  statusSubtitle: document.querySelector("#popup-status-subtitle"),
   highlightingEnabled: document.querySelector("#highlighting-enabled"),
   excludeSite: document.querySelector("#exclude-site"),
-  excludeMessage: document.querySelector("#exclude-message"),
   openSettings: document.querySelector("#open-settings")
 };
 
@@ -27,12 +28,12 @@ const storage = {
 };
 
 function renderSettings() {
-  elements.highlightingEnabled.checked = Boolean(settings.highlightingEnabled);
-}
+  const isEnabled = Boolean(settings.highlightingEnabled);
 
-function setExcludeMessage(message, kind = "error") {
-  elements.excludeMessage.textContent = message;
-  elements.excludeMessage.classList.toggle("is-info", kind === "info");
+  elements.highlightingEnabled.checked = isEnabled;
+  elements.highlightingEnabled.setAttribute("aria-checked", String(isEnabled));
+  elements.statusTitle.textContent = isEnabled ? "Extension is active" : "Extension is inactive";
+  elements.statusSubtitle.textContent = isEnabled ? "Show saved words on webpages" : "Saved words are hidden";
 }
 
 function normalizeExcludedSites(sites = []) {
@@ -45,6 +46,37 @@ function normalizeSettings(rawSettings = {}) {
     excludedSitesEnabled: rawSettings.excludedSitesEnabled !== false,
     managementSort: rawSettings.managementSort === "az" ? "az" : "latest"
   };
+}
+
+function isCurrentSiteExcluded() {
+  return !currentSiteDomain || excludedSites.some((site) => site.domain === currentSiteDomain);
+}
+
+function renderExcludeButton() {
+  const isExcluded = isCurrentSiteExcluded();
+  const label = elements.excludeSite.querySelector(".text-button__label");
+
+  label.textContent = isExcluded ? "This site is excluded" : "Exclude this site";
+  elements.excludeSite.disabled = isExcluded;
+  elements.excludeSite.classList.toggle("is-excluded", isExcluded);
+}
+
+async function renderSettingsButtonIcon() {
+  try {
+    const response = await fetch(chrome.runtime.getURL("assets/settings-02.svg"));
+    const svgText = await response.text();
+    const template = document.createElement("template");
+
+    template.innerHTML = svgText.trim();
+    const icon = template.content.firstElementChild;
+
+    icon.querySelectorAll("[stroke]").forEach((node) => node.setAttribute("stroke", "currentColor"));
+    icon.querySelectorAll("[fill]:not([fill='none'])").forEach((node) => node.setAttribute("fill", "currentColor"));
+    icon.setAttribute("aria-hidden", "true");
+    elements.openSettings.replaceChildren(icon);
+  } catch {
+    elements.openSettings.textContent = "";
+  }
 }
 
 async function saveSettings(nextSettings) {
@@ -78,23 +110,17 @@ async function loadCurrentSiteDomain() {
   const activeTab = tabs[0];
 
   currentSiteDomain = await window.GlowsaryDomains?.getWholeSiteDomainFromInput?.(activeTab?.url || "");
-  elements.excludeSite.disabled = !currentSiteDomain;
-
-  if (!currentSiteDomain) {
-    setExcludeMessage("This site cannot be excluded.");
-  }
+  renderExcludeButton();
 }
 
 async function excludeCurrentSite() {
-  setExcludeMessage("");
-
   if (!currentSiteDomain) {
-    setExcludeMessage("This site cannot be excluded.");
+    renderExcludeButton();
     return;
   }
 
   if (excludedSites.some((site) => site.domain === currentSiteDomain)) {
-    setExcludeMessage("Already on the list.");
+    renderExcludeButton();
     return;
   }
 
@@ -105,7 +131,7 @@ async function excludeCurrentSite() {
 
   excludedSites = nextSites;
   await storage.set({ [EXCLUDED_SITES_KEY]: nextSites });
-  setExcludeMessage(`Added ${currentSiteDomain}.`, "info");
+  renderExcludeButton();
 }
 
 function bindEvents() {
@@ -131,6 +157,7 @@ function bindEvents() {
 
     if (changes[EXCLUDED_SITES_KEY]) {
       excludedSites = normalizeExcludedSites(changes[EXCLUDED_SITES_KEY].newValue);
+      renderExcludeButton();
     }
   });
 }
@@ -154,9 +181,11 @@ async function loadState() {
 }
 
 async function init() {
+  await renderSettingsButtonIcon();
   await loadState();
   await loadCurrentSiteDomain();
   renderSettings();
+  renderExcludeButton();
   bindEvents();
 }
 

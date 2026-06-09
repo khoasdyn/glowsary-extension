@@ -249,3 +249,31 @@ Radius: the `large` role on the panel surface.
 Sizing and spacing (temporary raw values, not yet tokens): the panel is 400 wide, with 24 padding left and right and 16 padding top and bottom, a 32px gap between the header, form, and footer, a 24px gap between form fields, and an 8px gap between the footer buttons. The 16px outer margin on all edges is the placement, not padding. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
 States and motion not yet designed: Figma shows the panel as a static frame, so there is no open or close motion (such as a slide-in from the right) defined yet; the build uses a simple, subtle entrance until Figma defines one. Close behavior (X or Escape, no Cancel, no backdrop close) is PRD.md behavior, not a Figma style. These gaps are tracked in NOTES.md.
+
+### Toolbar Popup
+
+The Toolbar Popup is the small panel that opens when the user clicks the Glowsary icon in the browser toolbar. It maps to PRD.md FR-21, FR-22, FR-23, FR-24, FR-28. In Figma it is the "Extension Popup" frame (node 26:1076). The Figma shows two combined states — active (global switch on, site not excluded) and inactive (global switch off, site excluded) — but in the build these are two independent axes: the switch state and the exclude state.
+
+Container: a white card, 300px wide, 400px tall (min and max), 24px padding left and right, 16px padding top and bottom. Background `--bg-primary` (white). Radius: the `large` role (24px). No border or shadow on the container itself.
+
+Layout: a flex column with two children: the main content area and the footer. The main content area is 328px tall and the footer is 40px, together filling the 368px content height after padding.
+
+Main content area: flex column, items centered, content centered (justify-center), 32px gap between the text block and the Switch.
+
+Text block: flex column, items centered, 4px gap between title and subtitle.
+- Title: Card Title style (Copse, Regular, `--font-size-text-lg`, `--line-height-text-lg`, `--text-primary`). "Extension is active" when the global switch is on; "Extension is inactive" when off.
+- Subtitle: Body Text style (Poppins, Regular, `--font-size-text-sm`, `--line-height-text-sm`, `--text-quaternary`, centered). "Show saved words on webpages" when on; "Saved words are hidden on webpages" when off.
+
+Switch: the Switch component (see Switch entry), centered.
+
+Footer: flex row, full width, 8px gap.
+1. Exclude button: flex 1 (takes remaining width), height 40px, 20px padding left and right, fully rounded (`full` role). Two states:
+   - Default (site not excluded): Text Button Default variant — `--bg-primary-solid` background, `--text-white` text, label "Exclude this site".
+   - Excluded (site already on the list): no background, `--text-primary` text, label "This site is excluded", non-interactive. This is a read-only display, not a Text Button variant.
+2. Settings button: Icon Button Secondary variant (see Icon Button entry), fixed 40 by 40, settings-02 icon.
+
+The switch state and the exclude state are independent. The title and subtitle reflect the global switch state; the exclude button reflects whether the current site is on the excluded list. Both can change at the same time without affecting each other.
+
+Sizing and spacing (temporary raw values, not yet tokens): container 300 by 400, padding 24 left and right and 16 top and bottom, main content area height 328, gap 32 between text block and switch, text block gap 4, footer height 40, footer gap 8, exclude button padding 20 left and right. Replace with tokens once the spacing and sizing scale is defined.
+
+States not yet designed: Figma defines only the two combined states. There is no hover or focus style on the exclude button or the container. Because the settings Icon Button is interactive, it keeps a visible keyboard focus indicator until Figma defines one, tracked under item 9 in NOTES.md.

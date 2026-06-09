@@ -52,4 +52,6 @@ Follow the Markdown rule in AGENTS.md: keep each numbered rule, bullet, and shor
 
 ## Build plan format
 
-Always wrap the full build plan in a single fenced Markdown code block (` ```markdown ` … ` ``` `). This lets the user click the copy button and paste the whole plan into Codex in one action. The plan content inside the block must still follow the plan format defined in the product-planner or design-planner skill.
+Always wrap the full build plan in a single ` ```markdown ` … ` ``` ` code fence and nothing else. The plan content goes directly inside that one fence. Do not add an outer display wrapper around it. One fence only, so the copy button gives Codex clean markdown with no extra fence markers as literal text.
+
+When the plan comes from a Figma link, include the exact Figma URL the user shared at the top of the Context section, so Codex can open the mockup directly for implementation details.

@@ -54,7 +54,7 @@ Given a Figma link to one specific component, run this flow in order.
 
 Give the plan as a single Markdown code block so the user can copy it in one click. The plan reads like a clear order from a commander, stays in product and design language, and keeps build mode inside the scope. Use this structure:
 
-1. Context: which component this touches and why, in plain terms.
+1. Context: which component this touches and why, in plain terms. Always include the exact Figma URL the user shared, so Codex can open the mockup directly for implementation details.
 2. Goal and requirements: the exact look and behavior the user wants, written as clear, testable rules. Tie behavior to the matching PRD.md requirement (for example FR-7) when one exists.
 3. Expectations: what the user should see when it works.
 4. Edge cases: the states and situations to handle correctly (hover, focus, disabled, loading, empty, error), described as behavior, not code.

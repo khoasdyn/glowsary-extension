@@ -44,6 +44,31 @@
     ["Glowsary Poppins", "fonts/Poppins/Poppins-Medium.ttf", 500],
     ["Glowsary Poppins", "fonts/Poppins/Poppins-SemiBold.ttf", 600]
   ];
+  const CONTENT_TYPOGRAPHY_OVERRIDE_CSS = `:root {
+  --font-family-heading: "Glowsary Copse", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-family-body: "Glowsary Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}`;
+
+  function installContentTypographyOverrides() {
+    if (document.getElementById("glowsary-content-typography-overrides")) {
+      return;
+    }
+
+    const style = document.createElement("style");
+    style.id = "glowsary-content-typography-overrides";
+    style.textContent = CONTENT_TYPOGRAPHY_OVERRIDE_CSS;
+
+    const tokenStyle = document.getElementById("glowsary-radius-tokens")
+      || document.getElementById("glowsary-semantic-typography-tokens")
+      || document.getElementById("glowsary-typography-tokens");
+
+    if (tokenStyle?.parentNode) {
+      tokenStyle.after(style);
+      return;
+    }
+
+    (document.head || document.documentElement).append(style);
+  }
 
   function installContentFonts() {
     if (document.getElementById("glowsary-content-fonts")) {
@@ -869,6 +894,7 @@
   }
 
   async function init() {
+    installContentTypographyOverrides();
     installContentFonts();
     await loadState();
     bindChromeEvents();

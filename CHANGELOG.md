@@ -1,5 +1,6 @@
 ## 2026-06-09
 
+- Aligned in-page Save form typography tokens with the prefixed bundled font names.
 - Made saved-word highlight underlines dashed and tinted from each entry's Word Card color, including newest-entry color for shared underlines.
 - Loaded in-page Save form fonts from extension-read bytes so strict page CSP cannot block them.
 - Fixed in-page Save form font loading by resolving bundled font URLs at runtime in the content script.

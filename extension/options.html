@@ -67,40 +67,37 @@
 
       <section class="management-tab-panel" id="management-panel-settings" role="tabpanel" aria-labelledby="management-tab-settings" data-tab-panel="settings" hidden>
         <section class="excluded-section" aria-labelledby="excluded-heading">
-          <div class="list-heading-row">
-            <div>
-              <h2 id="excluded-heading">Excluded sites</h2>
+          <div class="settings-section-header">
+            <div class="settings-section-title-group">
+              <div class="settings-section-title-row">
+                <h2 id="excluded-heading">Excluded Sites (<span id="excluded-count">0</span>)</h2>
+                <label class="switch-row excluded-master" aria-label="Use excluded sites list">
+                  <input id="excluded-sites-enabled" type="checkbox" />
+                </label>
+              </div>
               <p>Pause highlighting on sites where saved words are noise.</p>
             </div>
-            <span id="excluded-count">0 sites</span>
           </div>
-          <label class="switch-row excluded-master">
-            <input id="excluded-sites-enabled" type="checkbox" />
-            <span>
-              <strong>Use excluded sites list</strong>
-              <small>When off, highlighting runs everywhere.</small>
-            </span>
-          </label>
-          <form class="excluded-form" id="excluded-form">
-            <label class="excluded-field">
-              Domain
-              <input id="excluded-input" type="text" autocomplete="off" placeholder="spotify.com" />
-            </label>
-            <button class="text-button text-button--secondary" type="submit"><span class="text-button__label">Exclude site</span></button>
-          </form>
-          <div class="form-message" id="excluded-message" role="status"></div>
-          <div class="empty-state" id="excluded-empty">No sites excluded.</div>
+          <div class="empty-state excluded-empty-state" id="excluded-empty">No sites excluded yet.</div>
           <div class="excluded-list" id="excluded-list"></div>
         </section>
 
-        <section class="list-section" aria-labelledby="data-tools-heading">
-          <div class="list-heading-row">
-            <h2 id="data-tools-heading">Data</h2>
-            <div class="list-heading-actions">
-              <button class="text-button text-button--secondary" id="export-entries" type="button"><span class="text-button__label">Export</span></button>
-              <button class="text-button text-button--secondary" id="import-entries" type="button"><span class="text-button__label">Import</span></button>
-              <input id="import-file" type="file" accept=".csv,text/csv" hidden />
-            </div>
+        <section class="backup-section" aria-labelledby="data-tools-heading">
+          <div class="settings-section-header">
+            <h2 id="data-tools-heading">Backup Data</h2>
+          </div>
+          <div class="backup-card-grid">
+            <button class="backup-card" id="import-entries" type="button">
+              <span class="backup-card__icon backup-card__icon--upload" aria-hidden="true"></span>
+              <span class="backup-card__title">Import CSV</span>
+              <span class="backup-card__subtitle">Load words from a CSV file</span>
+            </button>
+            <button class="backup-card" id="export-entries" type="button">
+              <span class="backup-card__icon backup-card__icon--download" aria-hidden="true"></span>
+              <span class="backup-card__title">Export CSV</span>
+              <span class="backup-card__subtitle">Save your words as a CSV file</span>
+            </button>
+            <input id="import-file" type="file" accept=".csv,text/csv" hidden />
           </div>
         </section>
       </section>

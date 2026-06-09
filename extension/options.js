@@ -41,9 +41,6 @@ const elements = {
   sortSelect: document.querySelector("#sort-select"),
   emptyState: document.querySelector("#empty-state"),
   entryList: document.querySelector("#entry-list"),
-  excludedForm: document.querySelector("#excluded-form"),
-  excludedInput: document.querySelector("#excluded-input"),
-  excludedMessage: document.querySelector("#excluded-message"),
   excludedCount: document.querySelector("#excluded-count"),
   excludedEmpty: document.querySelector("#excluded-empty"),
   excludedList: document.querySelector("#excluded-list"),
@@ -322,11 +319,6 @@ function syncEntrySaveState() {
   if (elements.aliasInput.value.trim()) {
     setAliasHint();
   }
-}
-
-function setExcludedMessage(message, kind = "error") {
-  elements.excludedMessage.textContent = message;
-  elements.excludedMessage.classList.toggle("is-info", kind === "info");
 }
 
 let toastTimer = null;
@@ -646,103 +638,41 @@ function renderEntries() {
   }
 }
 
-function isDuplicateExcludedDomain(domain, ignoredSite = null) {
-  return excludedSites.some((site) => site !== ignoredSite && site.domain === domain);
-}
-
-async function cleanExcludedDomain(value) {
-  return window.GlowsaryDomains?.getWholeSiteDomainFromInput?.(value);
-}
-
-async function addExcludedSite(value) {
-  const domain = await cleanExcludedDomain(value);
-
-  if (!domain) {
-    setExcludedMessage("Enter a valid domain.");
-    return;
-  }
-
-  if (isDuplicateExcludedDomain(domain)) {
-    setExcludedMessage("Already on the list.");
-    return;
-  }
-
-  await saveExcludedSites(excludedSites.concat({
-    domain,
-    createdAt: Date.now()
-  }));
-  elements.excludedInput.value = "";
-  setExcludedMessage(`Added ${domain}.`, "info");
-}
-
 async function toggleExcludedSitesEnabled(enabled) {
   await saveSettings({
     ...settings,
     excludedSitesEnabled: enabled
   });
-  setExcludedMessage("");
 }
 
 async function deleteExcludedSite(targetSite) {
   await saveExcludedSites(excludedSites.filter((site) => site !== targetSite));
-  setExcludedMessage("");
-}
-
-async function commitExcludedDomain(input, targetSite) {
-  const previousDomain = targetSite.domain;
-  const domain = await cleanExcludedDomain(input.value);
-
-  if (!domain || isDuplicateExcludedDomain(domain, targetSite)) {
-    input.value = previousDomain;
-    setExcludedMessage(domain ? "Already on the list." : "Enter a valid domain.");
-    return;
-  }
-
-  if (domain === previousDomain) {
-    input.value = previousDomain;
-    setExcludedMessage("");
-    return;
-  }
-
-  await saveExcludedSites(excludedSites.map((site) => (
-    site === targetSite
-      ? { ...site, domain }
-      : site
-  )));
-  setExcludedMessage(`Updated to ${domain}.`, "info");
 }
 
 function renderExcludedSites() {
   const visibleSites = excludedSites.slice().sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
 
   elements.excludedList.replaceChildren();
-  elements.excludedCount.textContent = `${visibleSites.length} ${visibleSites.length === 1 ? "site" : "sites"}`;
+  elements.excludedCount.textContent = String(visibleSites.length);
   elements.excludedEmpty.hidden = visibleSites.length > 0;
 
   for (const site of visibleSites) {
     const row = document.createElement("div");
     row.className = "excluded-row";
 
-    const domainInput = document.createElement("input");
-    domainInput.className = "excluded-domain-input";
-    domainInput.type = "text";
-    domainInput.value = site.domain;
-    domainInput.autocomplete = "off";
-    domainInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        domainInput.blur();
-      }
-    });
-    domainInput.addEventListener("blur", () => commitExcludedDomain(domainInput, site));
+    const domain = document.createElement("span");
+    domain.className = "excluded-row__domain";
+    domain.textContent = site.domain;
 
     const deleteButton = document.createElement("button");
-    deleteButton.className = "text-button text-button--destructive";
+    deleteButton.className = "excluded-row__delete";
     deleteButton.type = "button";
-    deleteButton.append(createTextButtonLabel("Delete"));
+    deleteButton.setAttribute("aria-label", `Delete ${site.domain}`);
+    deleteButton.title = `Delete ${site.domain}`;
+    deleteButton.innerHTML = '<span class="excluded-row__delete-icon" aria-hidden="true"></span>';
     deleteButton.addEventListener("click", () => deleteExcludedSite(site));
 
-    row.append(domainInput, deleteButton);
+    row.append(domain, deleteButton);
     elements.excludedList.appendChild(row);
   }
 }
@@ -776,10 +706,6 @@ function bindEvents() {
   elements.termInput.addEventListener("input", syncEntrySaveState);
   elements.definitionInput.addEventListener("input", syncEntrySaveState);
   elements.aliasInput.addEventListener("input", syncEntrySaveState);
-  elements.excludedForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    addExcludedSite(elements.excludedInput.value);
-  });
   elements.searchInput.addEventListener("input", () => {
     searchQuery = elements.searchInput.value;
     renderEntries();

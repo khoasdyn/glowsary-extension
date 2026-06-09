@@ -1,5 +1,7 @@
 ## 2026-06-09
 
+- Fixed the excluded-sites master switch placement so it sits next to the Settings heading.
+- Revamped the Settings tab with an inline excluded-sites switch, delete-only site grid, and Backup Data import/export cards.
 - Added Management form hints, placeholders, and disabled Save behavior until Word and Definition are filled.
 - Shortened the toolbar popup inactive subtitle and reserved text height so the switch stays in place.
 - Rebuilt the toolbar popup as the 300 by 400 white card with status copy, shared switch, exclude button state, and settings icon button.

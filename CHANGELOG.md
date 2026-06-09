@@ -1,5 +1,6 @@
 ## 2026-06-09
 
+- Added radius tokens and scoped Word Card color mode tokens for saved-word cards.
 - Fixed the excluded-sites master switch placement so it sits next to the Settings heading.
 - Revamped the Settings tab with an inline excluded-sites switch, delete-only site grid, and Backup Data import/export cards.
 - Added Management form hints, placeholders, and disabled Save behavior until Word and Definition are filled.

@@ -1,4 +1,42 @@
 (function registerGlowsarySemanticColorTokens(root) {
+  const wordCardModes = {
+    addNew: {
+      "--wc-bg-alias-chip": "--color-gray-50",
+      "--wc-bg-card": "--color-gray-100",
+      "--wc-border": "--color-gray-200",
+      "--wc-subtext": "--color-gray-600",
+      "--wc-word-text": "--color-gray-600"
+    },
+    purple: {
+      "--wc-bg-alias-chip": "--color-purple-50",
+      "--wc-bg-card": "--color-purple-100",
+      "--wc-border": "--color-purple-200",
+      "--wc-subtext": "--color-purple-800",
+      "--wc-word-text": "--color-purple-900"
+    },
+    yellow: {
+      "--wc-bg-alias-chip": "--color-yellow-50",
+      "--wc-bg-card": "--color-yellow-100",
+      "--wc-border": "--color-yellow-200",
+      "--wc-subtext": "--color-yellow-800",
+      "--wc-word-text": "--color-yellow-900"
+    },
+    green: {
+      "--wc-bg-alias-chip": "--color-green-50",
+      "--wc-bg-card": "--color-green-100",
+      "--wc-border": "--color-green-200",
+      "--wc-subtext": "--color-green-800",
+      "--wc-word-text": "--color-green-900"
+    },
+    blue: {
+      "--wc-bg-alias-chip": "--color-blue-50",
+      "--wc-bg-card": "--color-blue-100",
+      "--wc-border": "--color-blue-200",
+      "--wc-subtext": "--color-blue-800",
+      "--wc-word-text": "--color-blue-900"
+    }
+  };
+
   const modes = {
     light: {
       text: {
@@ -41,6 +79,23 @@
     return value;
   }
 
+  function normalizeWordCardMode(modeName) {
+    const normalized = String(modeName || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
+
+    const modeAliases = {
+      addnew: "addNew",
+      purple: "purple",
+      yellow: "yellow",
+      green: "green",
+      blue: "blue"
+    };
+
+    return modeAliases[normalized] || "addNew";
+  }
+
   function getPrimitiveReferenceNames(modeName = "light") {
     const mode = modes[modeName];
 
@@ -48,7 +103,10 @@
       return [];
     }
 
-    return Object.values(mode).flatMap((group) => Object.values(group));
+    return [
+      ...Object.values(mode).flatMap((group) => Object.values(group)),
+      ...Object.values(wordCardModes).flatMap((modeTokens) => Object.values(modeTokens))
+    ];
   }
 
   function getAvailablePrimitiveNames() {
@@ -79,6 +137,10 @@
     return getPrimitiveReferenceNames(modeName).filter((name) => !availablePrimitiveNames.has(name));
   }
 
+  function buildDeclarations(tokenMap) {
+    return Object.entries(tokenMap).map(([name, primitiveName]) => `  ${name}: var(${primitiveName});`);
+  }
+
   function buildCssText(modeName = "light") {
     const mode = modes[modeName];
 
@@ -89,12 +151,24 @@
     const declarations = [];
 
     for (const group of Object.values(mode)) {
-      for (const [name, primitiveName] of Object.entries(group)) {
-        declarations.push(`  ${name}: var(${primitiveName});`);
-      }
+      declarations.push(...buildDeclarations(group));
     }
 
+    declarations.push(...buildDeclarations(wordCardModes.addNew));
+
     return `:root {\n${declarations.join("\n")}\n}`;
+  }
+
+  function applyWordCardMode(element, modeName = "addNew") {
+    if (!element?.style) {
+      return;
+    }
+
+    const mode = wordCardModes[normalizeWordCardMode(modeName)];
+
+    for (const [name, primitiveName] of Object.entries(mode)) {
+      element.style.setProperty(name, `var(${primitiveName})`);
+    }
   }
 
   function injectCssVariables(targetDocument = root.document, modeName = "light") {
@@ -124,6 +198,8 @@
 
   root.GlowsarySemanticColorTokens = freezeDeep({
     modes,
+    wordCardModes,
+    applyWordCardMode,
     buildCssText,
     getMissingPrimitiveReferences,
     injectCssVariables

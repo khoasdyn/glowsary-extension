@@ -568,6 +568,7 @@ function createAddEntryCard() {
   card.className = "entry-card entry-card--add";
   card.type = "button";
   card.setAttribute("aria-label", "Add New Word");
+  window.GlowsarySemanticColorTokens?.applyWordCardMode?.(card, "addNew");
   card.addEventListener("click", () => showEditor());
 
   const label = document.createElement("span");
@@ -591,9 +592,11 @@ function createAliasChip(alias) {
 
 function createEntryCard(entry) {
   const card = document.createElement("button");
-  card.className = `entry-card entry-card--word entry-card--${window.GlowsaryColorPicker?.normalizeColor?.(entry.color) || "purple"}`;
+  const color = window.GlowsaryColorPicker?.normalizeColor?.(entry.color) || "purple";
+  card.className = `entry-card entry-card--word entry-card--${color}`;
   card.type = "button";
   card.setAttribute("aria-label", `Edit ${entry.displayTerm || entry.term}`);
+  window.GlowsarySemanticColorTokens?.applyWordCardMode?.(card, color);
   card.addEventListener("click", () => showEditor(entry));
 
   const main = document.createElement("span");

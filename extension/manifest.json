@@ -45,6 +45,7 @@
         "tokens/semantic-color-tokens.js",
         "tokens/typography-tokens.js",
         "tokens/semantic-typography-tokens.js",
+        "tokens/radius-tokens.js",
         "domain-utils.js",
         "icon-button.js",
         "color-picker.js",

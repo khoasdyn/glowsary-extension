@@ -59,13 +59,29 @@ Semantic tokens use short role names, for example `--text-primary`, `--bg-second
 
 Adoption note: the semantic layer exists, but the UI still uses primitives directly for now. Switching each screen to the matching semantic role is a separate, later step, done from the Figma screens so each element gets the right role. When that happens, the neutral grays (currently a mix of Slate, Neutral, Gray, and Mist) will settle onto the single Gray family that the semantics use.
 
-Note: the per-word color picker is now in PRD.md (FR-3e, FR-17f, FR-17g) and specced in the Components section as "Color picker". Its four colors map to existing primitive tokens (Purple 200, Green 200, Blue 200, Yellow 200) and the selected check uses the family's 800 step, so no new color tokens are needed. See the Color picker entry for the full spec.
+Word Card color modes: `semantic-color-tokens.js` also holds a Word Card token group alongside the base semantic tokens. This group is mode-switched: it has five modes — Add New, Purple, Yellow, Green, and Blue — so each word card can render with surfaces, borders, and text tinted to its assigned color. The Add New mode is the neutral gray default (matching existing gray primitives), used when no color has been assigned. The other four modes match the four color picker choices.
+
+The five Word Card tokens use the `--wc-` prefix to keep them separate from the base semantic tokens:
+- `--wc-bg-alias-chip`: background of the alias chip inside the card.
+- `--wc-bg-card`: card surface background.
+- `--wc-border`: card border color.
+- `--wc-subtext`: definition and secondary text color.
+- `--wc-word-text`: word title text color.
+
+When a word card renders, it scopes these tokens to the card element using the mode that matches the entry's color value. The base semantic tokens (Text, Foreground, Background, Border) are the same across all five modes; only the Word Card group changes per mode.
+
+Note: the Color picker circles (the selector UI) still use primitive tokens directly — Purple 200, Green 200, Blue 200, Yellow 200 fills; 800-step check — as documented in the Components section. The Word Card tokens are a separate, new layer for the card surface itself. Adding these tokens resolves NOTES.md item 23.
 
 ## Corner radius
 
-A small scale by role: small for chips, medium for cards, inputs, and list rows, large for the dialog, and full for fully rounded shapes like buttons, the switch, the Tab nav, icon buttons, and the color circles.
+The exact values live as tokens in `extension/tokens/radius-tokens.js`, generated from the Figma radius export. There are four tokens, named after their Figma variable names:
 
-The fully rounded value in code: in Figma a fully rounded shape is sometimes drawn with 99, 999, or 9999. These all mean the same thing. In code, do not copy those mixed numbers. Use `border-radius: 9999px` for pill shapes and fully rounded rectangles, and `border-radius: 50%` for true circles, where the element has equal width and height.
+- `--radius-cta`: 9999px. The fully rounded value for buttons, the switch track, the Tab nav track and items, icon buttons, and color circles. In code use `9999px` for pill shapes and fully rounded rectangles, and `50%` for true circles where the element has equal width and height.
+- `--radius-box`: 12px. For inputs, list rows, and general box elements.
+- `--radius-card-sm`: 12px. For small cards. Same value as `--radius-box` for now, kept as a separate token so the two roles can diverge later if Figma changes one.
+- `--radius-card-md`: 24px. For medium and large cards, dialogs, and panels.
+
+The Components section below uses these token names. Note: Figma has no separate radius token for alias chips yet. Until Figma defines one, alias chips use `--radius-box`. This gap is tracked in NOTES.md.
 
 ## Shadows
 
@@ -112,7 +128,7 @@ Typography: the label uses the body font (Poppins) at the `text-sm` size and `te
 
 Icon: the trailing icon is optional and is 20 by 20. It takes the icon (foreground) token of its variant, so it always matches the label color. The share-style icon in Figma is only a sample; the real icon is passed in by the caller. The app's current buttons are all label only, so they show no icon.
 
-Radius: the `full` role, a fully rounded pill.
+Radius: `--radius-cta`. The button is a fully rounded pill.
 
 Sizing and spacing (temporary raw values, not yet tokens): a fixed height of 40, inner padding of 12 top and bottom and 20 left and right, and a gap of 8 between the label and the trailing icon. The trailing icon is 20 by 20. The button has no fixed width; it sizes to its content. These numbers are the one place this file holds raw values, because no spacing or sizing scale exists yet. This is temporary debt tracked in NOTES.md; replace these with tokens once the scale is defined in Figma.
 
@@ -133,7 +149,7 @@ These are the same two surfaces as the Text Button (light gray and solid dark), 
 
 Knob shadow: the knob carries the `--shadow-xs-skeuomorphic` style (see Shadows) in both states, which gives it the soft raised look. The track has no shadow.
 
-Radius: the `full` role. The track is a pill (`9999px`); the knob is a true circle (`50%`), since it has equal width and height.
+Radius: `--radius-cta`. The track is a fully rounded pill (`9999px`); the knob is a true circle (`50%`), since it has equal width and height.
 
 Sizing and spacing (temporary raw values, not yet tokens): the track is 54 wide and 28 tall, with 4 padding top and bottom and 6 padding left and right; the knob is 20 by 20. With that padding, the knob travels from the left edge to the right edge between the two states. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
@@ -153,7 +169,7 @@ Variants, with colors from existing semantic tokens. Background is the surface, 
 
 Icon: the icon is required and is 18 by 18. It takes the icon (foreground) token of its variant, so it always matches the variant. The trash icon in Figma is only a sample; the real icon is passed in by the caller.
 
-Radius: the `full` role. The box has equal width and height, so it is a true circle (`50%`) per the corner radius rule.
+Radius: `--radius-cta`. The box has equal width and height, so it is a true circle (`50%`) per the corner radius rule.
 
 Sizing and spacing (temporary raw values, not yet tokens): a fixed box of 40 by 40, with the icon 18 by 18 centered inside. The button has no label and no fixed content sizing beyond the icon. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
@@ -180,7 +196,7 @@ Typography: the label uses the body font (Poppins) at the `text-md` size and `te
 
 Icon: each item has one leading icon, 24 by 24, taking the `--fg-primary` color. This is larger than the standard 18 by 18 icon slot used by the Text Button and the Icon Button, so the Tab nav uses a 24 by 24 icon slot.
 
-Radius: the `full` role for both the track and the items. The track is a pill (`9999px`) and each item is a pill (`9999px`).
+Radius: `--radius-cta` for both the track and the items. Both are fully rounded pills (`9999px`).
 
 Sizing and spacing (temporary raw values, not yet tokens): the track has a fixed height of 60, 6 padding on all sides, and a gap of 16 between the two items. Each item has 16 padding left and right, 12 padding top and bottom, and a gap of 12 between its icon and label. The two items share the width equally, each taking half, so the nav stretches to fill the width of its container and has no fixed width. The icon is 24 by 24. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
@@ -198,7 +214,7 @@ Selected state: the selected circle shows two marks together, a 1px solid border
 
 Check icon: the check mark is 20 by 20, centered in the 40 by 40 circle, and takes the selected circle's 800-step color as its foreground.
 
-Radius: the `full` role. Each circle has equal width and height, so it is a true circle (`50%`) per the corner radius rule.
+Radius: `--radius-cta`. Each circle has equal width and height, so it is a true circle (`50%`) per the corner radius rule.
 
 Sizing and spacing (temporary raw values, not yet tokens): each circle is 40 by 40, and the gap between circles is 12. The row sizes to its content and has no fixed width. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
@@ -214,7 +230,7 @@ Colors, from existing semantic tokens: the box background `--bg-secondary`, the 
 
 Typography: the label uses the body font (Poppins) at the `text-sm` size and `text-sm` line height, Medium weight, with letter spacing 0 (the shared field-label style noted under Typography). The value uses the Body Text style (body font, `text-sm`, Regular). The hint uses the body font at the `text-xs` size and `text-xs` line height, Regular (the shared hint style). Each of these stays on one line and is cut with an ellipsis if too long.
 
-Radius: the `medium` role on the box.
+Radius: `--radius-box` on the input box.
 
 Sizing and spacing (temporary raw values, not yet tokens): the box is 40 tall with 12 padding left and right, and the stack uses a 6px gap between the label, the box, and the hint. The field has no fixed width; it fills its container. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
@@ -222,7 +238,7 @@ States not yet designed: Figma shows only the filled resting state. There is no 
 
 ### Multiline input
 
-The Multiline input is the multi-line version of the Field input, used for the Definition field in the in-page save form and the Management form panel. In Figma it is the "Multiple Line Input" component. It shares the Field input's three-part structure (label, box, hint), its colors, its typography, and its `medium` radius. It differs in three ways: the box is taller to hold several lines, the value text sits at the top of the box instead of vertically centered, and the box has padding on all four sides.
+The Multiline input is the multi-line version of the Field input, used for the Definition field in the in-page save form and the Management form panel. In Figma it is the "Multiple Line Input" component. It shares the Field input's three-part structure (label, box, hint), its colors, its typography, and its `--radius-box` radius. It differs in three ways: the box is taller to hold several lines, the value text sits at the top of the box instead of vertically centered, and the box has padding on all four sides.
 
 Sizing and spacing (temporary raw values, not yet tokens): the box is 250 tall with 12 padding on all four sides, and the stack uses the same 6px gap between the label, the box, and the hint. The field has no fixed width; it fills its container. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
@@ -244,7 +260,7 @@ Anatomy: a white surface in a vertical stack of three sections with a 32px gap b
 
 Colors, from existing semantic tokens: the panel surface is `--bg-primary` (white). The title and the x-close take `--text-primary` and `--fg-primary`. The inner components carry their own tokens from their entries above.
 
-Radius: the `large` role on the panel surface.
+Radius: `--radius-card-md` on the panel surface.
 
 Sizing and spacing (temporary raw values, not yet tokens): the panel is 400 wide, with 24 padding left and right and 16 padding top and bottom, a 32px gap between the header, form, and footer, a 24px gap between form fields, and an 8px gap between the footer buttons. The 16px outer margin on all edges is the placement, not padding. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
@@ -254,7 +270,7 @@ States and motion not yet designed: Figma shows the panel as a static frame, so 
 
 The Toolbar Popup is the small panel that opens when the user clicks the Glowsary icon in the browser toolbar. It maps to PRD.md FR-21, FR-22, FR-23, FR-24, FR-28. In Figma it is the "Extension Popup" frame (node 26:1076). The Figma shows two combined states — active (global switch on, site not excluded) and inactive (global switch off, site excluded) — but in the build these are two independent axes: the switch state and the exclude state.
 
-Container: a white card, 300px wide, 400px tall (min and max), 24px padding left and right, 16px padding top and bottom. Background `--bg-primary` (white). Radius: the `large` role (24px). No border or shadow on the container itself.
+Container: a white card, 300px wide, 400px tall (min and max), 24px padding left and right, 16px padding top and bottom. Background `--bg-primary` (white). Radius: `--radius-card-md`. No border or shadow on the container itself.
 
 Layout: a flex column with two children: the main content area and the footer. The main content area is 328px tall and the footer is 40px, together filling the 368px content height after padding.
 

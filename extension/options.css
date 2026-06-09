@@ -266,10 +266,28 @@ button {
   white-space: nowrap;
 }
 
+.field-input__hint {
+  min-width: 0;
+  margin: 0;
+  color: var(--text-tertiary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-text-xs);
+  letter-spacing: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.field-input__hint.is-error {
+  color: var(--text-error-primary);
+}
+
 .multiline-input__control {
   height: 250px;
   padding: 12px;
-  resize: vertical;
+  resize: none;
   white-space: pre-wrap;
 }
 

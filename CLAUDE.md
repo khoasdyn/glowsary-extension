@@ -55,3 +55,7 @@ Follow the Markdown rule in AGENTS.md: keep each numbered rule, bullet, and shor
 Always wrap the full build plan in a single ` ```markdown ` … ` ``` ` code fence and nothing else. The plan content goes directly inside that one fence. Do not add an outer display wrapper around it. One fence only, so the copy button gives Codex clean markdown with no extra fence markers as literal text.
 
 When the plan comes from a Figma link, include the exact Figma URL the user shared at the top of the Context section, so Codex can open the mockup directly for implementation details.
+
+## Plan content style
+
+Focus on describing the problem and the expected outcome. Do not prescribe technical solutions, specific function names, variable names, HTML structures, or code snippets. Codex owns all technical decisions. A good plan answers "what is broken and what should it do instead" — not "how to fix it". Keep each item short and behavior-focused.

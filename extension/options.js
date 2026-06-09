@@ -26,10 +26,13 @@ const elements = {
   deleteEntryFromPanel: document.querySelector("#delete-entry-from-panel"),
   form: document.querySelector("#entry-form"),
   termInput: document.querySelector("#term-input"),
+  termHint: document.querySelector("#term-hint"),
   definitionInput: document.querySelector("#definition-input"),
+  definitionHint: document.querySelector("#definition-hint"),
   aliasInput: document.querySelector("#alias-input"),
+  aliasHint: document.querySelector("#alias-hint"),
   colorPicker: document.querySelector("#color-picker"),
-  formMessage: document.querySelector("#form-message"),
+  saveEntry: document.querySelector("#save-entry"),
   entryCount: document.querySelector("#entry-count"),
   exportEntries: document.querySelector("#export-entries"),
   importEntries: document.querySelector("#import-entries"),
@@ -286,9 +289,39 @@ function validateEntry(displayTerm, definition, aliasText = "") {
   };
 }
 
-function setMessage(message, kind = "error") {
-  elements.formMessage.textContent = message;
-  elements.formMessage.classList.toggle("is-info", kind === "info");
+function hasRequiredEntryFields() {
+  return Boolean(elements.termInput.value.trim() && elements.definitionInput.value.trim());
+}
+
+function setTermHint(message = null) {
+  elements.termHint.textContent = message || "Max 50 characters";
+  elements.termHint.classList.toggle("is-error", Boolean(message));
+}
+
+function setDefinitionHint(message = null) {
+  elements.definitionHint.textContent = message || "Max 350 characters";
+  elements.definitionHint.classList.toggle("is-error", Boolean(message));
+}
+
+function setAliasHint(message = null) {
+  elements.aliasHint.textContent = message || "Optional, comma separated";
+  elements.aliasHint.classList.toggle("is-error", Boolean(message));
+}
+
+function syncEntrySaveState() {
+  elements.saveEntry.disabled = !hasRequiredEntryFields();
+
+  if (elements.termInput.value.trim()) {
+    setTermHint();
+  }
+
+  if (elements.definitionInput.value.trim()) {
+    setDefinitionHint();
+  }
+
+  if (elements.aliasInput.value.trim()) {
+    setAliasHint();
+  }
 }
 
 function setExcludedMessage(message, kind = "error") {
@@ -340,7 +373,10 @@ function showEditor(entry = null) {
   elements.aliasInput.value = entry ? formatAliases(entry.aliases) : "";
   entryColorPicker?.setValue(entry?.color);
   elements.deleteEntryFromPanel.hidden = !entry;
-  setMessage("");
+  setTermHint();
+  setDefinitionHint();
+  setAliasHint();
+  syncEntrySaveState();
   elements.editorPanel.hidden = false;
   document.body.classList.add("modal-open");
   elements.termInput.focus();
@@ -353,7 +389,10 @@ function hideEditor() {
   elements.form.reset();
   entryColorPicker?.setValue();
   elements.deleteEntryFromPanel.hidden = true;
-  setMessage("");
+  setTermHint();
+  setDefinitionHint();
+  setAliasHint();
+  syncEntrySaveState();
 }
 
 async function saveEntries(nextEntries) {
@@ -378,10 +417,24 @@ async function saveExcludedSites(nextSites) {
 }
 
 async function saveEntry() {
+  if (!elements.definitionInput.value.trim()) {
+    setDefinitionHint("Definition is required");
+    return;
+  }
+
   const validation = validateEntry(elements.termInput.value, elements.definitionInput.value, elements.aliasInput.value);
 
   if (validation.error) {
-    setMessage(validation.error);
+    if (validation.error.startsWith("Word ")) {
+      setTermHint(validation.error);
+      return;
+    }
+
+    if (validation.error.startsWith("Alias ")) {
+      setAliasHint(validation.error);
+      return;
+    }
+
     return;
   }
 
@@ -720,6 +773,9 @@ function bindEvents() {
     event.preventDefault();
     saveEntry();
   });
+  elements.termInput.addEventListener("input", syncEntrySaveState);
+  elements.definitionInput.addEventListener("input", syncEntrySaveState);
+  elements.aliasInput.addEventListener("input", syncEntrySaveState);
   elements.excludedForm.addEventListener("submit", (event) => {
     event.preventDefault();
     addExcludedSite(elements.excludedInput.value);
@@ -798,6 +854,7 @@ async function init() {
   renderExcludedSites();
   renderEntries();
   bindEvents();
+  syncEntrySaveState();
 }
 
 init();

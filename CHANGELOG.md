@@ -1,5 +1,6 @@
 ## 2026-06-09
 
+- Added Management form hints, placeholders, and disabled Save behavior until Word and Definition are filled.
 - Shortened the toolbar popup inactive subtitle and reserved text height so the switch stays in place.
 - Rebuilt the toolbar popup as the 300 by 400 white card with status copy, shared switch, exclude button state, and settings icon button.
 

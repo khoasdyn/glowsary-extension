@@ -5,6 +5,8 @@
       "--wc-bg-card": "--color-gray-100",
       "--wc-border": "--color-gray-200",
       "--wc-subtext": "--color-gray-600",
+      "--wc-underline": "--color-gray-600",
+      "--wc-underline-hover": "--color-gray-800",
       "--wc-word-text": "--color-gray-600"
     },
     purple: {
@@ -12,6 +14,8 @@
       "--wc-bg-card": "--color-purple-100",
       "--wc-border": "--color-purple-200",
       "--wc-subtext": "--color-purple-800",
+      "--wc-underline": "--color-purple-600",
+      "--wc-underline-hover": "--color-purple-800",
       "--wc-word-text": "--color-purple-900"
     },
     yellow: {
@@ -19,6 +23,8 @@
       "--wc-bg-card": "--color-yellow-100",
       "--wc-border": "--color-yellow-200",
       "--wc-subtext": "--color-yellow-800",
+      "--wc-underline": "--color-yellow-600",
+      "--wc-underline-hover": "--color-yellow-800",
       "--wc-word-text": "--color-yellow-900"
     },
     green: {
@@ -26,6 +32,8 @@
       "--wc-bg-card": "--color-green-100",
       "--wc-border": "--color-green-200",
       "--wc-subtext": "--color-green-800",
+      "--wc-underline": "--color-green-600",
+      "--wc-underline-hover": "--color-green-800",
       "--wc-word-text": "--color-green-900"
     },
     blue: {
@@ -33,6 +41,8 @@
       "--wc-bg-card": "--color-blue-100",
       "--wc-border": "--color-blue-200",
       "--wc-subtext": "--color-blue-800",
+      "--wc-underline": "--color-blue-600",
+      "--wc-underline-hover": "--color-blue-800",
       "--wc-word-text": "--color-blue-900"
     }
   };

@@ -36,6 +36,61 @@
   let popupCloseTimer = 0;
   let activePopup = null;
   let activeDialog = null;
+  let contentFontsPromise = null;
+
+  const CONTENT_FONT_FACES = [
+    ["Glowsary Copse", "fonts/Copse/Copse-Regular.ttf", 400],
+    ["Glowsary Poppins", "fonts/Poppins/Poppins-Regular.ttf", 400],
+    ["Glowsary Poppins", "fonts/Poppins/Poppins-Medium.ttf", 500],
+    ["Glowsary Poppins", "fonts/Poppins/Poppins-SemiBold.ttf", 600]
+  ];
+
+  function installContentFonts() {
+    if (document.getElementById("glowsary-content-fonts")) {
+      return contentFontsPromise;
+    }
+
+    if ("FontFace" in window && document.fonts?.add) {
+      const marker = document.createElement("meta");
+      marker.id = "glowsary-content-fonts";
+      document.documentElement.appendChild(marker);
+      contentFontsPromise = Promise.all(CONTENT_FONT_FACES.map(async ([family, path, weight]) => {
+        try {
+          const response = await fetch(chrome.runtime.getURL(path));
+
+          if (!response.ok) {
+            return;
+          }
+
+          const fontBytes = await response.arrayBuffer();
+          const fontFace = new FontFace(family, fontBytes, {
+            style: "normal",
+            weight: String(weight),
+            display: "swap"
+          });
+          await fontFace.load();
+          document.fonts.add(fontFace);
+        } catch {
+          // Keep the injected UI readable through its fallback stack if a font cannot load.
+        }
+      }));
+
+      return contentFontsPromise;
+    }
+
+    const style = document.createElement("style");
+    style.id = "glowsary-content-fonts";
+    style.textContent = CONTENT_FONT_FACES.map(([family, path, weight]) => `
+@font-face {
+  font-family: "${family}";
+  src: url("${chrome.runtime.getURL(path)}") format("truetype");
+  font-style: normal;
+  font-weight: ${weight};
+  font-display: swap;
+}`).join("\n");
+
+    (document.head || document.documentElement).appendChild(style);
+  }
 
   function normalizeColor(value) {
     return window.GlowsaryColorPicker?.normalizeColor?.(value) || "purple";
@@ -301,6 +356,7 @@
       span.className = HIGHLIGHT_CLASS;
       span.glowsaryPages = match.pages;
       span.textContent = text.slice(match.start, match.end);
+      globalThis.GlowsarySemanticColorTokens?.applyWordCardMode?.(span, match.pages[0]?.entry?.color);
       attachHighlightEvents(span);
       fragment.appendChild(span);
       cursor = match.end;
@@ -813,6 +869,7 @@
   }
 
   async function init() {
+    installContentFonts();
     await loadState();
     bindChromeEvents();
     startObserver();

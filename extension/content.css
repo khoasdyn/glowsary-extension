@@ -1,46 +1,18 @@
-@font-face {
-  font-family: "Glowsary Copse";
-  src: url("chrome-extension://__MSG_@@extension_id__/fonts/Copse/Copse-Regular.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Glowsary Poppins";
-  src: url("chrome-extension://__MSG_@@extension_id__/fonts/Poppins/Poppins-Regular.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Glowsary Poppins";
-  src: url("chrome-extension://__MSG_@@extension_id__/fonts/Poppins/Poppins-Medium.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Glowsary Poppins";
-  src: url("chrome-extension://__MSG_@@extension_id__/fonts/Poppins/Poppins-SemiBold.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-}
-
 .glowsary-highlight {
   background: var(--color-base-transparent) !important;
   border: 0 !important;
-  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--color-blue-500) 68%, var(--color-base-transparent)) !important;
+  box-shadow: none !important;
   cursor: help !important;
-  text-decoration: none !important;
+  text-decoration-line: underline !important;
+  text-decoration-style: dashed !important;
+  text-decoration-color: color-mix(in srgb, var(--wc-underline) 68%, var(--color-base-transparent)) !important;
+  text-decoration-thickness: 0.08em !important;
+  text-underline-offset: 0.18em !important;
   border-radius: 0 !important;
 }
 
 .glowsary-highlight:hover {
-  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--color-blue-600) 96%, var(--color-base-transparent)) !important;
+  text-decoration-color: color-mix(in srgb, var(--wc-underline-hover) 96%, var(--color-base-transparent)) !important;
 }
 
 .glowsary-popup {

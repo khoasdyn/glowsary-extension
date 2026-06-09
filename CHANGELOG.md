@@ -1,5 +1,8 @@
 ## 2026-06-09
 
+- Made saved-word highlight underlines dashed and tinted from each entry's Word Card color, including newest-entry color for shared underlines.
+- Loaded in-page Save form fonts from extension-read bytes so strict page CSP cannot block them.
+- Fixed in-page Save form font loading by resolving bundled font URLs at runtime in the content script.
 - Moved in-page Save form validation messages into the matching field hints instead of the bottom error box.
 - Aligned the in-page Save form header, helper text, disabled Save behavior, and bottom-pinned footer with the Management form panel.
 - Fixed the in-page Save form manifest asset access, full-height overlay layout, local fonts, and Figma-matched spacing.

@@ -564,7 +564,7 @@
           </button>
         </div>
         <div id="glowsary-entry-form-mount"></div>
-        <div class="glowsary-error" role="alert"></div>
+        <p class="glowsary-save-error" role="alert"></p>
       </section>
     `;
 
@@ -589,27 +589,125 @@
     const form = formParts.form;
     const termInput = formParts.termInput;
     const definitionInput = formParts.definitionInput;
+    const definitionHint = formParts.definitionHint;
     const aliasInput = formParts.aliasInput;
+    const aliasHint = formParts.aliasHint;
     const colorPicker = formParts.colorPicker;
     const saveButton = formParts.saveButton;
-    const error = backdrop.querySelector(".glowsary-error");
+    const saveError = backdrop.querySelector(".glowsary-save-error");
     const colorPickerController = window.GlowsaryColorPicker?.init?.(colorPicker, { classPrefix: "glowsary-color-picker" });
+    const termHint = formParts.termHint;
+    const setTermHint = (message = null) => {
+      termHint.textContent = message || "Maximum 50 characters";
+      termHint.classList.toggle("is-error", Boolean(message));
+    };
+    const setDefinitionHint = (message = null) => {
+      definitionHint.textContent = message || "Maximum 350 characters";
+      definitionHint.classList.toggle("is-error", Boolean(message));
+    };
+    const setAliasHint = (message = null) => {
+      aliasHint.textContent = message || "Optional, comma separated";
+      aliasHint.classList.toggle("is-error", Boolean(message));
+    };
     const syncSaveState = () => {
       saveButton.disabled = !(termInput.value.trim() && definitionInput.value.trim());
     };
+    const clearSaveError = () => {
+      saveError.textContent = "";
+    };
+    const showValidationError = (message) => {
+      if (message === "Word is required." || message.startsWith("Word ")) {
+        setTermHint(message);
+        return true;
+      }
+
+      if (message === "Definition is required.") {
+        setDefinitionHint(message);
+        return true;
+      }
+
+      if (message.startsWith("Alias ")) {
+        setAliasHint(message);
+        return true;
+      }
+
+      return false;
+    };
+    const collectValidationErrors = () => {
+      const errors = {};
+      const cleanTerm = collapseSpaces(termInput.value);
+      const cleanDefinition = definitionInput.value.trim();
+
+      if (!cleanTerm) {
+        errors.term = "Word is required.";
+      } else if (cleanTerm.length < 3) {
+        errors.term = "Word must be at least 3 characters.";
+      }
+
+      if (!cleanDefinition) {
+        errors.definition = "Definition is required.";
+      }
+
+      const normalizedTerm = normalizeTerm(cleanTerm);
+      const aliasResult = parseAliases(aliasInput.value, normalizedTerm);
+
+      if (aliasResult.error) {
+        errors.alias = aliasResult.error;
+      }
+
+      return errors;
+    };
+    const showValidationErrors = (errors) => {
+      setTermHint(errors.term || null);
+      setDefinitionHint(errors.definition || null);
+      setAliasHint(errors.alias || null);
+      return Boolean(errors.term || errors.definition || errors.alias);
+    };
 
     backdrop.querySelector(".glowsary-dialog-close").addEventListener("click", closeDialog);
-    termInput.addEventListener("input", syncSaveState);
-    definitionInput.addEventListener("input", syncSaveState);
+    termInput.addEventListener("input", () => {
+      syncSaveState();
+      clearSaveError();
+
+      if (collapseSpaces(termInput.value).length >= 3) {
+        setTermHint();
+      }
+    });
+    definitionInput.addEventListener("input", () => {
+      syncSaveState();
+      clearSaveError();
+
+      if (definitionInput.value.trim()) {
+        setDefinitionHint();
+      }
+    });
+    aliasInput.addEventListener("input", () => {
+      clearSaveError();
+
+      if (!aliasInput.value.trim()) {
+        setAliasHint();
+        return;
+      }
+
+      if (!parseAliases(aliasInput.value, normalizeTerm(collapseSpaces(termInput.value))).error) {
+        setAliasHint();
+      }
+    });
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      error.textContent = "";
+      clearSaveError();
+
+      if (showValidationErrors(collectValidationErrors())) {
+        return;
+      }
 
       try {
         await saveEntry(termInput.value, definitionInput.value, aliasInput.value, colorPickerController?.getValue?.());
         closeDialog();
-      } catch (saveError) {
-        error.textContent = saveError.message;
+      } catch (error) {
+        if (!showValidationError(error.message)) {
+          saveError.textContent = error.message;
+        }
       }
     });
     syncSaveState();

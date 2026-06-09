@@ -376,7 +376,7 @@
   width: 100%;
 }
 
-.glowsary-error {
+.glowsary-save-error {
   min-height: 18px;
   margin: -24px 0 0;
   color: var(--color-red-700);
@@ -384,7 +384,7 @@
   line-height: var(--line-height-text-xs);
 }
 
-.glowsary-error:empty {
+.glowsary-save-error:empty {
   display: none;
 }
 

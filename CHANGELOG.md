@@ -1,5 +1,6 @@
 ## 2026-06-09
 
+- Moved in-page Save form validation messages into the matching field hints instead of the bottom error box.
 - Aligned the in-page Save form header, helper text, disabled Save behavior, and bottom-pinned footer with the Management form panel.
 - Fixed the in-page Save form manifest asset access, full-height overlay layout, local fonts, and Figma-matched spacing.
 - Centralized the Save form and Management form panel fields into one shared entry form component and removed the Save form Cancel button.

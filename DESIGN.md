@@ -70,7 +70,7 @@ The five Word Card tokens use the `--wc-` prefix to keep them separate from the 
 
 When a word card renders, it scopes these tokens to the card element using the mode that matches the entry's color value. The base semantic tokens (Text, Foreground, Background, Border) are the same across all five modes; only the Word Card group changes per mode.
 
-Note: the Color picker circles (the selector UI) now also use Word Card tokens — each circle is scoped to its color mode and uses `--wc-bg-card` and `--wc-border` for its surface, with `--wc-subtext` for the check mark. This is updated in the Components section. The Word Card tokens are used both for the picker circles and for the actual word cards in the grid and hover popup. Adding these tokens resolves NOTES.md item 23.
+Note: the Color picker circles (the selector UI) now also use Word Card tokens — each circle is scoped to its color mode and uses `--wc-bg-card` and `--wc-border` for its surface, with `--wc-subtext` for the check mark. This is updated in the Components section. The Word Card tokens are used both for the picker circles and for the actual word cards in the grid and hover popup.
 
 ## Corner radius
 
@@ -110,7 +110,7 @@ Not defined yet. To be added.
 
 ## Components
 
-This section is the single style guide for shared UI components, detailed enough that a plan can simply point an agent here instead of restating the spec. Each component lists the tokens it uses by role, so the code reads from tokens, never from raw values. A component is added here only after Figma defines it. Where a value has no token yet (for example spacing and sizing), the spec gives the exact value from Figma as a clearly marked temporary value and records the gap in NOTES.md, so an agent can still build the component and we replace the raw value with a token once the scale exists.
+This section is the single style guide for shared UI components, detailed enough that a plan can simply point an agent here instead of restating the spec. Each component lists the tokens it uses by role, so the code reads from tokens, never from raw values. A component is added here only after Figma defines it. Where a value has no token yet (for example spacing and sizing), the spec gives the exact value from Figma as a clearly marked temporary value, so an agent can still build the component and we replace the raw value with a token once the scale exists.
 
 ### Text Button
 
@@ -131,9 +131,9 @@ Icon: the trailing icon is optional and is 20 by 20. It takes the icon (foregrou
 
 Radius: `--cta`. The button is a fully rounded pill.
 
-Sizing and spacing (temporary raw values, not yet tokens): a fixed height of 40, inner padding of 12 top and bottom and 20 left and right, and a gap of 8 between the label and the trailing icon. The trailing icon is 20 by 20. The button has no fixed width; it sizes to its content. These numbers are the one place this file holds raw values, because no spacing or sizing scale exists yet. This is temporary debt tracked in NOTES.md; replace these with tokens once the scale is defined in Figma.
+Sizing and spacing (temporary raw values, not yet tokens): a fixed height of 40, inner padding of 12 top and bottom and 20 left and right, and a gap of 8 between the label and the trailing icon. The trailing icon is 20 by 20. The button has no fixed width; it sizes to its content. These numbers are the one place this file holds raw values, because no spacing or sizing scale exists yet. This is temporary debt; replace these with tokens once the scale is defined in Figma.
 
-States not yet designed: there is no hover, focus, or pressed style in Figma yet, and the Destructive variant has no background or border, so it reads as plain red text for now. Both are tracked in NOTES.md and wait on a design decision.
+States not yet designed: there is no hover, focus, or pressed style in Figma yet, and the Destructive variant has no background or border, so it reads as plain red text for now. Both wait on a design decision.
 
 ### Switch
 
@@ -152,9 +152,9 @@ Knob shadow: the knob carries the `--shadow-xs-skeuomorphic` style (see Shadows)
 
 Radius: `--cta`. The track is a fully rounded pill (`9999px`); the knob is a true circle (`50%`), since it has equal width and height.
 
-Sizing and spacing (temporary raw values, not yet tokens): the track is 54 wide and 28 tall, with 4 padding top and bottom and 6 padding left and right; the knob is 20 by 20. With that padding, the knob travels from the left edge to the right edge between the two states. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
+Sizing and spacing (temporary raw values, not yet tokens): the track is 54 wide and 28 tall, with 4 padding top and bottom and 6 padding left and right; the knob is 20 by 20. With that padding, the knob travels from the left edge to the right edge between the two states. These numbers are temporary debt; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
-States not yet designed: Figma defines only the off and on states. There is no disabled, hover, or pressed style yet, and there is no focus style. Because keyboard users must still see which control is focused, the switch keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision. The motion of the knob between states is a small slide; an exact timing is not set in Figma yet.
+States not yet designed: Figma defines only the off and on states. There is no disabled, hover, or pressed style yet, and there is no focus style. Because keyboard users must still see which control is focused, the switch keeps a visible keyboard focus indicator until Figma defines one; this waits on a design decision. The motion of the knob between states is a small slide; an exact timing is not set in Figma yet.
 
 ### Icon Button
 
@@ -172,11 +172,11 @@ Icon: the icon is required and is 18 by 18. It takes the icon (foreground) token
 
 Radius: `--cta`. The box has equal width and height, so it is a true circle (`50%`) per the corner radius rule.
 
-Sizing and spacing (temporary raw values, not yet tokens): a fixed box of 40 by 40, with the icon 18 by 18 centered inside. The button has no label and no fixed content sizing beyond the icon. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
+Sizing and spacing (temporary raw values, not yet tokens): a fixed box of 40 by 40, with the icon 18 by 18 centered inside. The button has no label and no fixed content sizing beyond the icon. These numbers are temporary debt; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
 Accessibility: because the button has no visible text, it must carry an accessible name so screen readers can announce its action, and a tooltip on hover so sighted users learn what it does. The caller provides this name and tooltip text. This is a build requirement, not a Figma value.
 
-States not yet designed: Figma defines only the three static variants. There is no hover, focus, pressed, or disabled style yet. Because keyboard users must still see which control is focused, the Icon Button keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision.
+States not yet designed: Figma defines only the three static variants. There is no hover, focus, pressed, or disabled style yet. Because keyboard users must still see which control is focused, the Icon Button keeps a visible keyboard focus indicator until Figma defines one; this waits on a design decision.
 
 ### Tab nav
 
@@ -199,9 +199,9 @@ Icon: each item has one leading icon, 24 by 24, taking the `--fg-primary` color.
 
 Radius: `--cta` for both the track and the items. Both are fully rounded pills (`9999px`).
 
-Sizing and spacing (temporary raw values, not yet tokens): the track has a fixed height of 60, 6 padding on all sides, and a gap of 16 between the two items. Each item has 16 padding left and right, 12 padding top and bottom, and a gap of 12 between its icon and label. The two items share the width equally, each taking half, so the nav stretches to fill the width of its container and has no fixed width. The icon is 24 by 24. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
+Sizing and spacing (temporary raw values, not yet tokens): the track has a fixed height of 60, 6 padding on all sides, and a gap of 16 between the two items. Each item has 16 padding left and right, 12 padding top and bottom, and a gap of 12 between its icon and label. The two items share the width equally, each taking half, so the nav stretches to fill the width of its container and has no fixed width. The icon is 24 by 24. These numbers are temporary debt; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
-States not yet designed: Figma defines only the two active states, Home active and Settings active. There is no hover, focus, pressed, or disabled style. Because the active tab is shown by the white fill alone, and keyboard users must see which tab is focused, the Tab nav keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision.
+States not yet designed: Figma defines only the two active states, Home active and Settings active. There is no hover, focus, pressed, or disabled style. Because the active tab is shown by the white fill alone, and keyboard users must see which tab is focused, the Tab nav keeps a visible keyboard focus indicator until Figma defines one; this waits on a design decision.
 
 ### Color picker
 
@@ -219,9 +219,9 @@ Check icon: 20 by 20, centered, color `--wc-subtext` of the selected circle's mo
 
 Radius: `--cta`. Each circle has equal width and height, so it is a true circle (`50%`) per the corner radius rule.
 
-Sizing and spacing (temporary raw values, not yet tokens): each circle is 40 by 40, and the gap between circles is 12. The row sizes to its content and has no fixed width. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
+Sizing and spacing (temporary raw values, not yet tokens): each circle is 40 by 40, and the gap between circles is 12. The row sizes to its content and has no fixed width. These numbers are temporary debt; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
-States not yet designed: Figma defines only the resting selected and unselected look. There is no hover, focus, or pressed style yet. Because the user picks a color with the keyboard as well as the pointer, the Color picker keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision.
+States not yet designed: Figma defines only the resting selected and unselected look. There is no hover, focus, or pressed style yet. Because the user picks a color with the keyboard as well as the pointer, the Color picker keeps a visible keyboard focus indicator until Figma defines one; this waits on a design decision.
 
 ### Field input
 
@@ -235,19 +235,19 @@ Typography: the label uses the body font (Poppins) at the `text-sm` size and `te
 
 Radius: `--box` on the input box.
 
-Sizing and spacing (temporary raw values, not yet tokens): the box is 40 tall with 12 padding left and right, and the stack uses a 6px gap between the label, the box, and the hint. The field has no fixed width; it fills its container. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
+Sizing and spacing (temporary raw values, not yet tokens): the box is 40 tall with 12 padding left and right, and the stack uses a 6px gap between the label, the box, and the hint. The field has no fixed width; it fills its container. These numbers are temporary debt; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
 Error message: Figma defines an error message for the field, shown in the Add Site dialog (see Add Site dialog). The hint slot below the box shows the message text in `--text-error-primary` using the same hint typography (body font, `text-xs`, Regular). The box border and background do not change in the mockup; only the message color marks the error. The error message is not shown while the field is empty; it appears only after the user types an invalid value (see Add Site dialog). This is the only error treatment defined so far.
 
-States not yet designed: beyond the error message above, Figma shows only the filled resting state. There is no focus, hover, or disabled style yet. Because the field is typed into, it keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md and waits on a design decision. The character limits on the value (Word 50, Definition 350) are behavior from PRD.md FR-3d, not a Figma style.
+States not yet designed: beyond the error message above, Figma shows only the filled resting state. There is no focus, hover, or disabled style yet. Because the field is typed into, it keeps a visible keyboard focus indicator until Figma defines one; this waits on a design decision. The character limits on the value (Word 50, Definition 350) are behavior from PRD.md FR-3d, not a Figma style.
 
 ### Multiline input
 
 The Multiline input is the multi-line version of the Field input, used for the Definition field in the in-page save form and the Management form panel. In Figma it is the "Multiple Line Input" component. It shares the Field input's three-part structure (label, box, hint), its colors, its typography, and its `--box` radius. It differs in three ways: the box is taller to hold several lines, the value text sits at the top of the box instead of vertically centered, and the box has padding on all four sides.
 
-Sizing and spacing (temporary raw values, not yet tokens): the box is 250 tall with 12 padding on all four sides, and the stack uses the same 6px gap between the label, the box, and the hint. The field has no fixed width; it fills its container. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
+Sizing and spacing (temporary raw values, not yet tokens): the box is 250 tall with 12 padding on all four sides, and the stack uses the same 6px gap between the label, the box, and the hint. The field has no fixed width; it fills its container. These numbers are temporary debt; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
-States not yet designed: the same as the Field input. Figma shows only the filled resting state, with no focus, hover, disabled, or error style yet, and it keeps a visible keyboard focus indicator until Figma defines one; this is tracked in NOTES.md.
+States not yet designed: the same as the Field input. Figma shows only the filled resting state, with no focus, hover, disabled, or error style yet, and it keeps a visible keyboard focus indicator until Figma defines one.
 
 ### Management form panel
 
@@ -255,7 +255,7 @@ The Management form panel is the right-side panel that holds the Add and Edit fo
 
 Placement: the panel is a right-side drawer. It floats near the right edge with a 16px gap from the top, the right, and the bottom of the viewport, so it does not touch those three edges; on the left it does not have a margin, because the overlay fills the space to its left. The panel is full height minus those 16px top and bottom gaps. In the mockup its width is 400. It opens over the management view.
 
-Overlay: behind the panel is a full-screen overlay (scrim) that dims the management view. In Figma the overlay fill is black at 40% opacity. It should reference the black primitive at 40% opacity rather than a raw color; there is no semantic overlay token yet, so this is tracked in NOTES.md. The 16px gaps around the panel show this dimmed overlay, which is what makes the panel read as a floating card. Clicking the overlay does not close the panel (PRD.md behavior); only the X or Escape closes it.
+Overlay: behind the panel is a full-screen overlay (scrim) that dims the management view. In Figma the overlay fill is black at 40% opacity. It should reference the black primitive at 40% opacity rather than a raw color; there is no semantic overlay token yet. The 16px gaps around the panel show this dimmed overlay, which is what makes the panel read as a floating card. Clicking the overlay does not close the panel (PRD.md behavior); only the X or Escape closes it.
 
 Anatomy: a white surface in a vertical stack of three sections with a 32px gap between them, in this order: the header, the form, and the footer.
 
@@ -267,9 +267,9 @@ Colors, from existing semantic tokens: the panel surface is `--bg-primary` (whit
 
 Radius: `--card-lg` on the panel surface.
 
-Sizing and spacing (temporary raw values, not yet tokens): the panel is 400 wide, with 24 padding left and right and 16 padding top and bottom, a 32px gap between the header, form, and footer, a 24px gap between form fields, and an 8px gap between the footer buttons. The 16px outer margin on all edges is the placement, not padding. These numbers are temporary debt tracked in NOTES.md; replace them with tokens once the spacing and sizing scale is defined in Figma.
+Sizing and spacing (temporary raw values, not yet tokens): the panel is 400 wide, with 24 padding left and right and 16 padding top and bottom, a 32px gap between the header, form, and footer, a 24px gap between form fields, and an 8px gap between the footer buttons. The 16px outer margin on all edges is the placement, not padding. These numbers are temporary debt; replace them with tokens once the spacing and sizing scale is defined in Figma.
 
-States and motion not yet designed: Figma shows the panel as a static frame, so there is no open or close motion (such as a slide-in from the right) defined yet; the build uses a simple, subtle entrance until Figma defines one. Close behavior (X or Escape, no Cancel, no backdrop close) is PRD.md behavior, not a Figma style. These gaps are tracked in NOTES.md.
+States and motion not yet designed: Figma shows the panel as a static frame, so there is no open or close motion (such as a slide-in from the right) defined yet; the build uses a simple, subtle entrance until Figma defines one. Close behavior (X or Escape, no Cancel, no backdrop close) is PRD.md behavior, not a Figma style. These gaps wait on a design decision.
 
 ### Add Site dialog
 
@@ -287,7 +287,7 @@ Colors, from existing semantic tokens: the same as the Management form panel. Th
 
 Behavior owned by PRD.md: the typed value is reduced to its whole-site domain on save (FR-27a), saving a domain already on the list does nothing and closes the dialog (FR-29a), and the dialog is closed by the X. These are behavior, not Figma styles.
 
-States and motion not yet designed: the same as the Management form panel. Figma shows the dialog as a static frame with the field in its error state and the Save button disabled; the open and close motion is not defined yet, and the build uses the same subtle entrance as the Management form panel. These gaps are tracked in NOTES.md.
+States and motion not yet designed: the same as the Management form panel. Figma shows the dialog as a static frame with the field in its error state and the Save button disabled; the open and close motion is not defined yet, and the build uses the same subtle entrance as the Management form panel. These gaps wait on a design decision.
 
 ### Toolbar Popup
 
@@ -329,7 +329,7 @@ Sizing and spacing (temporary raw values, not yet tokens): the card is 200 tall 
 
 Add New Word card: a special card variant for the "Add New Word" action at the first position in the grid. It uses the Add New color mode (neutral gray), has a 2px dashed border (not the usual 1px solid), and shows only a centered row with the label "Add New Word" and a plus-circle icon (24 by 24). Colors: background `--wc-bg-card` (Add New mode = `--color-gray-100`), border `--wc-border` (Add New mode = `--color-gray-200`), label and icon `--wc-subtext` (Add New mode = `--color-gray-600`). Radius: `--card-md`. Clicking it opens the Management form panel in add mode.
 
-States not yet designed: Figma defines only the filled resting state. There is no hover, focus, or pressed style yet. The card is interactive (clicking opens the edit panel), so it needs a keyboard focus indicator until Figma defines one; this is tracked in NOTES.md.
+States not yet designed: Figma defines only the filled resting state. There is no hover, focus, or pressed style yet. The card is interactive (clicking opens the edit panel), so it needs a keyboard focus indicator until Figma defines one.
 
 ### Highlight Popup
 
@@ -345,4 +345,4 @@ Radius: `--card-md`.
 
 Sizing and spacing (temporary raw values, not yet tokens): 12px padding left and right, 8px padding top and bottom, 6px gap between title and definition. The popup is 396px wide (min-width and max-width both 396px), with a 156px max-height. On viewports narrower than 420px the width falls back to `calc(100vw - 24px)`. Content that exceeds the max-height is clipped. The container uses `word-break: break-word` so long unbroken strings wrap instead of overflowing. Replace with tokens once the spacing and sizing scale is defined.
 
-States not yet designed: Figma defines only the resting state. There is no transition or animation for how the popup appears or disappears. The popup is read-only and non-interactive — the user cannot click anything inside it. This is tracked in NOTES.md.
+States not yet designed: Figma defines only the resting state. There is no transition or animation for how the popup appears or disappears. The popup is read-only and non-interactive — the user cannot click anything inside it.

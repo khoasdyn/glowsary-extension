@@ -22,7 +22,7 @@ Given a Figma link to one specific component, run this flow in order.
 1. Read the component from Figma through the Figma MCP.
 2. Give light UX notes first: call out obvious risks for that component, such as missing states (hover, focus, disabled, loading, empty, error). Keep it short. Anything bigger than the component, or any real product or behavior concern, goes back to product-planner.
 3. Check whether the component already exists, looking across three places: the code, DESIGN.md, and PRD.md.
-4. If the three do not fully agree (for example it is in the code but missing from DESIGN.md, or named in PRD.md but never built), stop and report exactly which layer is missing what. Record the gap in NOTES.md and wait for the user's decision before writing any plan.
+4. If the three do not fully agree (for example it is in the code but missing from DESIGN.md, or named in PRD.md but never built), stop and report exactly which layer is missing what, in the chat, and wait for the user's decision before writing any plan.
 5. Gate on PRD.md: if the Figma component shows behavior that PRD.md does not cover, stop and ask the user to update PRD.md first. Never edit PRD.md yourself. PRD.md holds the abstract, what the component is and how it behaves; DESIGN.md holds the design spec and style guide, how it looks.
 6. Handle tokens for this component only: add any token values the component needs that are missing, and fix any that do not match Figma (see "Tokens").
 7. Update DESIGN.md so the component is documented in the Components section (see "DESIGN.md ownership").
@@ -32,7 +32,7 @@ Given a Figma link to one specific component, run this flow in order.
 
 1. New, when the component is in neither the code nor DESIGN.md: add its entry to DESIGN.md from Figma, then write a build plan to create it. Gate on PRD.md first.
 2. Existing and consistent across the code, DESIGN.md, and PRD.md: update its DESIGN.md entry and the token plan to match Figma, then write a build plan for the change.
-3. Partial, when the three disagree: stop and report which layer is missing what, log it in NOTES.md, and wait for the user. Do not guess and do not build on top of an open gap.
+3. Partial, when the three disagree: stop and report which layer is missing what in the chat, and wait for the user. Do not guess and do not build on top of an open gap.
 
 ## Tokens
 
@@ -41,14 +41,14 @@ Given a Figma link to one specific component, run this flow in order.
 3. Color has two layers: primitives named `--color-{family}-{step}` in `extension/tokens/color-tokens.js`, and semantic role tokens like `--text-primary`, `--bg-secondary`, and `--border-primary` in `extension/tokens/semantic-color-tokens.js`, each one referencing a primitive. Use a semantic role token where one fits the role; use a primitive only when no role token covers the case.
 4. Typography comes from tokens: font size (`--font-size-{step}`), line height (`--line-height-{step}`), font family, and font weight. Use the named text styles (Page Title, Section Title, Card Title, Subtitle Page, Body Text) for headings and body, and the size and line-height tokens directly for smaller UI text. Only Regular, Medium, and SemiBold ship; Bold and italics exist in Figma but have no font file yet, so they are not used.
 5. You cannot edit code, so token work is part of the build plan. Use only token names that already exist, or, when a new token is needed, define that new token together with its value from Figma. Defining a new token's value is the one case where a plan includes a raw value, so build mode never has to guess.
-6. When the code tokens do not match Figma, Figma wins. Flag it, record it in NOTES.md, and put the fix in the plan.
+6. When the code tokens do not match Figma, Figma wins. Flag it in the chat and put the fix in the plan.
 
 ## DESIGN.md ownership
 
 1. design-planner owns DESIGN.md and is allowed to create and edit it. Build mode and product-planner only read it.
 2. DESIGN.md holds the rules and structure of the design (token names, roles, and conventions) and the Components section style guide, not the exact values. It currently covers typography, color, and corner radius; spacing comes later.
 3. The Components section is the single style guide for shared UI components (Text Button, input, card, and so on). Keep each component's full spec in one place there: its colors, typography, radius, sizing, and states, by token name. Do not invent a component style that is not in Figma.
-4. Record design mismatches in NOTES.md, which is shared with product-planner: UI versus design, Figma versus the code tokens, code versus DESIGN.md, and similar. Mark an item resolved or remove it once it is settled.
+4. Do not keep a standing mismatch log. Raise design mismatches (UI versus design, Figma versus the code tokens, code versus DESIGN.md, and similar) in the chat and resolve them into the plan or DESIGN.md. Open design debt that cannot be settled yet (an undesigned state, a missing token) stays documented inline in the matching DESIGN.md component entry, so it is not lost.
 
 ## How to write the build plan
 
@@ -71,13 +71,13 @@ When the component already has an entry in the Components section of DESIGN.md, 
 3. Never edit PRD.md. When behavior is missing or conflicting, stop and ask the user to update PRD.md, or to switch to product-planner, then continue.
 4. Never invent a design value. Pull every value from Figma. The only raw value allowed in a plan is a brand new token's value taken from Figma.
 5. Never go beyond a single component in this mode. Send screens, pages, flows, and any product or behavior concern back to product-planner.
-6. Never create new standalone notes, thinking, or scratch Markdown files. Keep all discussion and shaping in the chat. Edit only DESIGN.md, which this skill owns, and NOTES.md for mismatches. PRD.md, README.md, and AGENTS.md belong to product-planner.
+6. Never create new standalone notes, thinking, or scratch Markdown files. Keep all discussion and shaping in the chat. Edit only DESIGN.md, which this skill owns. PRD.md, README.md, and AGENTS.md belong to product-planner.
 
 ## Hand-off with product-planner
 
 1. design-planner and product-planner do not overlap. product-planner owns PRD, product thinking, critique, NOTES, and non-design build plans. design-planner owns the Figma-to-component flow and DESIGN.md.
 2. When you hit a PRD gap, a product or behavior question, or anything bigger than one component, stop and tell the user to switch to product-planner. After PRD.md is updated, return to design-planner and continue the flow.
-3. NOTES.md is shared: whichever skill is running logs its mismatches there.
+3. Neither skill keeps a standing mismatch log: each raises gaps in the chat and resolves them into PRD.md, DESIGN.md, or a build plan.
 
 ## Documentation style
 

@@ -1121,7 +1121,7 @@
   function bindChromeEvents() {
     chrome.runtime.onMessage.addListener((message) => {
       if (message?.type === "GLOWSARY_OPEN_NOTE") {
-        openNoteDialog(message.selectedText || window.getSelection()?.toString() || "");
+        openNoteDialog(typeof message.selectedText === "string" ? message.selectedText : "");
       }
     });
 

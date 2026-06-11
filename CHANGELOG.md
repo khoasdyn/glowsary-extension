@@ -1,5 +1,6 @@
 ## 2026-06-11
 
+- Made the "Add word" right-click menu available in every page context, opening an empty focused Word field when no text is selected.
 - Made disabled definition-popup chevrons render in the entry-colored border token.
 - Kept the hover definition popup open and anchored while paging between multiple entries.
 - Redesigned the hover definition popup with the edit button, full definitions, non-wrapping pagination, and in-page edit panel access.

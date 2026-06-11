@@ -44,7 +44,7 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: CONTEXT_MENU_ID,
     title: "Add word",
-    contexts: ["selection"]
+    contexts: ["all"]
   });
   refreshToolbarState();
 });

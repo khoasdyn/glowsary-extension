@@ -102,7 +102,7 @@ Icons are SVG assets in one folder, `extension/assets`, one file per icon, named
 
 A Figma icon export cannot link to a color token, so each SVG ships with a fixed color from Figma. That color in the file is only a placeholder; the icon does not get its final color from the file. Where the icon is used, it takes the color of its context, so the foreground token of the Icon Button variant or the Text Button drives it. Applying that color is done at the point of use, not in the asset.
 
-The standard icon slot is 18 by 18, used by the Icon Button and the Text Button trailing icon. An icon drawn at another size is scaled to fit the slot.
+The Icon Button uses an 18 by 18 icon slot. The Text Button trailing icon uses a 20 by 20 slot, matching Figma. An icon drawn at another size is scaled to fit its slot.
 
 ## Spacing
 

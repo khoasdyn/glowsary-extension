@@ -6,6 +6,19 @@ const DEFAULT_SETTINGS = {
 
 let settings = { ...DEFAULT_SETTINGS };
 
+const STATUS_COPY = {
+  on: {
+    title: "Highlighting is on",
+    description: "Saved words are highlighted as you read",
+    descriptionLines: ["Saved words are highlighted", "as you read"]
+  },
+  off: {
+    title: "Highlighting is off",
+    description: "You can still save & manage your words",
+    descriptionLines: ["You can still save &", "manage your words"]
+  }
+};
+
 const elements = {
   statusTitle: document.querySelector("#popup-status-title"),
   statusSubtitle: document.querySelector("#popup-status-subtitle"),
@@ -24,11 +37,20 @@ const storage = {
 
 function renderSettings() {
   const isEnabled = Boolean(settings.highlightingEnabled);
+  const statusCopy = isEnabled ? STATUS_COPY.on : STATUS_COPY.off;
 
   elements.highlightingEnabled.checked = isEnabled;
   elements.highlightingEnabled.setAttribute("aria-checked", String(isEnabled));
-  elements.statusTitle.textContent = isEnabled ? "Extension is active" : "Extension is inactive";
-  elements.statusSubtitle.textContent = isEnabled ? "Show saved words on webpages" : "Saved words are hidden";
+  elements.statusTitle.textContent = statusCopy.title;
+  elements.statusSubtitle.setAttribute("aria-label", statusCopy.description);
+  elements.statusSubtitle.replaceChildren(
+    ...statusCopy.descriptionLines.map((line) => {
+      const lineElement = document.createElement("span");
+      lineElement.setAttribute("aria-hidden", "true");
+      lineElement.textContent = line;
+      return lineElement;
+    })
+  );
 }
 
 function normalizeSettings(rawSettings = {}) {

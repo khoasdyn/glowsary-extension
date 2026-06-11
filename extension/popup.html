@@ -18,8 +18,11 @@
     <main class="popup-shell">
       <section class="popup-main" aria-live="polite">
         <div class="popup-status">
-          <h1 class="popup-status__title" id="popup-status-title">Extension is active</h1>
-          <p class="popup-status__subtitle" id="popup-status-subtitle">Show saved words on webpages</p>
+          <h1 class="popup-status__title" id="popup-status-title">Highlighting is on</h1>
+          <p class="popup-status__subtitle" id="popup-status-subtitle" aria-label="Saved words are highlighted as you read">
+            <span aria-hidden="true">Saved words are highlighted</span>
+            <span aria-hidden="true">as you read</span>
+          </p>
         </div>
 
         <label class="glowsary-switch-row popup-switch" aria-label="Highlighting">

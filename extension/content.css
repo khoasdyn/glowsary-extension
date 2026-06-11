@@ -133,12 +133,15 @@
   height: 28px;
   min-height: 28px;
   max-height: 28px;
+  margin-top: auto;
   padding: 0 6px;
   background: var(--wc-bg-alias-chip);
   border-radius: var(--cta);
 }
 
 .glowsary-popup-pagination button {
+  --glowsary-popup-chevron-color: var(--wc-subtext);
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -147,7 +150,7 @@
   min-width: 16px;
   min-height: 16px;
   padding: 0;
-  color: var(--wc-subtext);
+  color: var(--glowsary-popup-chevron-color);
   background: var(--color-base-transparent);
   border: 0;
   border-radius: var(--cta);
@@ -156,7 +159,9 @@
 }
 
 .glowsary-popup-pagination button:disabled {
-  color: var(--wc-border);
+  --glowsary-popup-chevron-color: var(--wc-border);
+
+  color: var(--glowsary-popup-chevron-color);
   cursor: default;
   pointer-events: none;
 }
@@ -165,7 +170,8 @@
   display: block;
   width: 16px;
   height: 16px;
-  background: currentColor;
+  color: var(--glowsary-popup-chevron-color);
+  background-color: var(--glowsary-popup-chevron-color);
 }
 
 .glowsary-popup-pagination__icon--previous {

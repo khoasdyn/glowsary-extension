@@ -1,5 +1,7 @@
 ## 2026-06-11
 
+- Made disabled definition-popup chevrons render in the entry-colored border token.
+- Kept the hover definition popup open and anchored while paging between multiple entries.
 - Redesigned the hover definition popup with the edit button, full definitions, non-wrapping pagination, and in-page edit panel access.
 - Made alias definition popups show the saved alias as the title, matching base word popup layout.
 - Vertically centered the Aliases label with its toggle in the entry forms.

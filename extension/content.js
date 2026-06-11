@@ -513,8 +513,15 @@
     titleRow.append(title, editButton);
     wordBlock.append(titleRow, definition);
     popup.append(wordBlock);
+
+    const controls = pages.length > 1 ? createPopupPagination() : null;
+
+    if (controls) {
+      popup.append(controls.pagination);
+    }
+
     document.documentElement.appendChild(popup);
-    activePopup = { element: popup, anchor, pages, pageIndex: 0 };
+    activePopup = { element: popup, anchor, pages, pageIndex: 0, controls, keepOpenUntil: 0 };
 
     editButton.addEventListener("click", () => {
       const page = activePopup?.pages?.[activePopup.pageIndex];
@@ -564,6 +571,112 @@
     popup.style.left = `${Math.max(gap, left)}px`;
   }
 
+  function createPopupPagination() {
+    const pagination = document.createElement("div");
+    pagination.className = "glowsary-popup-pagination";
+
+    const previous = document.createElement("button");
+    previous.type = "button";
+    previous.setAttribute("aria-label", "Previous definition");
+    const previousIcon = document.createElement("span");
+    previousIcon.className = "glowsary-popup-pagination__icon glowsary-popup-pagination__icon--previous";
+    previousIcon.setAttribute("aria-hidden", "true");
+    previous.append(previousIcon);
+    previous.addEventListener("click", () => {
+      changePopupPage((activePopup?.pageIndex || 0) - 1);
+    });
+
+    const status = document.createElement("span");
+
+    const next = document.createElement("button");
+    next.type = "button";
+    next.setAttribute("aria-label", "Next definition");
+    const nextIcon = document.createElement("span");
+    nextIcon.className = "glowsary-popup-pagination__icon glowsary-popup-pagination__icon--next";
+    nextIcon.setAttribute("aria-hidden", "true");
+    next.append(nextIcon);
+    next.addEventListener("click", () => {
+      changePopupPage((activePopup?.pageIndex || 0) + 1);
+    });
+
+    pagination.append(previous, status, next);
+
+    return {
+      pagination,
+      previous,
+      status,
+      next
+    };
+  }
+
+  function keepPopupOpenDuringPaging() {
+    if (!activePopup) {
+      return;
+    }
+
+    activePopup.keepOpenUntil = Date.now() + 350;
+    window.clearTimeout(popupCloseTimer);
+  }
+
+  function keepPopupWithinCurrentPosition(popup) {
+    const gap = 8;
+    const viewportRight = window.innerWidth - gap;
+    const viewportBottom = window.innerHeight - gap;
+    const rect = popup.getBoundingClientRect();
+    let top = rect.top;
+    let left = rect.left;
+
+    if (left + rect.width > viewportRight) {
+      left = viewportRight - rect.width;
+    }
+
+    if (left < gap) {
+      left = gap;
+    }
+
+    if (top < gap) {
+      top = gap;
+    }
+
+    popup.style.top = `${top}px`;
+    popup.style.left = `${left}px`;
+    popup.style.maxHeight = "";
+    popup.style.overflowY = "";
+
+    const availableHeight = Math.max(120, viewportBottom - top);
+    const nextRect = popup.getBoundingClientRect();
+
+    if (nextRect.height > availableHeight) {
+      const currentMinHeight = Number.parseFloat(popup.style.minHeight || "0");
+
+      if (currentMinHeight > availableHeight) {
+        popup.style.minHeight = `${availableHeight}px`;
+      }
+
+      popup.style.maxHeight = `${availableHeight}px`;
+      popup.style.overflowY = "auto";
+    }
+  }
+
+  function changePopupPage(nextIndex) {
+    if (!activePopup) {
+      return;
+    }
+
+    const nextPageIndex = Math.min(Math.max(nextIndex, 0), activePopup.pages.length - 1);
+
+    if (nextPageIndex === activePopup.pageIndex) {
+      return;
+    }
+
+    const currentRect = activePopup.element.getBoundingClientRect();
+    activePopup.element.style.minHeight = `${currentRect.height}px`;
+    activePopup.pageIndex = nextPageIndex;
+    keepPopupOpenDuringPaging();
+    renderPopupPage();
+    keepPopupWithinCurrentPosition(activePopup.element);
+  }
+
   function renderPopupPage() {
     if (!activePopup) {
       return;
@@ -580,54 +693,23 @@
     title.hidden = false;
     editButton.disabled = !page.entry;
     definition.textContent = page.definition || "";
-    element.querySelector(".glowsary-popup-pagination")?.remove();
 
-    if (pages.length <= 1) {
-      positionPopup(anchor, element);
-      return;
+    if (activePopup.controls) {
+      activePopup.controls.previous.disabled = activePopup.pageIndex === 0;
+      activePopup.controls.status.textContent = `${activePopup.pageIndex + 1} / ${pages.length}`;
+      activePopup.controls.next.disabled = activePopup.pageIndex === pages.length - 1;
     }
-
-    const pagination = document.createElement("div");
-    pagination.className = "glowsary-popup-pagination";
-
-    const previous = document.createElement("button");
-    previous.type = "button";
-    previous.setAttribute("aria-label", "Previous definition");
-    previous.disabled = activePopup.pageIndex === 0;
-    const previousIcon = document.createElement("span");
-    previousIcon.className = "glowsary-popup-pagination__icon glowsary-popup-pagination__icon--previous";
-    previousIcon.setAttribute("aria-hidden", "true");
-    previous.append(previousIcon);
-    previous.addEventListener("click", () => {
-      activePopup.pageIndex = Math.max(0, activePopup.pageIndex - 1);
-      renderPopupPage();
-    });
-
-    const status = document.createElement("span");
-    status.textContent = `${activePopup.pageIndex + 1} / ${pages.length}`;
-
-    const next = document.createElement("button");
-    next.type = "button";
-    next.setAttribute("aria-label", "Next definition");
-    next.disabled = activePopup.pageIndex === pages.length - 1;
-    const nextIcon = document.createElement("span");
-    nextIcon.className = "glowsary-popup-pagination__icon glowsary-popup-pagination__icon--next";
-    nextIcon.setAttribute("aria-hidden", "true");
-    next.append(nextIcon);
-    next.addEventListener("click", () => {
-      activePopup.pageIndex = Math.min(pages.length - 1, activePopup.pageIndex + 1);
-      renderPopupPage();
-    });
-
-    pagination.append(previous, status, next);
-    element.appendChild(pagination);
-    positionPopup(anchor, element);
   }
 
   function schedulePopupDismiss() {
     window.clearTimeout(popupCloseTimer);
     popupCloseTimer = window.setTimeout(() => {
       if (!activePopup) {
+        return;
+      }
+
+      if (Date.now() < activePopup.keepOpenUntil) {
+        schedulePopupDismiss();
         return;
       }
 

@@ -1,3 +1,7 @@
+## 2026-06-12
+
+- Updated the extension display name, kept the short Chrome name as "Glowsary", and bumped the version to 1.3.0.
+
 ## 2026-06-11
 
 - Added the centered logo to the management view header and adjusted the header spacing to match the Figma build plan.

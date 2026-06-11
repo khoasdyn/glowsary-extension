@@ -43,3 +43,5 @@ Glowsary is made for self-learners who read English online and want the effort o
 ```
 Education
 ```
+
+## Screenshots

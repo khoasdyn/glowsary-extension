@@ -144,6 +144,10 @@
     })).filter((alias) => alias.term && alias.displayTerm);
   }
 
+  function formatAliases(aliases = []) {
+    return normalizeAliasList(aliases).map((alias) => alias.displayTerm).join(", ");
+  }
+
   function normalizeEntry(entry) {
     return {
       ...entry,
@@ -482,9 +486,47 @@
       : [{ definition: "", displayTerm: anchor.textContent || "", isAlias: false }];
     const popup = document.createElement("div");
     popup.className = POPUP_CLASS;
-    popup.innerHTML = `<strong></strong><div class="glowsary-popup-definition"></div>`;
+
+    const wordBlock = document.createElement("div");
+    wordBlock.className = "glowsary-popup__word-block";
+
+    const titleRow = document.createElement("div");
+    titleRow.className = "glowsary-popup__title-row";
+
+    const title = document.createElement("strong");
+    title.className = "glowsary-popup__title";
+
+    const editButton = document.createElement("button");
+    editButton.className = "glowsary-popup__edit-button";
+    editButton.type = "button";
+    editButton.setAttribute("aria-label", "Edit word");
+    editButton.title = "Edit word";
+
+    const editIcon = document.createElement("span");
+    editIcon.className = "glowsary-popup__icon glowsary-popup__icon--pencil";
+    editIcon.setAttribute("aria-hidden", "true");
+    editButton.append(editIcon);
+
+    const definition = document.createElement("div");
+    definition.className = "glowsary-popup-definition";
+
+    titleRow.append(title, editButton);
+    wordBlock.append(titleRow, definition);
+    popup.append(wordBlock);
     document.documentElement.appendChild(popup);
     activePopup = { element: popup, anchor, pages, pageIndex: 0 };
+
+    editButton.addEventListener("click", () => {
+      const page = activePopup?.pages?.[activePopup.pageIndex];
+
+      if (!page?.entry) {
+        return;
+      }
+
+      const entry = page.entry;
+      dismissPopup();
+      openEditDialog(entry);
+    });
 
     popup.addEventListener("mouseenter", () => {
       window.clearTimeout(popupCloseTimer);
@@ -499,15 +541,23 @@
     const rect = anchor.getBoundingClientRect();
     const popupRect = popup.getBoundingClientRect();
     const gap = 8;
-    let top = rect.bottom + gap;
+    const viewportBottom = window.innerHeight - gap;
+    const viewportRight = window.innerWidth - gap;
+    const belowTop = rect.bottom + gap;
+    const aboveTop = rect.top - popupRect.height - gap;
+    let top = belowTop;
     let left = rect.left;
 
-    if (top + popupRect.height > window.innerHeight - gap) {
-      top = rect.top - popupRect.height - gap;
+    if (belowTop + popupRect.height > viewportBottom) {
+      top = aboveTop;
     }
 
-    if (left + popupRect.width > window.innerWidth - gap) {
-      left = window.innerWidth - popupRect.width - gap;
+    if (top < gap) {
+      top = Math.min(Math.max(gap, belowTop), Math.max(gap, viewportBottom - popupRect.height));
+    }
+
+    if (left + popupRect.width > viewportRight) {
+      left = viewportRight - popupRect.width;
     }
 
     popup.style.top = `${Math.max(gap, top)}px`;
@@ -523,10 +573,12 @@
     const page = pages[activePopup.pageIndex] || pages[0];
     const title = element.querySelector("strong");
     const definition = element.querySelector(".glowsary-popup-definition");
+    const editButton = element.querySelector(".glowsary-popup__edit-button");
     const color = globalThis.GlowsaryColorPicker?.normalizeColor?.(page.entry?.color) || "purple";
     globalThis.GlowsarySemanticColorTokens?.applyWordCardMode?.(element, color);
     title.textContent = page.displayTerm || anchor.textContent || "";
     title.hidden = false;
+    editButton.disabled = !page.entry;
     definition.textContent = page.definition || "";
     element.querySelector(".glowsary-popup-pagination")?.remove();
 
@@ -540,8 +592,12 @@
 
     const previous = document.createElement("button");
     previous.type = "button";
-    previous.textContent = "Prev";
+    previous.setAttribute("aria-label", "Previous definition");
     previous.disabled = activePopup.pageIndex === 0;
+    const previousIcon = document.createElement("span");
+    previousIcon.className = "glowsary-popup-pagination__icon glowsary-popup-pagination__icon--previous";
+    previousIcon.setAttribute("aria-hidden", "true");
+    previous.append(previousIcon);
     previous.addEventListener("click", () => {
       activePopup.pageIndex = Math.max(0, activePopup.pageIndex - 1);
       renderPopupPage();
@@ -552,8 +608,12 @@
 
     const next = document.createElement("button");
     next.type = "button";
-    next.textContent = "Next";
+    next.setAttribute("aria-label", "Next definition");
     next.disabled = activePopup.pageIndex === pages.length - 1;
+    const nextIcon = document.createElement("span");
+    nextIcon.className = "glowsary-popup-pagination__icon glowsary-popup-pagination__icon--next";
+    nextIcon.setAttribute("aria-hidden", "true");
+    next.append(nextIcon);
     next.addEventListener("click", () => {
       activePopup.pageIndex = Math.min(pages.length - 1, activePopup.pageIndex + 1);
       renderPopupPage();
@@ -639,6 +699,64 @@
     refreshHighlights();
   }
 
+  function findEntryIndex(targetEntry) {
+    const identityIndex = entries.findIndex((entry) => entry === targetEntry);
+
+    if (identityIndex >= 0) {
+      return identityIndex;
+    }
+
+    return entries.findIndex((entry) => (
+      entry.createdAt === targetEntry?.createdAt &&
+      entry.term === targetEntry?.term &&
+      entry.displayTerm === targetEntry?.displayTerm &&
+      entry.definition === targetEntry?.definition
+    ));
+  }
+
+  async function updateEntry(targetEntry, displayTerm, definition, aliasText = "", color, aliasEnabled = true) {
+    const validation = validateEntry(displayTerm, definition, aliasText, aliasEnabled);
+
+    if (validation.error) {
+      throw new Error(validation.error);
+    }
+
+    const targetIndex = findEntryIndex(targetEntry);
+
+    if (targetIndex < 0) {
+      throw new Error("This word could not be found.");
+    }
+
+    const nextEntry = {
+      term: validation.normalizedTerm,
+      displayTerm: validation.cleanTerm,
+      definition: validation.cleanDefinition,
+      aliases: validation.aliases,
+      color: normalizeColor(color),
+      createdAt: targetEntry.createdAt || Date.now()
+    };
+    const nextEntries = entries.map((entry, index) => (index === targetIndex ? nextEntry : entry))
+      .sort((a, b) => a.displayTerm.localeCompare(b.displayTerm));
+
+    await storage.set({ [ENTRIES_KEY]: nextEntries });
+    entries = nextEntries;
+    refreshHighlights();
+  }
+
+  async function deleteEntry(targetEntry) {
+    const targetIndex = findEntryIndex(targetEntry);
+
+    if (targetIndex < 0) {
+      throw new Error("This word could not be found.");
+    }
+
+    const nextEntries = entries.filter((entry, index) => index !== targetIndex);
+
+    await storage.set({ [ENTRIES_KEY]: nextEntries });
+    entries = nextEntries;
+    refreshHighlights();
+  }
+
   async function getEntries() {
     const result = await storage.get({ [ENTRIES_KEY]: [] });
     return Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY].map(normalizeEntry) : [];
@@ -650,14 +768,24 @@
   }
 
   function openNoteDialog(rawTerm) {
+    openEntryDialog({ rawTerm });
+  }
+
+  function openEditDialog(entry) {
+    openEntryDialog({ mode: "edit", entry });
+  }
+
+  function openEntryDialog({ mode = "add", rawTerm = "", entry = null } = {}) {
     closeDialog();
 
+    const isEditMode = mode === "edit" && entry;
+    const formattedAliases = isEditMode ? formatAliases(entry.aliases) : "";
     const backdrop = document.createElement("div");
     backdrop.className = "glowsary-dialog-backdrop";
     backdrop.innerHTML = `
       <section class="glowsary-dialog" role="dialog" aria-modal="true" aria-labelledby="glowsary-dialog-title">
         <div class="glowsary-dialog-header">
-          <h2 class="glowsary-dialog-title" id="glowsary-dialog-title">Add Word</h2>
+          <h2 class="glowsary-dialog-title" id="glowsary-dialog-title">${isEditMode ? "Edit Word" : "Add Word"}</h2>
           <button class="glowsary-dialog-close" type="button" aria-label="Close">
             <span class="glowsary-dialog-close__icon" aria-hidden="true"></span>
           </button>
@@ -676,12 +804,20 @@
         definition: "glowsary-definition",
         definitionHint: "glowsary-definition-hint",
         alias: "glowsary-aliases",
+        aliasToggle: "glowsary-alias-toggle",
         aliasHint: "glowsary-alias-hint",
         color: "glowsary-color-picker",
-        save: "glowsary-save-entry"
+        save: "glowsary-save-entry",
+        delete: "glowsary-delete-entry"
       },
+      mode: isEditMode ? "edit" : "add",
+      includeDelete: isEditMode,
+      aliasEnabled: isEditMode ? Boolean(formattedAliases) : false,
       values: {
-        term: collapseSpaces(rawTerm)
+        term: isEditMode ? entry.displayTerm : collapseSpaces(rawTerm),
+        definition: isEditMode ? entry.definition : "",
+        aliases: formattedAliases,
+        color: isEditMode ? entry.color : undefined
       }
     });
 
@@ -694,6 +830,7 @@
     const aliasHint = formParts.aliasHint;
     const colorPicker = formParts.colorPicker;
     const saveButton = formParts.saveButton;
+    const deleteButton = formParts.deleteButton;
     const saveError = backdrop.querySelector(".glowsary-save-error");
     const colorPickerController = window.GlowsaryColorPicker?.init?.(colorPicker, { classPrefix: "glowsary-color-picker" });
     const termHint = formParts.termHint;
@@ -812,12 +949,27 @@
       }
 
       try {
-        await saveEntry(termInput.value, definitionInput.value, aliasInput.value, colorPickerController?.getValue?.(), isAliasEnabled());
+        if (isEditMode) {
+          await updateEntry(entry, termInput.value, definitionInput.value, aliasInput.value, colorPickerController?.getValue?.(), isAliasEnabled());
+        } else {
+          await saveEntry(termInput.value, definitionInput.value, aliasInput.value, colorPickerController?.getValue?.(), isAliasEnabled());
+        }
+
         closeDialog();
       } catch (error) {
         if (!showValidationError(error.message)) {
           saveError.textContent = error.message;
         }
+      }
+    });
+    deleteButton?.addEventListener("click", async () => {
+      clearSaveError();
+
+      try {
+        await deleteEntry(entry);
+        closeDialog();
+      } catch (error) {
+        saveError.textContent = error.message;
       }
     });
     syncAliasFieldVisibility();

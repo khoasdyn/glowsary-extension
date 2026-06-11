@@ -30,6 +30,10 @@
       "resources": [
         "public_suffix_list.dat",
         "assets/check.svg",
+        "assets/chevron-left.svg",
+        "assets/chevron-right.svg",
+        "assets/pencil-02.svg",
+        "assets/trash-03.svg",
         "assets/x-close.svg",
         "fonts/Copse/Copse-Regular.ttf",
         "fonts/Poppins/Poppins-Regular.ttf",

@@ -1,5 +1,6 @@
 ## 2026-06-11
 
+- Redesigned the hover definition popup with the edit button, full definitions, non-wrapping pagination, and in-page edit panel access.
 - Made alias definition popups show the saved alias as the title, matching base word popup layout.
 - Vertically centered the Aliases label with its toggle in the entry forms.
 - Consolidated toggle styling into the shared Switch component with large and medium sizes, fixed the medium on-state spacing, and let form hints wrap fully.

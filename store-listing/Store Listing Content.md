@@ -1,3 +1,5 @@
+This file holds the marketing copy for the Chrome Web Store listing. Each section maps to a field in the store's listing form (name, summary, description, category), so you fill the store form by copying from here. It is content only, not product behavior; the source of truth for what the product does is PRD.md. Some fields (Name and Summary) also live in `manifest.json`, as noted per section, and must stay in sync with it.
+
 ## Name
 
 ```
@@ -11,6 +13,8 @@ This is the title shown on the Chrome Web Store. It comes from the `name` field 
 ```
 Highlight your saved vocabulary across the web and reveal your own definitions on demand.
 ```
+
+This is the short summary shown under the name on the store. Like the Name, it comes from `manifest.json`, from the `description` field, so it must stay in sync with the manifest.
 
 ## Description
 

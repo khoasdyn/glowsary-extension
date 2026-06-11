@@ -1,5 +1,6 @@
 ## 2026-06-11
 
+- Added the centered logo to the management view header and adjusted the header spacing to match the Figma build plan.
 - Added pronounce buttons to the definition popup and saved-word cards, speaking the shown word with browser text-to-speech.
 - Updated the toolbar popup copy, height, padding, and centered status spacing to match the new 300 by 350 mockup.
 - Made the "Add word" right-click menu available in every page context, opening an empty focused Word field when no text is selected.

@@ -1,5 +1,6 @@
 ## 2026-06-11
 
+- Made alias definition popups show the saved alias as the title, matching base word popup layout.
 - Vertically centered the Aliases label with its toggle in the entry forms.
 - Consolidated toggle styling into the shared Switch component with large and medium sizes, fixed the medium on-state spacing, and let form hints wrap fully.
 - Added the Aliases toggle to the in-page save form and Management form panel, with hidden-input defaults and toggle-controlled alias saving.

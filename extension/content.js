@@ -332,7 +332,7 @@
         entry: candidate.entry,
         source: candidate.source,
         definition: candidate.entry.definition,
-        displayTerm: candidate.source.isAlias ? "" : candidate.entry.displayTerm,
+        displayTerm: candidate.source.displayTerm,
         isAlias: candidate.source.isAlias
       };
       let group = groupMap.get(groupKey);
@@ -526,7 +526,7 @@
     const color = globalThis.GlowsaryColorPicker?.normalizeColor?.(page.entry?.color) || "purple";
     globalThis.GlowsarySemanticColorTokens?.applyWordCardMode?.(element, color);
     title.textContent = page.displayTerm || anchor.textContent || "";
-    title.hidden = Boolean(page.isAlias);
+    title.hidden = false;
     definition.textContent = page.definition || "";
     element.querySelector(".glowsary-popup-pagination")?.remove();
 

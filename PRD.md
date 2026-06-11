@@ -4,6 +4,8 @@ Glowsary is a Chrome extension that adds a personal vocabulary layer over the we
 
 The closest reference is Word Wise on a Kindle. The difference is that the highlights come from the user’s own saved words, not a fixed list, and the definition stays hidden until the user asks for it.
 
+This file owns product behavior (the FRs below). The component names this file uses, and their visual specs, live in Figma and are written into each build plan; the design tokens and rules live in DESIGN.md.
+
 ## Problem
 
 People who learn English by reading articles, blogs, and social posts on sites like Medium and Substack have no good way to remember which words they have already looked up. When they meet a word again on a different page, there is no visual sign that they once searched for it. Each new page feels like the first time. This slows learning and wastes the effort already spent looking words up.

@@ -47,7 +47,7 @@ Given a Figma link to one specific component, run this flow in order.
 
 1. design-planner owns DESIGN.md and is allowed to create and edit it. Build mode and product-planner only read it.
 2. DESIGN.md holds the rules and structure of the design (token names, roles, and conventions) and the Components section style guide, not the exact values. It currently covers typography, color, and corner radius; spacing comes later.
-3. The Components section is the single style guide for shared UI components (Text Button, input, card, and so on). Keep each component's full spec in one place there: its colors, typography, radius, sizing, and states, by token name. Do not invent a component style that is not in Figma.
+3. The Components section is the single home for the extension's components: a Component index that names every component and is the naming authority, and the style-guide entries that hold each Figma-defined component's full spec (colors, typography, radius, sizing, and states, by token name). Each index entry points to the PRD.md requirements that own the component's behavior; the index references behavior, it does not define it. Keep each spec in one place there. Do not invent a component style that is not in Figma.
 4. Do not keep a standing mismatch log. Raise design mismatches (UI versus design, Figma versus the code tokens, code versus DESIGN.md, and similar) in the chat and resolve them into the plan or DESIGN.md. Open design debt that cannot be settled yet (an undesigned state, a missing token) stays documented inline in the matching DESIGN.md component entry, so it is not lost.
 
 ## How to write the build plan

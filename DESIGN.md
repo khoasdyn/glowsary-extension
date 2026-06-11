@@ -23,7 +23,7 @@ Sync rule: when the user shares a Figma link or asks for a check, Claude reads F
 3. If a value you need does not exist as a token, do not guess. Stop and tell the user, so the user adds it in Figma first and Claude adds the token.
 4. Token names match across Figma, this file, and the code, so there is no guessing.
 5. Only Claude maintains this file. Codex reads the tokens and this file, and never edits this file.
-6. Component styles always come from this file. The Components section below is the single style guide for shared UI components (Text Button, input, card, and so on). When you build or change a component, match its spec here. Do not invent a component style that is not in this section; if one is missing or unclear, stop and tell the user so Claude adds it from Figma first.
+6. Component styles always come from this file. The Components section below is the single home for the extension's components: its Component index is the naming authority for every component, and the style-guide entries hold the visual spec for the components Figma has defined. When you build or change a component, match its style-guide entry here. Do not invent a component style that is not in this section; if one is missing or unclear, stop and tell the user so Claude adds it from Figma first.
 
 ## Typography
 
@@ -110,7 +110,43 @@ Not defined yet. To be added.
 
 ## Components
 
-This section is the single style guide for shared UI components, detailed enough that a plan can simply point an agent here instead of restating the spec. Each component lists the tokens it uses by role, so the code reads from tokens, never from raw values. A component is added here only after Figma defines it. Where a value has no token yet (for example spacing and sizing), the spec gives the exact value from Figma as a clearly marked temporary value, so an agent can still build the component and we replace the raw value with a token once the scale exists.
+This section is the single home for the extension's UI components. The Component index below names every component and is the naming authority. The component entries after the index are the style guide: each is the visual spec for a component Figma has defined, detailed enough that a plan can point an agent here instead of restating it, and each lists the tokens it uses by role so the code reads from tokens, never from raw values. A component gets a style-guide entry only after Figma defines it. Where a value has no token yet (for example spacing and sizing), the entry gives the exact value from Figma as a clearly marked temporary value, so an agent can still build the component and we replace the raw value with a token once the scale exists.
+
+### Component index
+
+This index names every distinct UI component in the extension. Specs, code, and conversations should use these exact names. Each entry says what the component is and points to the PRD.md requirements that own its behavior. An entry marked "styled below" also has a full visual spec further down in this section; the rest have no separate visual spec yet.
+
+- **Highlight underline** — the subtle dashed underline shown beneath a saved word or phrase on any web page, tinted in the entry's card color. Behavior and look: FR-9, FR-9a, FR-10b. No separate style-guide entry yet.
+- **Definition Popup** — the small floating card shown when the user hovers over a highlighted word; shows the saved definition, pages through several matching entries newest first, and is sticky. Behavior: FR-11, FR-11a, FR-12, FR-13. Styled below.
+- **Definition pagination control** — the controls at the bottom of the Definition Popup that move between entries matching the same highlighted text; shown only when more than one entry matches. Behavior: FR-11a.
+- **Save form** — the in-page form opened from the "Add word" context menu action, with four fields (Word, Definition, Aliases, Color); it shares its form body with the Management form panel. Behavior: FR-2, FR-2a, FR-3, FR-3e. Built from the Field input, Multiline input, and Color picker (styled below).
+- **Alias field** — the text input labeled "Aliases" in the Save form and the Management form panel for optional comma-separated aliases. Behavior: FR-3b, FR-3c. It is an instance of the Field input (styled below).
+- **Color picker** — the row of four fixed color choices that tag a saved entry, shown in the Save form and the Management form panel. Behavior: FR-3e, FR-17f. Styled below.
+- **Management form panel** — the right-side panel that holds the Add and Edit form in the management view. Behavior: FR-17a, FR-18, FR-18a. Styled below.
+- **Context menu item** — the "Add word" action added to the browser's right-click menu when text is selected on a page. Behavior: FR-1.
+- **Toolbar popup** — the small panel opened by the Glowsary toolbar icon; holds the global highlighting switch and the "Go To App" button, and is the only place to turn highlighting on or off. Behavior: FR-21, FR-22, FR-23, FR-24. Styled below.
+- **Add New button** — the button in the Excluded sites manager that opens the Add Site dialog; the only way to add an excluded site. Behavior: FR-28.
+- **Add Site dialog** — the right-side panel for adding one excluded site, with a single "Site" field and no edit mode. Behavior: FR-28, FR-28a, FR-29a. Styled below.
+- **Go To App button** — the button in the Toolbar popup that opens the management view in a browser tab, focusing an existing tab if one is open. Behavior: FR-24. It is an instance of the Text Button (styled below).
+- **Toolbar icon** — the Glowsary icon in the browser toolbar; it reflects the global highlighting state, colored when on and grayscale with an "OFF" badge when off. Behavior: FR-25.
+- **Management view** — the full-page view opened from the Toolbar popup; a shared header above a tab nav that splits it into the Home tab and the Settings tab, opening on Home. Behavior: FR-38, FR-41.
+- **Tab nav** — the two-tab switch below the shared header that moves between the Home tab and the Settings tab. Behavior: FR-38. Styled below.
+- **Home tab** — the default tab of the management view; holds the saved-words tools (the "Saved Words (N)" heading, the subtitle, the Search box, the Sort control, and the Entry grid). Behavior: FR-39.
+- **Settings tab** — the tab that holds the Excluded sites manager and the Backup Data section (the Import and Export buttons). Behavior: FR-40.
+- **Shared header** — the top area of the management view, above the tab nav, with the single centered title "Welcome to Glowsary!" and no subtitle; visible on both tabs. Behavior: FR-38.
+- **Excluded sites manager** — the area on the Settings tab that controls the excluded sites list, with the "Excluded Sites (N)" heading, a subtitle, the Add New button, and the list; there is no master on/off switch. Behavior: FR-30.
+- **Excluded sites list** — the 2-column grid of excluded site items inside the Excluded sites manager. Behavior: FR-30.
+- **Excluded site item** — one item in the Excluded sites list; shows one domain with a delete button, with no toggle and no edit. Behavior: FR-30.
+- **Highlighting bar** — retired. The global highlighting switch is no longer in the management view; it lives only in the Toolbar popup. Behavior: FR-22.
+- **Global highlighting switch** — the on/off switch that controls all highlighting; it lives only in the Toolbar popup. Behavior: FR-14, FR-22. It is an instance of the Switch (styled below).
+- **Search box** — the input in the management view that filters the Entry grid by term in real time. Behavior: FR-17b.
+- **Sort control** — the control that switches the Entry grid between "Latest added" and "A → Z"; the chosen option persists. Behavior: FR-17d.
+- **Entry grid** — the four-column grid of word cards on the Home tab; it always begins with the Add New Word card. Behavior: FR-42, FR-17a.
+- **Word card** — one item in the Entry grid; shows one saved entry using its color as the full card background. Behavior: FR-42, FR-43, FR-17g. Styled below.
+- **Add New Word card** — the first card in the Entry grid; opens the Management form panel in add mode and shows a dashed border with no color background. Behavior: FR-17a. Styled with the Word Card (styled below).
+- **Export button** — the button that saves all saved words to a CSV file, always exporting the full list and ignoring any active search. Behavior: FR-34, FR-35.
+- **Import button** — the button that imports words from a CSV file, skipping exact duplicates and invalid rows. Behavior: FR-36.
+- **Empty state** — the message shown in the Entry grid area when no entries match the current search query. Behavior: FR-17c.
 
 ### Text Button
 
@@ -251,7 +287,7 @@ States not yet designed: the same as the Field input. Figma shows only the fille
 
 ### Management form panel
 
-The Management form panel is the right-side panel that holds the Add and Edit form. It replaces the earlier centered modal. In Figma it is the "Dialog" frame. It maps to PRD.md FR-17a, FR-18, FR-18a, and the Management form panel component entry, which own its behavior; this section owns its look. It is a composition of components already specced above, not a new control.
+The Management form panel is the right-side panel that holds the Add and Edit form. It replaces the earlier centered modal. In Figma it is the "Dialog" frame. It maps to PRD.md FR-17a, FR-18, FR-18a, which own its behavior; this section owns its look. It is a composition of components already specced above, not a new control.
 
 Placement: the panel is a right-side drawer. It floats near the right edge with a 16px gap from the top, the right, and the bottom of the viewport, so it does not touch those three edges; on the left it does not have a margin, because the overlay fills the space to its left. The panel is full height minus those 16px top and bottom gaps. In the mockup its width is 400. It opens over the management view.
 
@@ -273,7 +309,7 @@ States and motion not yet designed: Figma shows the panel as a static frame, so 
 
 ### Add Site dialog
 
-The Add Site dialog is the right-side panel for adding one excluded site. It maps to PRD.md FR-28, FR-28a, FR-29a, and the Add Site dialog glossary entry, which own its behavior; this section owns its look. It is the same right-side panel as the Management form panel, with a much simpler form: one field instead of four, and no delete button. It is a composition of components already specced above, not a new control.
+The Add Site dialog is the right-side panel for adding one excluded site. It maps to PRD.md FR-28, FR-28a, FR-29a, which own its behavior; this section owns its look. It is the same right-side panel as the Management form panel, with a much simpler form: one field instead of four, and no delete button. It is a composition of components already specced above, not a new control.
 
 Placement, overlay, surface, and radius: the same as the Management form panel. It is a right-side drawer with a 16px gap from the top, right, and bottom of the viewport, full height minus those gaps, over a black 40% overlay that does not close on click. The surface is `--bg-primary` (white) with `--card-lg` radius. Width follows the Management form panel.
 
@@ -291,7 +327,7 @@ States and motion not yet designed: the same as the Management form panel. Figma
 
 ### Toolbar Popup
 
-The Toolbar Popup is the small panel that opens when the user clicks the Glowsary icon in the browser toolbar. It maps to PRD.md FR-21, FR-22, FR-23, FR-24. In Figma it is the "Extension Popup" frame (node 26:1076). The Figma shows two combined states — active (global switch on, site not excluded) and inactive (global switch off, site excluded) — but in the build these are two independent axes: the switch state and the exclude state.
+The Toolbar Popup is the small panel that opens when the user clicks the Glowsary icon in the browser toolbar. It maps to PRD.md FR-21, FR-22, FR-23, FR-24. In Figma it is the "Extension Popup" frame. The Figma shows two combined states — active (global switch on, site not excluded) and inactive (global switch off, site excluded) — but in the build these are two independent axes: the switch state and the exclude state.
 
 Container: a white card, 300px wide, 400px tall (min and max), 24px padding left and right, 16px padding top and bottom. Background `--bg-primary` (white). Radius: `--card-lg`. No border or shadow on the container itself.
 
@@ -313,7 +349,7 @@ States not yet designed: Figma defines only the two switch states (on and off). 
 
 ### Word Card
 
-The Word Card is the colored card in the management view Home tab that shows one saved entry. It is used in the four-column grid on the Home tab. In Figma it is the "Word Card" frame in the Page Structure node (20:1842). Each card takes on the color mode of its entry's assigned color.
+The Word Card is the colored card in the management view Home tab that shows one saved entry. It is used in the four-column grid on the Home tab. In Figma it is the "Word Card" frame in the Page Structure. Each card takes on the color mode of its entry's assigned color.
 
 Anatomy: a vertical stack with a 8px gap, in this order: the main block and the alias row. The main block is a vertical stack with an 8px gap between the word title and the definition. The alias row wraps as needed.
 
@@ -331,9 +367,9 @@ Add New Word card: a special card variant for the "Add New Word" action at the f
 
 States not yet designed: Figma defines only the filled resting state. There is no hover, focus, or pressed style yet. The card is interactive (clicking opens the edit panel), so it needs a keyboard focus indicator until Figma defines one.
 
-### Highlight Popup
+### Definition Popup
 
-The Highlight Popup is the small card that appears when the user hovers over a highlighted word on any web page. It shows the saved word and its definition. In Figma it is the "Highlight Popup" component (node 476:1296). It maps to the core read-while-hovering behavior described in the product overview and user story 3.
+The Definition Popup is the small card that appears when the user hovers over a highlighted word on any web page. It shows the saved word and its definition. In Figma it is still named the "Highlight Popup" frame; our canonical name for it is Definition Popup. It maps to the core read-while-hovering behavior described in the product overview and user story 3.
 
 Anatomy: a vertical stack with a 6px gap, in this order: the word title on top and the definition below.
 

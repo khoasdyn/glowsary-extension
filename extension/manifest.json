@@ -34,6 +34,7 @@
         "assets/chevron-right.svg",
         "assets/pencil-02.svg",
         "assets/trash-03.svg",
+        "assets/volume-max.svg",
         "assets/x-close.svg",
         "fonts/Copse/Copse-Regular.ttf",
         "fonts/Poppins/Poppins-Regular.ttf",
@@ -55,6 +56,7 @@
         "tokens/radius-tokens.js",
         "domain-utils.js",
         "icon-button.js",
+        "speech.js",
         "color-picker.js",
         "entry-form.js",
         "content.js"

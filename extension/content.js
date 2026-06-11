@@ -493,6 +493,18 @@
     const titleRow = document.createElement("div");
     titleRow.className = "glowsary-popup__title-row";
 
+    const titleGroup = document.createElement("div");
+    titleGroup.className = "glowsary-popup__title-group";
+
+    const soundButton = document.createElement("button");
+    soundButton.className = "glowsary-popup__sound-button";
+    soundButton.type = "button";
+
+    const soundIcon = document.createElement("span");
+    soundIcon.className = "glowsary-popup__sound-icon";
+    soundIcon.setAttribute("aria-hidden", "true");
+    soundButton.append(soundIcon);
+
     const title = document.createElement("strong");
     title.className = "glowsary-popup__title";
 
@@ -510,7 +522,8 @@
     const definition = document.createElement("div");
     definition.className = "glowsary-popup-definition";
 
-    titleRow.append(title, editButton);
+    titleGroup.append(soundButton, title);
+    titleRow.append(titleGroup, editButton);
     wordBlock.append(titleRow, definition);
     popup.append(wordBlock);
 
@@ -522,6 +535,15 @@
 
     document.documentElement.appendChild(popup);
     activePopup = { element: popup, anchor, pages, pageIndex: 0, controls, keepOpenUntil: 0 };
+
+    soundButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const page = activePopup?.pages?.[activePopup.pageIndex];
+      const titleText = page?.displayTerm || activePopup?.anchor?.textContent || "";
+      window.GlowsarySpeech?.speakEnglish?.(titleText);
+    });
 
     editButton.addEventListener("click", () => {
       const page = activePopup?.pages?.[activePopup.pageIndex];
@@ -687,10 +709,13 @@
     const title = element.querySelector("strong");
     const definition = element.querySelector(".glowsary-popup-definition");
     const editButton = element.querySelector(".glowsary-popup__edit-button");
+    const soundButton = element.querySelector(".glowsary-popup__sound-button");
     const color = globalThis.GlowsaryColorPicker?.normalizeColor?.(page.entry?.color) || "purple";
+    const titleText = page.displayTerm || anchor.textContent || "";
     globalThis.GlowsarySemanticColorTokens?.applyWordCardMode?.(element, color);
-    title.textContent = page.displayTerm || anchor.textContent || "";
+    title.textContent = titleText;
     title.hidden = false;
+    soundButton?.setAttribute("aria-label", `Pronounce ${titleText}`);
     editButton.disabled = !page.entry;
     definition.textContent = page.definition || "";
 

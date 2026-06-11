@@ -79,8 +79,8 @@ The exact values live as tokens in `extension/tokens/radius-tokens.js`, generate
 - `--cta`: 9999px. The fully rounded value for buttons, the switch track, the Tab nav track and items, icon buttons, and color circles. In code use `9999px` for pill shapes and fully rounded rectangles, and `50%` for true circles where the element has equal width and height.
 - `--box`: 12px. For inputs, list rows, and general box elements.
 - `--card-sm`: 4px. Used for alias chips and small card elements.
-- `--card-md`: 12px. For the highlight popup and medium-radius card elements.
-- `--card-lg`: 24px. For word cards, dialogs, and panels that need the larger rounded look.
+- `--card-md`: 12px. For the highlight popup, the word cards, and medium-radius card elements.
+- `--card-lg`: 24px. For dialogs and panels that need the larger rounded look.
 
 The component specs in the build plans use these token names.
 

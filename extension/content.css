@@ -57,6 +57,40 @@
   min-width: 0;
 }
 
+.glowsary-popup__title-group {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.glowsary-popup__sound-button {
+  display: inline-flex;
+  flex: 0 0 18px;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  padding: 0;
+  color: var(--wc-word-text);
+  background: var(--color-base-transparent);
+  border: 0;
+  cursor: pointer;
+  appearance: none;
+}
+
+.glowsary-popup__sound-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  background: currentColor;
+  -webkit-mask: url("chrome-extension://__MSG_@@extension_id__/assets/volume-max.svg") center / contain no-repeat;
+  mask: url("chrome-extension://__MSG_@@extension_id__/assets/volume-max.svg") center / contain no-repeat;
+}
+
 .glowsary-popup__title {
   display: block;
   flex: 1 1 auto;

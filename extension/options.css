@@ -606,6 +606,7 @@ button {
   color: var(--wc-subtext);
   background: var(--wc-bg-card);
   border: 1px solid var(--wc-border);
+  cursor: pointer;
   text-align: left;
 }
 
@@ -617,9 +618,45 @@ button {
   width: 100%;
 }
 
+.entry-card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+}
+
+.entry-card-sound-button {
+  display: inline-flex;
+  flex: 0 0 20px;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  padding: 0;
+  color: var(--wc-word-text);
+  background: var(--color-base-transparent);
+  border: 0;
+  cursor: pointer;
+  appearance: none;
+}
+
+.entry-card-sound-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background: currentColor;
+  -webkit-mask: url("assets/volume-max.svg") center / contain no-repeat;
+  mask: url("assets/volume-max.svg") center / contain no-repeat;
+}
+
 .entry-term {
   display: block;
+  flex: 1 1 auto;
   width: 100%;
+  min-width: 0;
   color: var(--wc-word-text);
   font-family: var(--text-style-card-title-font-family);
   font-size: var(--text-style-card-title-font-size);

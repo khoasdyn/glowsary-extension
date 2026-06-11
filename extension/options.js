@@ -654,16 +654,43 @@ function createAliasChip(alias) {
 }
 
 function createEntryCard(entry) {
-  const card = document.createElement("button");
+  const card = document.createElement("div");
   const color = window.GlowsaryColorPicker?.normalizeColor?.(entry.color) || "purple";
   card.className = `entry-card entry-card--word entry-card--${color}`;
-  card.type = "button";
+  card.setAttribute("role", "button");
+  card.tabIndex = 0;
   card.setAttribute("aria-label", `Edit ${entry.displayTerm || entry.term}`);
   window.GlowsarySemanticColorTokens?.applyWordCardMode?.(card, color);
   card.addEventListener("click", () => showEditor(entry));
+  card.addEventListener("keydown", (event) => {
+    if (event.target !== card || (event.key !== "Enter" && event.key !== " ")) {
+      return;
+    }
+
+    event.preventDefault();
+    showEditor(entry);
+  });
 
   const main = document.createElement("span");
   main.className = "entry-card-main";
+
+  const header = document.createElement("span");
+  header.className = "entry-card-header";
+
+  const soundButton = document.createElement("button");
+  soundButton.className = "entry-card-sound-button";
+  soundButton.type = "button";
+  soundButton.setAttribute("aria-label", `Pronounce ${entry.displayTerm || entry.term}`);
+  soundButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    window.GlowsarySpeech?.speakEnglish?.(entry.displayTerm || entry.term);
+  });
+
+  const soundIcon = document.createElement("span");
+  soundIcon.className = "entry-card-sound-icon";
+  soundIcon.setAttribute("aria-hidden", "true");
+  soundButton.append(soundIcon);
 
   const term = document.createElement("span");
   term.className = "entry-term";
@@ -673,7 +700,8 @@ function createEntryCard(entry) {
   definition.className = "entry-definition";
   definition.textContent = entry.definition;
 
-  main.append(term, definition);
+  header.append(soundButton, term);
+  main.append(header, definition);
 
   const aliases = document.createElement("span");
   aliases.className = "entry-aliases";

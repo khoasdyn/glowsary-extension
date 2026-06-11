@@ -32,6 +32,7 @@ A self-directed English learner, often a non-native speaker, who reads English c
 5. As a reader, I want to review, edit, and delete my saved words in one place, so I can keep my list correct and clean.
 6. As a reader, I want to add a new word by hand in the management view, so I can save a word even when I am not reading it on a page.
 7. As a reader, I want to export my saved words to a file and import them back, so I can back them up or move them to another device.
+8. As a reader, I want to hear how a saved word is pronounced, so I learn the sound of the word, not only its meaning.
 
 ## Functional requirements
 
@@ -74,6 +75,16 @@ A self-directed English learner, often a non-native speaker, who reads English c
 - FR-13c: The edit form panel can open directly over the web page the user is reading, not only over the management view (FR-17a). It opens as an in-page overlay, the same way the in-page "Add word" form appears on the page (FR-2), so the user can edit a saved word without leaving the page. It is the same panel with the same fields, color picker (FR-17f), alias toggle (FR-3f), Save button, and the delete button in edit mode (FR-18a); nothing about the panel's own behavior changes. After the user saves or deletes from this in-page panel, highlights on the page update live (FR-5, FR-18); on delete the highlight is removed. The popup does not reopen on its own; the user keeps reading and can hover again to see the updated definition.
 - FR-13d: When the popup paginates between entries (FR-11a), paging stops at the ends and does not wrap. On the first page the "previous" control is disabled; on the last page the "next" control is disabled. With only one entry, no pagination controls are shown (FR-11a).
 
+### Pronouncing a word
+
+- FR-44: The user can hear a saved word spoken aloud by clicking a sound icon, like the speaker button in a dictionary app. The speech uses the browser's built-in text-to-speech, so it needs no network connection and no third-party service, and it can speak anything the user saved, including phrases and aliases. Only the word is spoken, never the definition.
+- FR-44a: The sound icon appears in two places: in the definition popup, on the left of the word title (FR-12), and on each word card in the management view, on the left of the term. The edit and add form panel has no sound icon.
+- FR-44b: The icon speaks the text shown, in its display form. In the definition popup it speaks the title of the current page, which for an alias match is the alias display form (FR-12): hovering the alias "versions" speaks "versions", not the term "version". On a multi-entry popup (FR-11a), each page speaks its own title. On a word card it speaks the term as the user typed it; alias pills are not spoken.
+- FR-44c: The speech always uses an English voice, even when the user's system or browser language is different, because saved words are English and a non-English voice reads them badly. It speaks at the normal default rate.
+- FR-44d: Clicking the icon while a word is still being spoken stops it and speaks it again from the beginning. Starting speech for one word stops any other word still being spoken. There is no play/stop toggle and no ignored click.
+- FR-44e: Clicking the sound icon never triggers another action. In the popup, it does not open the edit panel, and the popup stays open under the sticky rule (FR-13). On a word card, it does not open the edit panel (FR-18). If the popup closes while a word is being spoken, the speech simply finishes on its own; it does not need to be cut off.
+- FR-44f: When the browser has no usable voice (rare), clicking the icon silently does nothing. The icon is still shown and no error message appears; the case is too rare to deserve extra UI.
+
 ### Global on and off
 
 - FR-14: The extension has a single global on/off switch that controls all highlighting. This switch lives only in the toolbar popup (FR-22). The management view has no copy of it.
@@ -108,7 +119,7 @@ A self-directed English learner, often a non-native speaker, who reads English c
 - FR-40: The Settings tab holds the excluded sites manager and the Backup Data section. The excluded sites manager has its section heading "Excluded Sites (N)", a subtitle line, an "Add New" button that opens the Add Site dialog (FR-28), and the excluded sites list. There is no master on/off switch on the heading. Deletion is the only action on items in the list. The Backup Data section has the Import button and the Export button.
 - FR-41: The management view always opens on the Home tab.
 - FR-42: The word card grid uses four columns. Each card has a fixed height. When the definition text is too long to fit in the card, it is truncated with an ellipsis. The full definition is visible in the hover popup (FR-13a) and inside the Management form panel.
-- FR-43: Each word card shows three pieces of content: the term at the top, the definition below it, and any aliases as small pills at the bottom. If an entry has no aliases, the alias area is empty. Switching between tabs does not reload the page and does not change or lose any saved word, excluded site, search text, or sort choice. It only changes which tab is shown.
+- FR-43: Each word card shows three pieces of content: the term at the top, the definition below it, and any aliases as small pills at the bottom. If an entry has no aliases, the alias area is empty. The card also shows a sound icon that speaks the term aloud (FR-44, FR-44a). Switching between tabs does not reload the page and does not change or lose any saved word, excluded site, search text, or sort choice. It only changes which tab is shown.
 
 ### Managing saved words
 

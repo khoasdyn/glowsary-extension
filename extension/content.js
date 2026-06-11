@@ -585,7 +585,7 @@
     activePopup = null;
   }
 
-  function validateEntry(displayTerm, definition, aliasText = "") {
+  function validateEntry(displayTerm, definition, aliasText = "", aliasEnabled = true) {
     const cleanTerm = collapseSpaces(displayTerm);
     const cleanDefinition = String(definition || "").trim();
 
@@ -602,7 +602,7 @@
     }
 
     const normalizedTerm = normalizeTerm(cleanTerm);
-    const aliasResult = parseAliases(aliasText, normalizedTerm);
+    const aliasResult = aliasEnabled ? parseAliases(aliasText, normalizedTerm) : { aliases: [] };
 
     if (aliasResult.error) {
       return aliasResult;
@@ -616,8 +616,8 @@
     };
   }
 
-  async function saveEntry(displayTerm, definition, aliasText = "", color) {
-    const validation = validateEntry(displayTerm, definition, aliasText);
+  async function saveEntry(displayTerm, definition, aliasText = "", color, aliasEnabled = true) {
+    const validation = validateEntry(displayTerm, definition, aliasText, aliasEnabled);
 
     if (validation.error) {
       throw new Error(validation.error);
@@ -690,6 +690,7 @@
     const definitionInput = formParts.definitionInput;
     const definitionHint = formParts.definitionHint;
     const aliasInput = formParts.aliasInput;
+    const aliasToggle = formParts.aliasToggle;
     const aliasHint = formParts.aliasHint;
     const colorPicker = formParts.colorPicker;
     const saveButton = formParts.saveButton;
@@ -705,8 +706,13 @@
       definitionHint.classList.toggle("is-error", Boolean(message));
     };
     const setAliasHint = (message = null) => {
-      aliasHint.textContent = message || "Optional, comma separated";
+      aliasHint.textContent = message || "Aliases are other spellings or forms of this word, like \"versions\" for \"version\". They get the same highlight and definition. Separate each with a comma.";
       aliasHint.classList.toggle("is-error", Boolean(message));
+    };
+    const isAliasEnabled = () => Boolean(aliasToggle?.checked);
+    const syncAliasFieldVisibility = () => {
+      aliasInput.hidden = !isAliasEnabled();
+      aliasToggle?.setAttribute("aria-expanded", String(isAliasEnabled()));
     };
     const syncSaveState = () => {
       saveButton.disabled = !(termInput.value.trim() && definitionInput.value.trim());
@@ -748,7 +754,7 @@
       }
 
       const normalizedTerm = normalizeTerm(cleanTerm);
-      const aliasResult = parseAliases(aliasInput.value, normalizedTerm);
+      const aliasResult = isAliasEnabled() ? parseAliases(aliasInput.value, normalizedTerm) : { aliases: [] };
 
       if (aliasResult.error) {
         errors.alias = aliasResult.error;
@@ -792,6 +798,11 @@
         setAliasHint();
       }
     });
+    aliasToggle?.addEventListener("change", () => {
+      syncAliasFieldVisibility();
+      clearSaveError();
+      setAliasHint();
+    });
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       clearSaveError();
@@ -801,7 +812,7 @@
       }
 
       try {
-        await saveEntry(termInput.value, definitionInput.value, aliasInput.value, colorPickerController?.getValue?.());
+        await saveEntry(termInput.value, definitionInput.value, aliasInput.value, colorPickerController?.getValue?.(), isAliasEnabled());
         closeDialog();
       } catch (error) {
         if (!showValidationError(error.message)) {
@@ -809,6 +820,7 @@
         }
       }
     });
+    syncAliasFieldVisibility();
     syncSaveState();
 
     document.documentElement.appendChild(backdrop);

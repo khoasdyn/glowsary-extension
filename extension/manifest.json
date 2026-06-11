@@ -45,6 +45,7 @@
       "js": [
         "tokens/color-tokens.js",
         "tokens/semantic-color-tokens.js",
+        "tokens/shadow-tokens.js",
         "tokens/typography-tokens.js",
         "tokens/semantic-typography-tokens.js",
         "tokens/radius-tokens.js",
@@ -54,7 +55,7 @@
         "entry-form.js",
         "content.js"
       ],
-      "css": ["content.css"],
+      "css": ["switch.css", "content.css"],
       "run_at": "document_idle"
     }
   ]

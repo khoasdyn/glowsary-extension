@@ -38,6 +38,7 @@ const elements = {
   definitionInput: document.querySelector("#definition-input"),
   definitionHint: document.querySelector("#definition-hint"),
   aliasInput: document.querySelector("#alias-input"),
+  aliasToggle: document.querySelector("#alias-toggle"),
   aliasHint: document.querySelector("#alias-hint"),
   colorPicker: document.querySelector("#color-picker"),
   saveEntry: document.querySelector("#save-entry"),
@@ -283,7 +284,7 @@ function getDuplicateKey(entry) {
   ]);
 }
 
-function validateEntry(displayTerm, definition, aliasText = "") {
+function validateEntry(displayTerm, definition, aliasText = "", aliasEnabled = true) {
   const cleanTerm = collapseSpaces(displayTerm);
   const cleanDefinition = String(definition || "").trim();
 
@@ -300,7 +301,7 @@ function validateEntry(displayTerm, definition, aliasText = "") {
   }
 
   const normalizedTerm = normalizeTerm(cleanTerm);
-  const aliasResult = parseAliases(aliasText, normalizedTerm);
+  const aliasResult = aliasEnabled ? parseAliases(aliasText, normalizedTerm) : { aliases: [] };
 
   if (aliasResult.error) {
     return aliasResult;
@@ -329,8 +330,17 @@ function setDefinitionHint(message = null) {
 }
 
 function setAliasHint(message = null) {
-  elements.aliasHint.textContent = message || "Optional, comma separated";
+  elements.aliasHint.textContent = message || "Aliases are other spellings or forms of this word, like \"versions\" for \"version\". They get the same highlight and definition. Separate each with a comma.";
   elements.aliasHint.classList.toggle("is-error", Boolean(message));
+}
+
+function isAliasEnabled() {
+  return Boolean(elements.aliasToggle?.checked);
+}
+
+function syncAliasFieldVisibility() {
+  elements.aliasInput.hidden = !isAliasEnabled();
+  elements.aliasToggle?.setAttribute("aria-expanded", String(isAliasEnabled()));
 }
 
 function syncEntrySaveState() {
@@ -391,6 +401,8 @@ function showEditor(entry = null) {
   elements.termInput.value = entry?.displayTerm || "";
   elements.definitionInput.value = entry?.definition || "";
   elements.aliasInput.value = entry ? formatAliases(entry.aliases) : "";
+  elements.aliasToggle.checked = Boolean(elements.aliasInput.value.trim());
+  syncAliasFieldVisibility();
   entryColorPicker?.setValue(entry?.color);
   entryForm?.setMode(entry ? "edit" : "add");
   setTermHint();
@@ -407,6 +419,8 @@ function hideEditor() {
   syncModalOpenState();
   editingEntry = null;
   elements.form.reset();
+  elements.aliasToggle.checked = false;
+  syncAliasFieldVisibility();
   entryColorPicker?.setValue();
   entryForm?.setMode("add");
   setTermHint();
@@ -465,7 +479,7 @@ async function saveEntry() {
     return;
   }
 
-  const validation = validateEntry(elements.termInput.value, elements.definitionInput.value, elements.aliasInput.value);
+  const validation = validateEntry(elements.termInput.value, elements.definitionInput.value, elements.aliasInput.value, isAliasEnabled());
 
   if (validation.error) {
     if (validation.error.startsWith("Word ")) {
@@ -798,6 +812,11 @@ function bindEvents() {
   elements.termInput.addEventListener("input", syncEntrySaveState);
   elements.definitionInput.addEventListener("input", syncEntrySaveState);
   elements.aliasInput.addEventListener("input", syncEntrySaveState);
+  elements.aliasToggle.addEventListener("change", () => {
+    syncAliasFieldVisibility();
+    setAliasHint();
+    syncEntrySaveState();
+  });
   elements.searchInput.addEventListener("input", () => {
     searchQuery = elements.searchInput.value;
     renderEntries();

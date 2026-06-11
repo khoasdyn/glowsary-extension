@@ -281,6 +281,13 @@
   white-space: nowrap;
 }
 
+.glowsary-field-input__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
 .glowsary-field-input__control {
   box-sizing: border-box;
   width: 100%;
@@ -302,8 +309,20 @@
   appearance: none;
 }
 
+.glowsary-field-input__control--alias {
+  background: var(--bg-primary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-text-sm);
+}
+
 .glowsary-field-input__control:focus-visible {
   outline: auto;
+}
+
+.glowsary-field-input__control[hidden] {
+  display: none;
 }
 
 .glowsary-field-input__control::placeholder {
@@ -320,9 +339,7 @@
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-text-xs);
   letter-spacing: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .glowsary-field-input__hint.is-error {

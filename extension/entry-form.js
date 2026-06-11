@@ -6,11 +6,14 @@
     definition: "definition-input",
     definitionHint: "definition-hint",
     alias: "alias-input",
+    aliasToggle: "alias-toggle",
     aliasHint: "alias-hint",
     color: "color-picker",
     save: "save-entry",
     delete: "delete-entry-from-panel"
   };
+
+  const ALIAS_HINT_TEXT = "Aliases are other spellings or forms of this word, like \"versions\" for \"version\". They get the same highlight and definition. Separate each with a comma.";
 
   function className(prefix, base) {
     return prefix ? `${prefix}-${base}` : base;
@@ -64,6 +67,54 @@
     return { label, control, hint };
   }
 
+  function createAliasField(config, prefix) {
+    const wrapper = createElement("div", { className: config.wrapperClass });
+    const header = createElement("div", { className: className(prefix, "field-input__header") });
+    const labelText = createElement("label", {
+      className: className(prefix, "field-input__label"),
+      textContent: "Aliases",
+      attributes: { for: config.id }
+    });
+    const toggle = createElement("input", {
+      className: "glowsary-switch",
+      attributes: {
+        id: config.toggleId,
+        type: "checkbox",
+        "aria-label": "Show aliases field",
+        "aria-controls": config.id
+      }
+    });
+    const control = createElement("input", {
+      className: `${config.controlClass} ${className(prefix, "field-input__control--alias")}`,
+      attributes: {
+        id: config.id,
+        name: "alias",
+        autocomplete: "off",
+        placeholder: "Other spellings, separated by commas"
+      }
+    });
+    const hint = createElement("p", {
+      className: className(prefix, "field-input__hint"),
+      textContent: ALIAS_HINT_TEXT,
+      attributes: { id: config.hintId }
+    });
+
+    control.value = config.value || "";
+    toggle.checked = Boolean(config.enabled);
+    control.hidden = !toggle.checked;
+    toggle.setAttribute("aria-expanded", String(toggle.checked));
+    const toggleWrapper = createElement("label", {
+      className: "glowsary-switch-row glowsary-switch-row--md",
+      attributes: { "aria-label": "Show aliases field" }
+    });
+
+    toggleWrapper.append(toggle);
+    header.append(labelText, toggleWrapper);
+    wrapper.append(header, control, hint);
+
+    return { label: wrapper, control, toggle, hint };
+  }
+
   function render(target, options = {}) {
     if (!target) {
       return null;
@@ -110,18 +161,15 @@
       value: values.definition
     }, prefix);
 
-    const alias = createField({
+    const aliasValue = values.aliases || "";
+    const alias = createAliasField({
       wrapperClass: fieldClass,
       controlClass,
-      tagName: "input",
       id: ids.alias,
-      name: "alias",
-      autocomplete: "off",
-      placeholder: "versions, versioned",
-      label: "Aliases",
-      hint: "Optional, comma separated",
+      toggleId: ids.aliasToggle,
       hintId: ids.aliasHint,
-      value: values.aliases
+      value: aliasValue,
+      enabled: options.aliasEnabled ?? Boolean(String(aliasValue).trim())
     }, prefix);
 
     const colorField = createElement("div", { className: fieldClass });
@@ -191,6 +239,7 @@
       definitionInput: definition.control,
       definitionHint: definition.hint,
       aliasInput: alias.control,
+      aliasToggle: alias.toggle,
       aliasHint: alias.hint,
       colorPicker,
       saveButton,

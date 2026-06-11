@@ -1,66 +1,79 @@
-.switch-row {
+.glowsary-switch-row {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.switch-row input[type="checkbox"] {
+.glowsary-switch-row input[type="checkbox"] {
   --switch-track-bg: var(--bg-quaternary);
   --switch-track-border: var(--border-primary);
+  --switch-track-width: 54px;
+  --switch-track-height: 28px;
+  --switch-track-padding: 6px;
+  --switch-knob-size: 20px;
+  --switch-knob-offset: calc((var(--switch-track-height) - var(--switch-knob-size)) / 2 - 1px);
+  --switch-knob-travel: calc(var(--switch-track-width) - var(--switch-knob-size) - (2 * var(--switch-track-padding)));
 
   position: relative;
-  width: 54px;
-  height: 28px;
-  flex: 0 0 54px;
+  width: var(--switch-track-width);
+  height: var(--switch-track-height);
+  flex: 0 0 var(--switch-track-width);
   appearance: none;
   background: var(--switch-track-bg);
   border: 1px solid var(--switch-track-border);
-  border-radius: 9999px;
+  border-radius: var(--cta);
   cursor: pointer;
   outline: none;
 }
 
-.switch-row input[type="checkbox"]::before {
+.glowsary-switch-row--md input[type="checkbox"] {
+  --switch-track-width: 39px;
+  --switch-track-height: 20px;
+  --switch-track-padding: 3px;
+  --switch-knob-size: 16px;
+}
+
+.glowsary-switch-row input[type="checkbox"]::before {
   content: "";
   position: absolute;
-  top: 3px;
-  left: 5px;
-  width: 20px;
-  height: 20px;
+  top: var(--switch-knob-offset);
+  left: calc(var(--switch-track-padding) - 1px);
+  width: var(--switch-knob-size);
+  height: var(--switch-knob-size);
   background: var(--bg-primary);
-  border-radius: 50%;
+  border-radius: var(--cta);
   box-shadow: var(--shadow-xs-skeuomorphic);
   transition: transform 120ms ease;
 }
 
-.switch-row input[type="checkbox"]:checked {
+.glowsary-switch-row input[type="checkbox"]:checked {
   --switch-track-bg: var(--bg-primary-solid);
   --switch-track-border: var(--color-base-transparent);
 }
 
-.switch-row input[type="checkbox"]:checked::before {
-  transform: translateX(22px);
+.glowsary-switch-row input[type="checkbox"]:checked::before {
+  transform: translateX(var(--switch-knob-travel));
 }
 
-.switch-row input[type="checkbox"]:focus-visible {
+.glowsary-switch-row input[type="checkbox"]:focus-visible {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--bg-primary-solid) 20%, var(--color-base-transparent));
 }
 
-.switch-row span {
+.glowsary-switch-row span {
   display: grid;
   gap: 2px;
 }
 
-.switch-row small {
+.glowsary-switch-row small {
   color: var(--color-neutral-500);
 }
 
-.switch-row strong {
+.glowsary-switch-row strong {
   font-weight: var(--font-weight-semi-bold);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .switch-row input[type="checkbox"]::before {
+  .glowsary-switch-row input[type="checkbox"]::before {
     transition: none;
   }
 }

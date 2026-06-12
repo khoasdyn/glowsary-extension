@@ -233,9 +233,10 @@
     transition: background 0.2s ease, transform 0.2s ease;
   }
   .btn-primary:hover { background: var(--color-gray-800); transform: translateY(-1px); }
-  .btn-primary .ic { width: 18px; height: 18px; transition: transform 0.2s ease; }
-  .btn-primary:hover .ic { transform: translateX(3px); }
+  .btn-primary .btn-chrome { width: 18px; height: 18px; flex: none; transition: transform 0.3s ease; }
+  .btn-primary:hover .btn-chrome { transform: rotate(180deg); }
   .btn-primary--lg { font-size: var(--font-size-text-md); line-height: var(--line-height-text-md); padding: 14px 32px; }
+  .btn-primary--lg .btn-chrome { width: 20px; height: 20px; }
 
   /* ---- Hero ---- */
   .hero {
@@ -519,7 +520,7 @@
     letter-spacing: 0.08em;
     padding: 4px 12px;
   }
-  .section__eyebrow .ic { width: 14px; height: 14px; }
+  .section__eyebrow svg { flex: none; display: block; }
   .section__title {
     text-align: center;
     font-size: var(--font-size-display-xs);
@@ -707,68 +708,114 @@
   .feature__dot { width: 14px; height: 14px; border-radius: var(--cta); border: 1px solid var(--shadow-skeumorphic-inner-border); }
 
   /* ---- Privacy ---- */
-  .privacy { text-align: center; position: relative; }
-  .privacy__card {
-    position: relative;
-    max-width: 680px;
-    margin: 0 auto;
-    background: var(--color-brand-50);
-    border: 1px solid var(--color-brand-100);
-    border-radius: var(--card-lg);
-    padding: 40px 28px;
-    overflow: hidden;
+  .privacy__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    align-items: center;
   }
-  .privacy__card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(circle, var(--color-brand-200) 1px, var(--color-base-transparent) 1.5px);
-    background-size: 22px 22px;
-    opacity: 0.5;
-    mask-image: radial-gradient(ellipse 80% 80% at 50% 0%, #000 0, transparent 75%);
-    -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 0%, #000 0, transparent 75%);
+  @media (min-width: 880px) { .privacy__grid { grid-template-columns: 6fr 5fr; } }
+  .section__eyebrow--left { justify-content: flex-start; }
+  .privacy__copy h2 {
+    font-size: var(--font-size-display-xs);
+    line-height: var(--line-height-display-xs);
+    margin-top: 14px;
   }
-  .privacy__shield {
-    position: relative;
-    width: 56px;
-    height: 56px;
-    margin: 0 auto 14px;
+  @media (min-width: 768px) {
+    .privacy__copy h2 { font-size: var(--font-size-display-sm); line-height: var(--line-height-display-sm); }
+  }
+  .privacy__copy > p {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-text-md);
+    line-height: var(--line-height-text-md);
+    margin: 12px 0 24px;
+    max-width: 480px;
+  }
+  .privacy__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .privacy__list li {
     display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--box);
+    padding: 14px 16px;
+    color: var(--text-tertiary);
+    font-size: var(--font-size-text-sm);
+    line-height: var(--line-height-text-sm);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .privacy__list li:hover { transform: translateX(4px); box-shadow: 0 6px 16px -6px var(--shadow-skeumorphic-inner-border); }
+  .privacy__list strong { font-weight: var(--font-weight-semi-bold); color: var(--text-primary); }
+  .privacy__check {
+    width: 26px;
+    height: 26px;
+    flex: none;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-base-white);
-    border: 1px solid var(--color-brand-200);
+    background: var(--color-green-100);
+    border: 1px solid var(--color-green-200);
     border-radius: var(--cta);
-    color: var(--color-brand-600);
-    box-shadow: 0 4px 12px 0 var(--shadow-xs);
+    color: var(--color-green-800);
   }
-  .privacy__shield .ic { width: 28px; height: 28px; }
-  .privacy__card h2 { position: relative; color: var(--color-brand-700); font-size: var(--font-size-display-xs); line-height: var(--line-height-display-xs); }
-  .privacy__card > p { position: relative; color: var(--text-tertiary); font-size: var(--font-size-text-md); line-height: var(--line-height-text-md); margin: 12px auto 0; max-width: 480px; }
-  .privacy__checks {
+  .privacy__check svg { display: block; }
+
+  .privacy__visual {
     position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px 18px;
-    margin-top: 22px;
-    padding: 0;
-    list-style: none;
+    width: min(360px, calc(100vw - 96px));
+    aspect-ratio: 1;
+    margin: 16px auto;
   }
-  .privacy__checks li {
+  .privacy__ring { position: absolute; border-radius: var(--cta); }
+  .privacy__ring--outer { inset: 0; border: 2px dashed var(--color-brand-200); }
+  .privacy__ring--inner { inset: 19%; border: 2px dashed var(--color-brand-100); }
+  .privacy__spin { position: absolute; inset: 0; animation: spin 56s linear infinite; }
+  .privacy__sat {
+    position: absolute;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: var(--color-brand-700);
+    background: var(--wc-bg-card);
+    border: 1px solid var(--wc-border);
+    border-radius: var(--cta);
+    color: var(--wc-word-text);
+    font-family: var(--font-family-heading);
     font-size: var(--font-size-text-sm);
     line-height: var(--line-height-text-sm);
-    font-weight: var(--font-weight-medium);
-    background: var(--color-base-white);
-    border: 1px solid var(--color-brand-100);
-    border-radius: var(--cta);
-    padding: 6px 14px;
+    padding: 7px 14px;
+    box-shadow: 0 2px 8px 0 var(--shadow-xs);
+    white-space: nowrap;
+    animation: counterspin 56s linear infinite;
   }
-  .privacy__checks .ic { width: 15px; height: 15px; color: var(--color-green-600); }
+  .privacy__sat .ic { width: 14px; height: 14px; color: var(--wc-underline); }
+  .privacy__sat--1 { top: 0; left: 50%; translate: -50% -50%; }
+  .privacy__sat--2 { top: 50%; left: 100%; translate: -50% -50%; }
+  .privacy__sat--3 { top: 100%; left: 50%; translate: -50% -50%; }
+  .privacy__sat--4 { top: 50%; left: 0; translate: -50% -50%; }
+  .privacy__shield {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: 88px;
+    height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-primary);
+    border: 1px solid var(--color-brand-200);
+    border-radius: var(--cta);
+    color: var(--color-brand-600);
+    box-shadow: 0 8px 24px -4px var(--shadow-skeumorphic-inner-border);
+  }
+  .privacy__shield .ic { width: 40px; height: 40px; }
+  .privacy__spark { position: absolute; color: var(--color-yellow-400); animation: twinkle 3.6s ease-in-out infinite; }
+  .privacy__spark .ic { width: 20px; height: 20px; }
+  .privacy__spark--1 { top: 12%; right: 8%; }
+  .privacy__spark--2 { bottom: 10%; left: 10%; color: var(--color-brand-300); animation-delay: 1.6s; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes counterspin { to { transform: rotate(-360deg); } }
 
   /* ---- Final CTA + footer ---- */
   .closing { position: relative; text-align: center; }
@@ -851,13 +898,6 @@
       <path opacity="0.4" d="M4.5 7V4.5M4.5 4.5V2M4.5 4.5H2M4.5 4.5H7M4.5 22V19.5M4.5 19.5V17M4.5 19.5H2M4.5 19.5H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       <path d="M13 3L14.7342 7.50886C15.0162 8.24209 15.1572 8.60871 15.3765 8.91709C15.5708 9.1904 15.8096 9.42919 16.0829 9.62353C16.3913 9.8428 16.7579 9.98381 17.4911 10.2658L22 12L17.4911 13.7342C16.7579 14.0162 16.3913 14.1572 16.0829 14.3765C15.8096 14.5708 15.5708 14.8096 15.3765 15.0829C15.1572 15.3913 15.0162 15.7579 14.7342 16.4911L13 21L11.2658 16.4911C10.9838 15.7579 10.8428 15.3913 10.6235 15.0829C10.4292 14.8096 10.1904 14.5708 9.91709 14.3765C9.60871 14.1572 9.24209 14.0162 8.50886 13.7342L4 12L8.50886 10.2658C9.24209 9.98381 9.60871 9.84281 9.91709 9.62353C10.1904 9.42919 10.4292 9.1904 10.6235 8.91709C10.8428 8.60871 10.9838 8.24209 11.2658 7.50886L13 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
     </g>
-    <g id="i-arrow-right">
-      <path opacity="0.4" d="M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      <path d="M14 6L20 12L14 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    </g>
-    <g id="i-check">
-      <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    </g>
     <g id="i-search">
       <path opacity="0.4" d="M21 20.9999L16.65 16.6499" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
@@ -886,7 +926,7 @@
         <img src="assets/logo.png" alt="Glowsary logo, a smiling slice of bread">
         <span>Glowsary</span>
       </a>
-      <a class="btn-primary" href="#" data-store-link>Add to Chrome<span class="ic"><svg viewBox="0 0 24 24"><use href="#i-arrow-right"/></svg></span></a>
+      <a class="btn-primary" href="#" data-store-link><img class="btn-chrome" src="assets/chrome-logo.svg" alt="">Add to Chrome</a>
     </div>
   </div>
 </div>
@@ -908,7 +948,7 @@
     <h1>Turn the web into your personal <span class="hero__marker">vocabulary&nbsp;notebook</span>.</h1>
     <p class="hero__subline">Save a word once with your own meaning. Glowsary quietly underlines it everywhere you read and shows your definition when you hover. Like Word Wise on a Kindle, except the words are the ones you chose.</p>
     <div class="hero__cta">
-      <a class="btn-primary btn-primary--lg" href="#" data-store-link>Add to Chrome — it's free<span class="ic"><svg viewBox="0 0 24 24"><use href="#i-arrow-right"/></svg></span></a>
+      <a class="btn-primary btn-primary--lg" href="#" data-store-link><img class="btn-chrome" src="assets/chrome-logo.svg" alt="">Add to Chrome — it's free</a>
       <p class="hero__cta-hint">No account. No sign-in. Your words stay on your device.</p>
     </div>
 
@@ -956,7 +996,7 @@
 
   <section class="section">
     <div class="container">
-      <div class="section__eyebrow reveal"><span><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-zap"/></svg></span>How it works</span></div>
+      <div class="section__eyebrow reveal"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path opacity="0.4" d="M4.5 7V4.5M4.5 4.5V2M4.5 4.5H2M4.5 4.5H7M4.5 22V19.5M4.5 19.5V17M4.5 19.5H2M4.5 19.5H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 3L14.7342 7.50886C15.0162 8.24209 15.1572 8.60871 15.3765 8.91709C15.5708 9.1904 15.8096 9.42919 16.0829 9.62353C16.3913 9.8428 16.7579 9.98381 17.4911 10.2658L22 12L17.4911 13.7342C16.7579 14.0162 16.3913 14.1572 16.0829 14.3765C15.8096 14.5708 15.5708 14.8096 15.3765 15.0829C15.1572 15.3913 15.0162 15.7579 14.7342 16.4911L13 21L11.2658 16.4911C10.9838 15.7579 10.8428 15.3913 10.6235 15.0829C10.4292 14.8096 10.1904 14.5708 9.91709 14.3765C9.60871 14.1572 9.24209 14.0162 8.50886 13.7342L4 12L8.50886 10.2658C9.24209 9.98381 9.60871 9.84281 9.91709 9.62353C10.1904 9.42919 10.4292 9.1904 10.6235 8.91709C10.8428 8.60871 10.9838 8.24209 11.2658 7.50886L13 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>How it works</span></div>
       <h2 class="section__title reveal">Three small moments, every day</h2>
       <p class="section__subtitle reveal">Save, glow, hover — repeated until the words are yours.</p>
       <div class="steps">
@@ -967,7 +1007,7 @@
           </div>
           <h3>Save it as you read</h3>
           <p>Select a word, right-click, and choose "Add word". Write the meaning in your own words, add aliases, and pick a color.</p>
-          <div class="step__shot"><img src="assets/figma-add-word.png" alt="The Add Word panel from the Glowsary design, with fields for the word, your definition, aliases, and a four-color picker" loading="lazy"></div>
+          <div class="step__shot"><img src="assets/figma-add-word@2x.png" alt="The Add Word panel from the Glowsary design, with fields for the word, your definition, aliases, and a four-color picker" loading="lazy"></div>
         </div>
         <div class="step reveal wc-yellow">
           <div class="step__badge-row">
@@ -976,7 +1016,7 @@
           </div>
           <h3>See it glow everywhere</h3>
           <p>From now on, that word gets a subtle underline on every site you visit. You recognize it on sight, without doing anything.</p>
-          <div class="step__shot"><img src="assets/figma-home.png" alt="The Glowsary home page design showing a grid of saved words on pastel colored cards" loading="lazy"></div>
+          <div class="step__shot"><img src="assets/figma-home@2x.png" alt="The Glowsary home page design showing a grid of saved words on pastel colored cards" loading="lazy"></div>
         </div>
         <div class="step reveal wc-green">
           <div class="step__badge-row">
@@ -985,7 +1025,7 @@
           </div>
           <h3>Hover to remember</h3>
           <p>Your definition appears in a small popup next to the word, then gets out of your way. Your reading is never interrupted.</p>
-          <div class="step__shot step__shot--pad"><img src="assets/figma-popup.png" alt="The definition popup design showing a saved word with its definition, a speaker icon, and an edit button" loading="lazy"></div>
+          <div class="step__shot step__shot--pad"><img src="assets/figma-popup@4x.png" alt="The definition popup design showing a saved word with its definition, a speaker icon, and an edit button" loading="lazy"></div>
         </div>
       </div>
     </div>
@@ -993,21 +1033,21 @@
 
   <section class="section section--alt">
     <div class="container">
-      <div class="section__eyebrow reveal"><span><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-search"/></svg></span>The management view</span></div>
+      <div class="section__eyebrow reveal"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path opacity="0.4" d="M4.5 7V4.5M4.5 4.5V2M4.5 4.5H2M4.5 4.5H7M4.5 22V19.5M4.5 19.5V17M4.5 19.5H2M4.5 19.5H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 3L14.7342 7.50886C15.0162 8.24209 15.1572 8.60871 15.3765 8.91709C15.5708 9.1904 15.8096 9.42919 16.0829 9.62353C16.3913 9.8428 16.7579 9.98381 17.4911 10.2658L22 12L17.4911 13.7342C16.7579 14.0162 16.3913 14.1572 16.0829 14.3765C15.8096 14.5708 15.5708 14.8096 15.3765 15.0829C15.1572 15.3913 15.0162 15.7579 14.7342 16.4911L13 21L11.2658 16.4911C10.9838 15.7579 10.8428 15.3913 10.6235 15.0829C10.4292 14.8096 10.1904 14.5708 9.91709 14.3765C9.60871 14.1572 9.24209 14.0162 8.50886 13.7342L4 12L8.50886 10.2658C9.24209 9.98381 9.60871 9.84281 9.91709 9.62353C10.1904 9.42919 10.4292 9.1904 10.6235 8.91709C10.8428 8.60871 10.9838 8.24209 11.2658 7.50886L13 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>The management view</span></div>
       <h2 class="section__title reveal">One cozy home for every word</h2>
       <p class="section__subtitle reveal">Everything you saved, in a colorful grid you can search, sort, and shape.</p>
       <div class="showcase">
         <div class="showcase__stage reveal">
           <div class="showcase__frame">
-            <img id="showcaseImage" src="assets/figma-home.png" alt="The Glowsary management view design, Home tab, with a grid of saved word cards in four pastel colors">
+            <img id="showcaseImage" src="assets/figma-home@2x.png" alt="The Glowsary management view design, Home tab, with a grid of saved word cards in four pastel colors">
           </div>
-          <span class="showcase__float showcase__float--popup" aria-hidden="true"><img src="assets/figma-popup.png" alt=""></span>
-          <span class="showcase__float showcase__float--toolbar" aria-hidden="true"><img src="assets/figma-toolbar.png" alt=""></span>
+          <span class="showcase__float showcase__float--popup" aria-hidden="true"><img src="assets/figma-popup@4x.png" alt=""></span>
+          <span class="showcase__float showcase__float--toolbar" aria-hidden="true"><img src="assets/figma-toolbar@2x.png" alt=""></span>
         </div>
         <div class="showcase__panel reveal">
           <div class="showcase__tabs" role="tablist" aria-label="Management view tabs">
-            <button class="showcase__tab" id="tabHome" role="tab" aria-selected="true" data-shot="assets/figma-home.png" data-alt="The Glowsary management view design, Home tab, with a grid of saved word cards in four pastel colors">Home</button>
-            <button class="showcase__tab" id="tabSettings" role="tab" aria-selected="false" data-shot="assets/figma-settings.png" data-alt="The Glowsary management view design, Settings tab, with the excluded sites list and CSV backup buttons">Settings</button>
+            <button class="showcase__tab" id="tabHome" role="tab" aria-selected="true" data-shot="assets/figma-home@2x.png" data-alt="The Glowsary management view design, Home tab, with a grid of saved word cards in four pastel colors">Home</button>
+            <button class="showcase__tab" id="tabSettings" role="tab" aria-selected="false" data-shot="assets/figma-settings@2x.png" data-alt="The Glowsary management view design, Settings tab, with the excluded sites list and CSV backup buttons">Settings</button>
           </div>
           <h3>Flip the tabs, just like in the app</h3>
           <p>The Home tab keeps your word collection; the Settings tab keeps the quiet machinery. Click the tabs above to peek at both.</p>
@@ -1024,7 +1064,7 @@
 
   <section class="section">
     <div class="container">
-      <div class="section__eyebrow reveal"><span><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span>Features</span></div>
+      <div class="section__eyebrow reveal"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path opacity="0.4" d="M4.5 7V4.5M4.5 4.5V2M4.5 4.5H2M4.5 4.5H7M4.5 22V19.5M4.5 19.5V17M4.5 19.5H2M4.5 19.5H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 3L14.7342 7.50886C15.0162 8.24209 15.1572 8.60871 15.3765 8.91709C15.5708 9.1904 15.8096 9.42919 16.0829 9.62353C16.3913 9.8428 16.7579 9.98381 17.4911 10.2658L22 12L17.4911 13.7342C16.7579 14.0162 16.3913 14.1572 16.0829 14.3765C15.8096 14.5708 15.5708 14.8096 15.3765 15.0829C15.1572 15.3913 15.0162 15.7579 14.7342 16.4911L13 21L11.2658 16.4911C10.9838 15.7579 10.8428 15.3913 10.6235 15.0829C10.4292 14.8096 10.1904 14.5708 9.91709 14.3765C9.60871 14.1572 9.24209 14.0162 8.50886 13.7342L4 12L8.50886 10.2658C9.24209 9.98381 9.60871 9.84281 9.91709 9.62353C10.1904 9.42919 10.4292 9.1904 10.6235 8.91709C10.8428 8.60871 10.9838 8.24209 11.2658 7.50886L13 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Features</span></div>
       <h2 class="section__title reveal">Small features that make words stick</h2>
       <div class="features">
         <div class="feature reveal wc-purple">
@@ -1069,15 +1109,30 @@
 
   <section class="section section--alt privacy">
     <div class="container">
-      <div class="privacy__card reveal">
-        <span class="privacy__shield"><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-shield"/></svg></span></span>
-        <h2>Private by design.</h2>
-        <p>Everything is stored on your own device. No account, no sign-in, no tracking. Your words never leave your computer.</p>
-        <ul class="privacy__checks">
-          <li><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span>No account</li>
-          <li><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span>No tracking</li>
-          <li><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-check"/></svg></span>Words stay local</li>
-        </ul>
+      <div class="privacy__grid">
+        <div class="privacy__copy reveal">
+          <div class="section__eyebrow section__eyebrow--left"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path opacity="0.4" d="M4.5 7V4.5M4.5 4.5V2M4.5 4.5H2M4.5 4.5H7M4.5 22V19.5M4.5 19.5V17M4.5 19.5H2M4.5 19.5H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 3L14.7342 7.50886C15.0162 8.24209 15.1572 8.60871 15.3765 8.91709C15.5708 9.1904 15.8096 9.42919 16.0829 9.62353C16.3913 9.8428 16.7579 9.98381 17.4911 10.2658L22 12L17.4911 13.7342C16.7579 14.0162 16.3913 14.1572 16.0829 14.3765C15.8096 14.5708 15.5708 14.8096 15.3765 15.0829C15.1572 15.3913 15.0162 15.7579 14.7342 16.4911L13 21L11.2658 16.4911C10.9838 15.7579 10.8428 15.3913 10.6235 15.0829C10.4292 14.8096 10.1904 14.5708 9.91709 14.3765C9.60871 14.1572 9.24209 14.0162 8.50886 13.7342L4 12L8.50886 10.2658C9.24209 9.98381 9.60871 9.84281 9.91709 9.62353C10.1904 9.42919 10.4292 9.1904 10.6235 8.91709C10.8428 8.60871 10.9838 8.24209 11.2658 7.50886L13 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Privacy</span></div>
+          <h2>Private by design.</h2>
+          <p>Glowsary has no servers to send your words to. Everything lives in your browser, on your own computer, and nowhere else.</p>
+          <ul class="privacy__list">
+            <li><span class="privacy__check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><strong>No account, no sign-in.</strong> Install it and start saving words right away.</span></li>
+            <li><span class="privacy__check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><strong>No tracking.</strong> Glowsary never watches what you read or phones home.</span></li>
+            <li><span class="privacy__check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><strong>Your words stay local.</strong> The only copy is yours — export it as a CSV whenever you like.</span></li>
+          </ul>
+        </div>
+        <div class="privacy__visual reveal" aria-hidden="true">
+          <span class="privacy__ring privacy__ring--outer"></span>
+          <span class="privacy__ring privacy__ring--inner"></span>
+          <div class="privacy__spin">
+            <span class="privacy__sat privacy__sat--1 wc-purple"><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-volume"/></svg></span>cynical</span>
+            <span class="privacy__sat privacy__sat--2 wc-yellow"><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-volume"/></svg></span>wanderlust</span>
+            <span class="privacy__sat privacy__sat--3 wc-green"><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-volume"/></svg></span>resilient</span>
+            <span class="privacy__sat privacy__sat--4 wc-blue"><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-volume"/></svg></span>eloquent</span>
+          </div>
+          <span class="privacy__shield"><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-shield"/></svg></span></span>
+          <span class="privacy__spark privacy__spark--1"><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span></span>
+          <span class="privacy__spark privacy__spark--2"><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span></span>
+        </div>
       </div>
     </div>
   </section>
@@ -1087,7 +1142,7 @@
     <div class="container">
       <h2 class="section__title reveal">Make every lookup stick.</h2>
       <p class="closing__line reveal">Made for self-learners who read English online and want the effort of every lookup to last.</p>
-      <a class="btn-primary btn-primary--lg reveal" href="#" data-store-link>Add to Chrome — it's free<span class="ic"><svg viewBox="0 0 24 24"><use href="#i-arrow-right"/></svg></span></a>
+      <a class="btn-primary btn-primary--lg reveal" href="#" data-store-link><img class="btn-chrome" src="assets/chrome-logo.svg" alt="">Add to Chrome — it's free</a>
     </div>
   </section>
 </main>

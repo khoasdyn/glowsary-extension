@@ -45,3 +45,7 @@ Education
 ```
 
 ## Screenshots
+
+```
+You want five Chrome Web Store screenshots (1280x800 PNG), each built around one of your real asset images, each promoting a single feature, with image one acting as a cover. The job right now is to decide what images two through five should show and how they should look, and to catch anything that could go wrong before you hand the prompts to an image AI.
+```

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glowsary — Build Your Vocabulary as You Read Online</title>
+<meta name="description" content="Save a word once with your own meaning. Glowsary quietly underlines it everywhere you read and shows your definition when you hover.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<style>
+  /* ---- Glowsary design tokens (values mirrored from extension/tokens) ---- */
+  :root {
+    --color-base-white: #FFFFFF;
+    --color-base-transparent: rgba(255, 255, 255, 0);
+
+    --color-gray-50: #F9FAFB;
+    --color-gray-100: #F3F4F6;
+    --color-gray-200: #E5E7EB;
+    --color-gray-300: #D1D5DB;
+    --color-gray-500: #6B7280;
+    --color-gray-600: #4B5563;
+    --color-gray-800: #1F2937;
+    --color-gray-900: #111827;
+
+    --color-brand-50: #F9F5FF;
+    --color-brand-100: #F4EBFF;
+    --color-brand-600: #7F56D9;
+    --color-brand-700: #6941C6;
+
+    --color-purple-50: #FAF5FF;
+    --color-purple-100: #F3E8FF;
+    --color-purple-200: #E9D5FF;
+    --color-purple-600: #9333EA;
+    --color-purple-800: #6B21A8;
+    --color-purple-900: #581C87;
+
+    --color-yellow-50: #FEFCE8;
+    --color-yellow-100: #FEF9C3;
+    --color-yellow-200: #FEF08A;
+    --color-yellow-600: #CA8A04;
+    --color-yellow-800: #854D0E;
+    --color-yellow-900: #713F12;
+
+    --color-green-50: #F0FDF4;
+    --color-green-100: #DCFCE7;
+    --color-green-200: #BBF7D0;
+    --color-green-600: #16A34A;
+    --color-green-800: #166534;
+    --color-green-900: #14532D;
+
+    --color-blue-50: #EFF6FF;
+    --color-blue-100: #DBEAFE;
+    --color-blue-200: #BFDBFE;
+    --color-blue-600: #2563EB;
+    --color-blue-800: #1E40AF;
+    --color-blue-900: #1E3A8A;
+
+    --text-primary: var(--color-gray-900);
+    --text-tertiary: var(--color-gray-600);
+    --text-quaternary: var(--color-gray-500);
+    --bg-primary: var(--color-base-white);
+    --bg-primary-solid: var(--color-gray-900);
+    --bg-secondary: var(--color-gray-50);
+    --border-primary: var(--color-gray-300);
+
+    --font-family-heading: "Copse", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-family-body: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semi-bold: 600;
+
+    --font-size-text-xs: 12px;   --line-height-text-xs: 18px;
+    --font-size-text-sm: 14px;   --line-height-text-sm: 20px;
+    --font-size-text-md: 16px;   --line-height-text-md: 24px;
+    --font-size-text-lg: 18px;   --line-height-text-lg: 28px;
+    --font-size-display-xs: 24px; --line-height-display-xs: 32px;
+    --font-size-display-sm: 30px; --line-height-display-sm: 38px;
+    --font-size-display-md: 36px; --line-height-display-md: 44px;
+    --font-size-display-lg: 48px; --line-height-display-lg: 60px;
+
+    --cta: 9999px;
+    --box: 12px;
+    --card-md: 12px;
+    --card-lg: 24px;
+
+    --shadow-xs: color-mix(in srgb, #000000 5%, var(--color-base-transparent));
+    --shadow-skeumorphic-inner: color-mix(in srgb, #000000 5%, var(--color-base-transparent));
+    --shadow-skeumorphic-inner-border: color-mix(in srgb, #000000 18%, var(--color-base-transparent));
+    --shadow-xs-skeuomorphic: 0 1px 2px 0 var(--shadow-xs), inset 0 -2px 0 0 var(--shadow-skeumorphic-inner), inset 0 0 0 1px var(--shadow-skeumorphic-inner-border);
+  }
+
+  @font-face {
+    font-family: "Copse";
+    src: url("fonts/Copse-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Poppins";
+    src: url("fonts/Poppins-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Poppins";
+    src: url("fonts/Poppins-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Poppins";
+    src: url("fonts/Poppins-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-display: swap;
+  }
+
+  /* ---- Word-card color modes (mirrored from semantic-color-tokens) ---- */
+  .wc-purple {
+    --wc-bg-card: var(--color-purple-100);
+    --wc-border: var(--color-purple-200);
+    --wc-subtext: var(--color-purple-800);
+    --wc-underline: var(--color-purple-600);
+    --wc-underline-hover: var(--color-purple-800);
+    --wc-word-text: var(--color-purple-900);
+  }
+  .wc-yellow {
+    --wc-bg-card: var(--color-yellow-100);
+    --wc-border: var(--color-yellow-200);
+    --wc-subtext: var(--color-yellow-800);
+    --wc-underline: var(--color-yellow-600);
+    --wc-underline-hover: var(--color-yellow-800);
+    --wc-word-text: var(--color-yellow-900);
+  }
+  .wc-green {
+    --wc-bg-card: var(--color-green-100);
+    --wc-border: var(--color-green-200);
+    --wc-subtext: var(--color-green-800);
+    --wc-underline: var(--color-green-600);
+    --wc-underline-hover: var(--color-green-800);
+    --wc-word-text: var(--color-green-900);
+  }
+  .wc-blue {
+    --wc-bg-card: var(--color-blue-100);
+    --wc-border: var(--color-blue-200);
+    --wc-subtext: var(--color-blue-800);
+    --wc-underline: var(--color-blue-600);
+    --wc-underline-hover: var(--color-blue-800);
+    --wc-word-text: var(--color-blue-900);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-family-body);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-text-md);
+    line-height: var(--line-height-text-md);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-family-heading);
+    font-weight: var(--font-weight-regular);
+    margin: 0;
+  }
+
+  /* ---- Maintainer notice (visible only while the store URL placeholder is unreplaced) ---- */
+  .store-notice {
+    display: none;
+    background: var(--color-yellow-100);
+    border-bottom: 1px solid var(--color-yellow-200);
+    color: var(--color-yellow-900);
+    font-size: var(--font-size-text-sm);
+    line-height: var(--line-height-text-sm);
+    text-align: center;
+    padding: 8px 16px;
+  }
+  .store-notice.is-visible { display: block; }
+
+  /* ---- Top bar ---- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 0;
+  }
+  .topbar__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-primary);
+  }
+  .topbar__brand img { width: 32px; height: 32px; }
+  .topbar__brand span {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-text-lg);
+    line-height: var(--line-height-text-lg);
+  }
+
+  /* ---- Buttons ---- */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--bg-primary-solid);
+    color: var(--color-base-white);
+    font-family: var(--font-family-body);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-text-sm);
+    line-height: var(--line-height-text-sm);
+    text-decoration: none;
+    border: 0;
+    border-radius: var(--cta);
+    padding: 12px 24px;
+    box-shadow: var(--shadow-xs-skeuomorphic);
+    cursor: pointer;
+  }
+  .btn-primary:hover { background: var(--color-gray-800); }
+  .btn-primary--lg {
+    font-size: var(--font-size-text-md);
+    line-height: var(--line-height-text-md);
+    padding: 14px 32px;
+  }
+  .btn-primary[aria-disabled="true"] { cursor: not-allowed; }
+
+  /* ---- Hero ---- */
+  .hero {
+    text-align: center;
+    padding: 56px 0 32px;
+  }
+  .hero img.hero__logo { width: 72px; height: 72px; }
+  .hero h1 {
+    font-size: var(--font-size-display-md);
+    line-height: var(--line-height-display-md);
+    margin: 16px auto 0;
+    max-width: 720px;
+  }
+  .hero p.hero__subline {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-text-md);
+    line-height: var(--line-height-text-md);
+    max-width: 640px;
+    margin: 16px auto 0;
+  }
+  .hero .hero__cta { margin-top: 28px; }
+  .hero .hero__cta-hint {
+    color: var(--text-quaternary);
+    font-size: var(--font-size-text-xs);
+    line-height: var(--line-height-text-xs);
+    margin-top: 10px;
+  }
+  @media (min-width: 768px) {
+    .hero { padding-top: 72px; }
+    .hero h1 {
+      font-size: var(--font-size-display-lg);
+      line-height: var(--line-height-display-lg);
+    }
+    .hero p.hero__subline {
+      font-size: var(--font-size-text-lg);
+      line-height: var(--line-height-text-lg);
+    }
+  }
+
+  /* ---- Live demo passage ---- */
+  .demo {
+    margin: 40px auto 0;
+    max-width: 720px;
+    background: var(--bg-primary);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--card-lg);
+    box-shadow: 0 1px 2px 0 var(--shadow-xs);
+    padding: 28px 28px 24px;
+    text-align: left;
+  }
+  .demo__label {
+    color: var(--text-quaternary);
+    font-size: var(--font-size-text-xs);
+    line-height: var(--line-height-text-xs);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 12px;
+  }
+  .demo__text {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: var(--font-size-text-md);
+    line-height: var(--line-height-text-md);
+  }
+  .demo__hint {
+    margin: 14px 0 0;
+    color: var(--text-quaternary);
+    font-size: var(--font-size-text-xs);
+    line-height: var(--line-height-text-xs);
+  }
+
+  .demo-word {
+    position: relative;
+    cursor: help;
+    text-decoration-line: underline;
+    text-decoration-style: dashed;
+    text-decoration-color: color-mix(in srgb, var(--wc-underline) 68%, var(--color-base-transparent));
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+  .demo-word:hover, .demo-word:focus-visible, .demo-word.is-open {
+    text-decoration-color: color-mix(in srgb, var(--wc-underline-hover) 96%, var(--color-base-transparent));
+  }
+
+  .demo-pop {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(280px, calc(100vw - 48px));
+    background: var(--wc-bg-card);
+    border: 1px solid var(--wc-border);
+    border-radius: var(--card-md);
+    padding: 12px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 10;
+    box-shadow: 0 4px 12px 0 var(--shadow-xs);
+    text-align: left;
+  }
+  .demo-word:hover .demo-pop,
+  .demo-word:focus-visible .demo-pop,
+  .demo-word.is-open .demo-pop { display: flex; }
+
+  .demo-pop__title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .demo-pop__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--wc-word-text);
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-text-lg);
+    line-height: var(--line-height-text-lg);
+  }
+  .demo-pop__icon {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    color: var(--wc-underline);
+  }
+  .demo-pop__def {
+    margin: 0;
+    color: var(--wc-subtext);
+    font-size: var(--font-size-text-xs);
+    line-height: var(--line-height-text-xs);
+  }
+
+  /* ---- Sections ---- */
+  .section { padding: 56px 0; }
+  .section--alt { background: var(--bg-secondary); }
+  .section__title {
+    text-align: center;
+    font-size: var(--font-size-display-xs);
+    line-height: var(--line-height-display-xs);
+  }
+  .section__subtitle {
+    text-align: center;
+    color: var(--text-tertiary);
+    font-size: var(--font-size-text-md);
+    line-height: var(--line-height-text-md);
+    max-width: 560px;
+    margin: 12px auto 0;
+  }
+  @media (min-width: 768px) {
+    .section { padding: 72px 0; }
+    .section__title {
+      font-size: var(--font-size-display-sm);
+      line-height: var(--line-height-display-sm);
+    }
+  }
+
+  /* ---- How it works ---- */
+  .steps {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 40px;
+  }
+  @media (min-width: 768px) {
+    .steps { grid-template-columns: repeat(3, 1fr); }
+  }
+  .step {
+    background: var(--bg-primary);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--card-lg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .step__badge {
+    width: 28px;
+    height: 28px;
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-brand-100);
+    color: var(--color-brand-700);
+    border-radius: var(--cta);
+    font-size: var(--font-size-text-sm);
+    line-height: var(--line-height-text-sm);
+    font-weight: var(--font-weight-semi-bold);
+  }
+  .step h3 {
+    font-size: var(--font-size-text-lg);
+    line-height: var(--line-height-text-lg);
+  }
+  .step p {
+    margin: 0;
+    color: var(--text-tertiary);
+    font-size: var(--font-size-text-sm);
+    line-height: var(--line-height-text-sm);
+  }
+  .step img {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--box);
+    margin-top: auto;
+  }
+
+  /* ---- Feature grid ---- */
+  .features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 40px;
+  }
+  @media (min-width: 600px) { .features { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .features { grid-template-columns: repeat(3, 1fr); } }
+  .feature {
+    background: var(--wc-bg-card);
+    border: 1px solid var(--wc-border);
+    border-radius: var(--card-lg);
+    padding: 20px;
+  }
+  .feature h3 {
+    color: var(--wc-word-text);
+    font-size: var(--font-size-text-lg);
+    line-height: var(--line-height-text-lg);
+    margin-bottom: 8px;
+  }
+  .feature p {
+    margin: 0;
+    color: var(--wc-subtext);
+    font-size: var(--font-size-text-sm);
+    line-height: var(--line-height-text-sm);
+  }
+  .feature__dots {
+    display: inline-flex;
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .feature__dot {
+    width: 14px;
+    height: 14px;
+    border-radius: var(--cta);
+    border: 1px solid var(--shadow-skeumorphic-inner-border);
+  }
+
+  /* ---- Privacy ---- */
+  .privacy { text-align: center; }
+  .privacy__card {
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--color-brand-50);
+    border: 1px solid var(--color-brand-100);
+    border-radius: var(--card-lg);
+    padding: 36px 28px;
+  }
+  .privacy__card h2 {
+    color: var(--color-brand-700);
+    font-size: var(--font-size-display-xs);
+    line-height: var(--line-height-display-xs);
+  }
+  .privacy__card p {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-text-md);
+    line-height: var(--line-height-text-md);
+    margin: 12px 0 0;
+  }
+
+  /* ---- Final CTA + footer ---- */
+  .closing { text-align: center; }
+  .closing p.closing__line {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-text-md);
+    line-height: var(--line-height-text-md);
+    max-width: 520px;
+    margin: 16px auto 28px;
+  }
+  footer {
+    border-top: 1px solid var(--color-gray-200);
+    padding: 24px 0;
+  }
+  .footer__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--text-quaternary);
+    font-size: var(--font-size-text-sm);
+    line-height: var(--line-height-text-sm);
+  }
+  .footer__links { display: flex; gap: 20px; }
+  .footer__links a { color: var(--text-tertiary); text-decoration: none; }
+  .footer__links a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="store-notice" id="storeNotice">
+  Maintainer note: the Chrome Web Store link is not set yet. Replace STORE_URL at the bottom of this file. This banner disappears once it is set.
+</div>
+
+<header class="container">
+  <div class="topbar">
+    <a class="topbar__brand" href="#">
+      <img src="assets/logo.png" alt="Glowsary logo, a smiling slice of bread">
+      <span>Glowsary</span>
+    </a>
+    <a class="btn-primary" href="#" data-store-link>Add to Chrome</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero container">
+    <img class="hero__logo" src="assets/logo.png" alt="">
+    <h1>Turn the web into your personal vocabulary notebook.</h1>
+    <p class="hero__subline">Save a word once with your own meaning. Glowsary quietly underlines it everywhere you read and shows your definition when you hover. Like Word Wise on a Kindle, except the words are the ones you chose.</p>
+    <div class="hero__cta">
+      <a class="btn-primary btn-primary--lg" href="#" data-store-link>Add to Chrome — it's free</a>
+      <p class="hero__cta-hint">No account. No sign-in. Your words stay on your device.</p>
+    </div>
+
+    <div class="demo">
+      <p class="demo__label">Try it — hover a glowing word</p>
+      <p class="demo__text">
+        Reading online can feel like a
+        <span class="demo-word wc-blue" tabindex="0" role="button" aria-label="mosaic — tap to see the saved definition">mosaic<span class="demo-pop"><span class="demo-pop__title-row"><span class="demo-pop__title"><svg class="demo-pop__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>mosaic</span><svg class="demo-pop__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></span><span class="demo-pop__def">something made from many small different parts that form a whole.</span></span></span>
+        of new words. One article calls a politician
+        <span class="demo-word wc-purple" tabindex="0" role="button" aria-label="cynical — tap to see the saved definition">cynical<span class="demo-pop"><span class="demo-pop__title-row"><span class="demo-pop__title"><svg class="demo-pop__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>cynical</span><svg class="demo-pop__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></span><span class="demo-pop__def">believing that people are mostly selfish and not sincere.</span></span></span>,
+        another makes an
+        <span class="demo-word wc-yellow" tabindex="0" role="button" aria-label="allusion — tap to see the saved definition">allusion<span class="demo-pop"><span class="demo-pop__title-row"><span class="demo-pop__title"><svg class="demo-pop__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>allusion</span><svg class="demo-pop__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></span><span class="demo-pop__def">an indirect reference to a person, story, event, or idea.</span></span></span>
+        to a novel you never read, and you are
+        <span class="demo-word wc-green" tabindex="0" role="button" aria-label="hard-pressed — tap to see the saved definition">hard-pressed<span class="demo-pop"><span class="demo-pop__title-row"><span class="demo-pop__title"><svg class="demo-pop__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>hard-pressed</span><svg class="demo-pop__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></span><span class="demo-pop__def">having difficulty doing something; under pressure or struggling to achieve something.</span></span></span>
+        to remember any of them the next day.
+      </p>
+      <p class="demo__hint">This is how your saved words look on every page you read. On a touch screen, tap a word instead.</p>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <h2 class="section__title">How it works</h2>
+      <p class="section__subtitle">Three small moments, repeated every day, until the words are yours.</p>
+      <div class="steps">
+        <div class="step">
+          <span class="step__badge">1</span>
+          <h3>Save it as you read</h3>
+          <p>Select a word, right-click, and choose "Add word". Write the meaning in your own words, add other forms as aliases, and pick a color.</p>
+          <img src="assets/add-new-word.png" alt="The Add Word panel with fields for the word, your definition, aliases, and a four-color picker">
+        </div>
+        <div class="step">
+          <span class="step__badge">2</span>
+          <h3>See it glow everywhere</h3>
+          <p>From now on, that word gets a subtle underline on every site you visit. You recognize it on sight, without doing anything.</p>
+          <img src="assets/home-page.png" alt="The Glowsary home page showing a grid of saved words on colored cards">
+        </div>
+        <div class="step">
+          <span class="step__badge">3</span>
+          <h3>Hover to remember</h3>
+          <p>Your definition appears in a small popup next to the word, then gets out of your way. Your reading is never interrupted.</p>
+          <img src="assets/definition-popup.png" alt="A small popup showing a saved word with its definition, a speaker icon, and an edit button">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section__title">Small features that make words stick</h2>
+      <div class="features">
+        <div class="feature wc-purple">
+          <h3>Four colors</h3>
+          <p>Tag each saved word with a color to group them and tell them apart at a glance.</p>
+          <span class="feature__dots" aria-hidden="true">
+            <span class="feature__dot" style="background: var(--color-purple-200)"></span>
+            <span class="feature__dot" style="background: var(--color-yellow-200)"></span>
+            <span class="feature__dot" style="background: var(--color-green-200)"></span>
+            <span class="feature__dot" style="background: var(--color-blue-200)"></span>
+          </span>
+        </div>
+        <div class="feature wc-yellow">
+          <h3>Aliases</h3>
+          <p>Let "version" and "versions" share one definition and one highlight, so every form of the word glows.</p>
+        </div>
+        <div class="feature wc-green">
+          <h3>Many meanings</h3>
+          <p>The same word can hold several saved definitions. The popup pages through them, newest first.</p>
+        </div>
+        <div class="feature wc-blue">
+          <h3>Hear it spoken</h3>
+          <p>A speaker icon pronounces any saved word out loud, so you learn the sound, not only the meaning.</p>
+        </div>
+        <div class="feature wc-purple">
+          <h3>You stay in control</h3>
+          <p>One switch turns all highlighting off, and you can exclude any site where you want to read normally.</p>
+        </div>
+        <div class="feature wc-yellow">
+          <h3>Backup in your hands</h3>
+          <p>Export your whole list as a CSV file anytime, and import it back on any computer.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt privacy">
+    <div class="container">
+      <div class="privacy__card">
+        <h2>Private by design.</h2>
+        <p>Everything is stored on your own device. No account, no sign-in, no tracking. Your words never leave your computer.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section closing">
+    <div class="container">
+      <h2 class="section__title">Make every lookup stick.</h2>
+      <p class="closing__line">Made for self-learners who read English online and want the effort of every lookup to last.</p>
+      <a class="btn-primary btn-primary--lg" href="#" data-store-link>Add to Chrome — it's free</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container footer__row">
+    <span>Glowsary — build your vocabulary as you read online.</span>
+    <nav class="footer__links" aria-label="Footer">
+      <a href="https://github.com/khoasdyn/glowsary-extension/blob/main/store-listing/PRIVACY.md">Privacy Policy</a>
+      <a href="https://github.com/khoasdyn/glowsary-extension">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  var STORE_URL = "https://chromewebstore.google.com/detail/glowsary/bfnlhjdjkblhenfhnmdoghfomekcekmj";
+
+  (function () {
+    var links = document.querySelectorAll("[data-store-link]");
+    var isPlaceholder = STORE_URL.indexOf("[") === 0;
+
+    links.forEach(function (link) {
+      if (isPlaceholder) {
+        link.setAttribute("aria-disabled", "true");
+        link.setAttribute("title", "Store link coming soon");
+        link.addEventListener("click", function (event) { event.preventDefault(); });
+      } else {
+        link.href = STORE_URL;
+      }
+    });
+
+    if (isPlaceholder) {
+      document.getElementById("storeNotice").classList.add("is-visible");
+    }
+
+    // Demo popups: tap toggles on touch screens, and open popups are nudged back inside the viewport.
+    var words = document.querySelectorAll(".demo-word");
+
+    function closeAll(except) {
+      words.forEach(function (word) {
+        if (word !== except) { word.classList.remove("is-open"); }
+      });
+    }
+
+    function keepInView(word) {
+      var pop = word.querySelector(".demo-pop");
+      if (!pop) { return; }
+      pop.style.marginLeft = "0px";
+      var rect = pop.getBoundingClientRect();
+      var shift = 0;
+      if (rect.left < 16) { shift = 16 - rect.left; }
+      if (rect.right > window.innerWidth - 16) { shift = (window.innerWidth - 16) - rect.right; }
+      pop.style.marginLeft = shift + "px";
+    }
+
+    words.forEach(function (word) {
+      word.addEventListener("click", function () {
+        var willOpen = !word.classList.contains("is-open");
+        closeAll(word);
+        word.classList.toggle("is-open", willOpen);
+        if (willOpen) { keepInView(word); }
+      });
+      word.addEventListener("mouseenter", function () { keepInView(word); });
+      word.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          word.click();
+        }
+        if (event.key === "Escape") { word.classList.remove("is-open"); }
+      });
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest(".demo-word")) { closeAll(null); }
+    });
+  })();
+</script>
+
+</body>
+</html>

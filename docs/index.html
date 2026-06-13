@@ -463,15 +463,8 @@
   .demo-pop__icon svg { display: block; width: 100%; height: 100%; }
   .demo-pop__def { margin: 0; color: var(--wc-subtext); font-size: var(--font-size-text-xs); line-height: var(--line-height-text-xs); }
 
-  /* ---- Hero video (real product footage, click to play) ---- */
-  .hero__video { margin: 26px auto 0; max-width: 760px; }
-  .hero__video-caption {
-    color: var(--text-quaternary);
-    font-size: var(--font-size-text-sm);
-    line-height: var(--line-height-text-sm);
-    margin: 0 0 14px;
-  }
-  .hero__video-caption strong { color: var(--text-tertiary); font-weight: var(--font-weight-medium); }
+  /* ---- Demo video (real product footage, click to play) ---- */
+  .video-block { margin: 44px auto 0; max-width: 760px; }
   .video-frame {
     position: relative;
     width: 100%;
@@ -1045,16 +1038,6 @@
         <p class="demo__hint">This is how your saved words look on every page you read. On a touch screen, tap a word instead.</p>
       </div>
     </div>
-
-    <div class="hero__video reveal">
-      <p class="hero__video-caption"><strong>Prefer to watch?</strong> See Glowsary at work on a real article — about a minute.</p>
-      <div class="video-frame" data-video="1bxnTHSs1WA">
-        <button type="button" class="video-facade" aria-label="Play the Glowsary demo video">
-          <img src="assets/video-thumb.jpg" alt="Glowsary underlining saved words on a real web article" loading="lazy" width="1280" height="720">
-          <span class="video-facade__play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
-        </button>
-      </div>
-    </div>
   </section>
 
   <div class="marquee" aria-hidden="true">
@@ -1212,6 +1195,22 @@
           <span class="privacy__shield"><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-shield"/></svg></span></span>
           <span class="privacy__spark privacy__spark--1"><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span></span>
           <span class="privacy__spark privacy__spark--2"><span class="ic"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg></span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="watch">
+    <div class="container">
+      <div class="section__eyebrow reveal"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path opacity="0.4" d="M4.5 7V4.5M4.5 4.5V2M4.5 4.5H2M4.5 4.5H7M4.5 22V19.5M4.5 19.5V17M4.5 19.5H2M4.5 19.5H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 3L14.7342 7.50886C15.0162 8.24209 15.1572 8.60871 15.3765 8.91709C15.5708 9.1904 15.8096 9.42919 16.0829 9.62353C16.3913 9.8428 16.7579 9.98381 17.4911 10.2658L22 12L17.4911 13.7342C16.7579 14.0162 16.3913 14.1572 16.0829 14.3765C15.8096 14.5708 15.5708 14.8096 15.3765 15.0829C15.1572 15.3913 15.0162 15.7579 14.7342 16.4911L13 21L11.2658 16.4911C10.9838 15.7579 10.8428 15.3913 10.6235 15.0829C10.4292 14.8096 10.1904 14.5708 9.91709 14.3765C9.60871 14.1572 9.24209 14.0162 8.50886 13.7342L4 12L8.50886 10.2658C9.24209 9.98381 9.60871 9.84281 9.91709 9.62353C10.1904 9.42919 10.4292 9.1904 10.6235 8.91709C10.8428 8.60871 10.9838 8.24209 11.2658 7.50886L13 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Watch</span></div>
+      <h2 class="section__title reveal">See Glowsary in action</h2>
+      <p class="section__subtitle reveal">A one-minute walkthrough on a real article — save a word, then watch it glow everywhere you read.</p>
+      <div class="video-block reveal">
+        <div class="video-frame" data-video="1bxnTHSs1WA">
+          <button type="button" class="video-facade" aria-label="Play the Glowsary demo video">
+            <img src="assets/video-thumb.jpg" alt="Glowsary underlining saved words on a real web article" loading="lazy" width="1280" height="720">
+            <span class="video-facade__play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          </button>
         </div>
       </div>
     </div>

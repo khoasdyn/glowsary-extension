@@ -1,0 +1,338 @@
+2026-06-13T07:13:25.299+0700 notice   [Polyrecorder] Polyrecorder started. appStart=553251.7068158333 modelIdentifier=MacBookPro18,1 operatingSystem=Version 26.5.1 (Build 25F80) systemLaunch=2026-06-06 14:32:33 +0000 version=2.7.0
+2026-06-13T07:13:25.299+0700 notice   [polyrecorder] Connect RecordKit logger to Polyrecorder logger rkLogLevel=debug
+2026-06-13T07:13:25.299+0700 debug    [Polyrecorder] Accessing active displays
+2026-06-13T07:13:25.351+0700 notice   [Polyrecorder] Active displays: [polyrecorder.DisplayDiscovery.Display(displayID: 1, bounds: polyrecorder.Bounds(x: 0.0, y: 0.0, width: 1728.0, height: 1117.0), refreshRate: 120.0, isMain: true, isBuiltin: true)]
+2026-06-13T07:13:25.351+0700 notice   [Polyrecorder] Thermal state at startup. thermalState=nominal
+2026-06-13T07:13:25.351+0700 debug    [Polyrecorder] Validating configuration.
+2026-06-13T07:13:25.352+0700 notice   [Polyrecorder] Configuration validated: {
+  "logLevel" : "debug",
+  "channels" : [
+    {
+      "captureKeyStrokes" : true,
+      "type" : "input"
+    },
+    {
+      "excludedWindowIds" : [
+        35033,
+        35148,
+        35149,
+        35150
+      ],
+      "cropRect" : {
+        "height" : 1084,
+        "yAxis" : "topBasedIncreasingDownwards",
+        "x" : 0,
+        "width" : 1728,
+        "y" : 33
+      },
+      "type" : "display",
+      "excludeFinderDesktopIcons" : true,
+      "displayId" : 1
+    }
+  ],
+  "outputDirectory" : "\/Users\/khoasdyn\/Library\/Application Support\/Screen Studio\/Screen Studio Recordings\/Google Chrome 2026-06-13 07:13:25"
+}
+2026-06-13T07:13:25.352+0700 debug    [Polyrecorder] Creating output directory. url=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25
+2026-06-13T07:13:25.352+0700 notice   [Polyrecorder] Created output directory. url=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25
+2026-06-13T07:13:25.352+0700 debug    [Polyrecorder] Redirecting logs to file. url=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/polyrecorder.log
+2026-06-13T07:13:25.352+0700 notice   [Polyrecorder] Redirected logs to file. url=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/polyrecorder.log
+2026-06-13T07:13:25.353+0700 debug    [Polyrecorder] Attaching uncaught exception handler.
+2026-06-13T07:13:25.353+0700 notice   [Polyrecorder] Attached uncaught exception handler.
+2026-06-13T07:13:25.353+0700 debug    [Polyrecorder] Enabling DAL devices...
+2026-06-13T07:13:25.377+0700 notice   [Polyrecorder] Enabled DAL devices.
+2026-06-13T07:13:25.377+0700 debug    [Polyrecorder] Creating conductor with recorders. channels=2
+2026-06-13T07:13:25.379+0700 debug    [CursorRecorder] Checking if cursor folder/files don't exist yet.
+2026-06-13T07:13:25.381+0700 notice   [CursorRecorder] Checked cursor folder/files don't exist yet.
+2026-06-13T07:13:25.381+0700 debug    [CursorRecorder] Creating display link. displayId=1
+2026-06-13T07:13:25.383+0700 notice   [CursorRecorder] Created display link. displayId=1
+2026-06-13T07:13:25.383+0700 debug    [InputRecorder] Checking input monitoring authorization status. id=channel-0-input
+2026-06-13T07:13:25.407+0700 notice   [InputRecorder] Input monitoring is authorized. id=channel-0-input
+2026-06-13T07:13:25.434+0700 debug    [DisplayRecorder: channel-1-display] Checking if displayID 1 is in Active Displays list id=channel-1-display
+2026-06-13T07:13:25.460+0700 debug    [DisplayRecorder: channel-1-display] Creating DisplayRecorderOutput id=channel-1-display
+2026-06-13T07:13:25.463+0700 notice   [DisplayRecorder: channel-1-display] Created DisplayRecorderOutput id=channel-1-display output=DisplayRecorderOutput(cropRect: Optional((0.0, 33.0, 1728.0, 1084.0)), recordBounds: (0.0, 33.0, 1728.0, 1084.0), displayScaleFactor: 2, displayRefreshRate: 120.0, minFrameDuration: CMTime(seconds:0.008333333333333333 timescale:120 value:1 flags:valid), recordingScale: 0.5, assetWriterSettings: polyrecorder.AssetWriterSettings(mediaType: __C.AVMediaType(_rawValue: vide), outputSettings: ["AVVideoCodecKey": avc1, "AVVideoCompressionPropertiesKey": {
+    AllowFrameReordering = 1;
+    AverageBitRate = 23423088;
+    AverageNonDroppableFrameRate = 30;
+    ExpectedFrameRate = 120;
+    H264EntropyMode = CABAC;
+    MaxKeyFrameInterval = 30;
+    ProfileLevel = "H264_High_AutoLevel";
+}, "AVVideoEncoderSpecificationKey": {
+    EnableHardwareAcceleratedVideoEncoder = 1;
+}, "AVVideoWidthKey": 3456, "AVVideoHeightKey": 2168, "AVVideoScalingModeKey": AVVideoScalingModeResizeAspect]))
+2026-06-13T07:13:25.463+0700 debug    [polyrecorder] Set handler for frameRepeater id=channel-1-display
+2026-06-13T07:13:25.463+0700 info     [Polyrecorder] Created conductor with recorders. channels=2 recorders=3
+2026-06-13T07:13:25.463+0700 debug    [Polyrecorder] Attaching recorder abortion handler.
+2026-06-13T07:13:25.463+0700 notice   [Polyrecorder] Attached recorder abortion handler.
+2026-06-13T07:13:25.463+0700 debug    [Polyrecorder] Installing signal handlers on process 7123.
+2026-06-13T07:13:25.463+0700 notice   [Polyrecorder] Installed signal handlers on process 7123.
+2026-06-13T07:13:25.463+0700 notice   [Polyrecorder] Setup finished.
+2026-06-13T07:13:25.463+0700 debug    [Conductor] Starting recording.
+2026-06-13T07:13:25.463+0700 debug    [Conductor] Starting latency critical activity.
+2026-06-13T07:13:25.464+0700 notice   [Conductor] Started latency critical activity.
+2026-06-13T07:13:25.464+0700 debug    [Conductor] Setting up all recorders. recorders=3
+2026-06-13T07:13:25.464+0700 debug    [CursorRecorder] Creating cursor image directory. id=channel-0-cursor url=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/cursors/
+2026-06-13T07:13:25.464+0700 debug    [InputRecorder] Starting event monitor. id=channel-0-input
+2026-06-13T07:13:25.464+0700 info     [InputRecorder] Event monitor started. id=channel-0-input
+2026-06-13T07:13:25.464+0700 notice   [InputRecorder] Setup complete id=channel-0-input
+2026-06-13T07:13:25.464+0700 notice   [CursorRecorder] Created cursor image directory. id=channel-0-cursor url=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/cursors/
+2026-06-13T07:13:25.464+0700 debug    [DisplayRecorder: channel-1-display] Accessing ShareableContent id=channel-1-display
+2026-06-13T07:13:25.526+0700 debug    [CursorRecorder] Preloading system cursors. cursors=49 id=channel-0-cursor
+2026-06-13T07:13:25.526+0700 notice   [CursorRecorder] Preloaded system cursors. dropped=dropped: (public)columnResize > existing: (public)resizeLeftRight, dropped: (public)rowResize > existing: (public)resizeUpDown, dropped: (private)closedHand > existing: (public)closedHand, dropped: (private)crosshair > existing: (public)crosshair, dropped: (private)genericDrag > existing: (public)arrow, dropped: (private)hand > existing: (public)openHand, dropped: (private)horizontalResize > existing: (public)resizeLeftRight, dropped: (private)overrideHelp > existing: (private)help, dropped: (private)verticalResize > existing: (public)resizeUpDown, dropped: (private)zoomIn > existing: (public)zoomIn, dropped: (private)zoomOut > existing: (public)zoomOut id=channel-0-cursor
+2026-06-13T07:13:25.526+0700 debug    [CursorRecorder] Writing preloaded cursors information to disk. count=38 id=channel-0-cursor
+2026-06-13T07:13:25.549+0700 notice   [CursorRecorder] Cursor information written to disk. count=38 id=channel-0-cursor
+2026-06-13T07:13:25.549+0700 debug    [CursorRecorder] Configuring display link output handler. errorRateLimit=10.0 id=channel-0-cursor
+2026-06-13T07:13:25.549+0700 info     [CursorRecorder] Display link output handler configured. errorRateLimit=10.0 id=channel-0-cursor
+2026-06-13T07:13:25.549+0700 debug    [CursorRecorder] Setting current display on display link. displayId=1 id=channel-0-cursor
+2026-06-13T07:13:25.549+0700 info     [CursorRecorder] Current display on display link set. displayId=1 id=channel-0-cursor
+2026-06-13T07:13:25.549+0700 debug    [CursorRecorder] Starting display link. displayId=1 id=channel-0-cursor
+2026-06-13T07:13:25.549+0700 notice   [CursorRecorder] Started display link. displayId=1 id=channel-0-cursor
+2026-06-13T07:13:25.549+0700 notice   [CursorRecorder] Setup complete id=channel-0-cursor
+2026-06-13T07:13:25.552+0700 notice   [DisplayRecorder: channel-1-display] Received ShareableContent attempt=1 id=channel-1-display restarted=false
+2026-06-13T07:13:25.552+0700 debug    [DisplayRecorder: channel-1-display] Creating SCContentFilter from configuration id=channel-1-display
+2026-06-13T07:13:25.554+0700 debug    [DisplayRecorder: channel-1-display] Creating SCStream id=channel-1-display streamConfig=SCStreamConfiguration sourceRect:(0.0, 33.0, 1728.0, 1084.0) width:3456 height:2168 queueDepth:8
+2026-06-13T07:13:25.556+0700 notice   [CursorRecorder] Refresh rate of current display changed. currentDisplay=1 id=channel-0-cursor refreshRate=120 FPS
+2026-06-13T07:13:25.635+0700 notice   [DisplayRecorder: channel-1-display] Created SCStream id=channel-1-display
+2026-06-13T07:13:25.635+0700 debug    [DisplayRecorder: channel-1-display] Add StreamOutput to capture screen content id=channel-1-display
+2026-06-13T07:13:25.635+0700 debug    [DisplayRecorder: channel-1-display] Enable verbose SCK logging id=channel-1-display
+2026-06-13T07:13:25.635+0700 debug    [DisplayRecorder: channel-1-display] Start stream capture id=channel-1-display
+2026-06-13T07:13:25.730+0700 notice   [DisplayRecorder: channel-1-display] Started stream capture id=channel-1-display
+2026-06-13T07:13:25.730+0700 debug    [DisplayRecorder: channel-1-display] Waiting for ring buffer to have a frame id=channel-1-display
+2026-06-13T07:13:25.738+0700 debug    [StreamCoordinator: channel-1-display] Stream did output sample buffer id=channel-1-display isValid=true
+2026-06-13T07:13:25.738+0700 debug    [DisplayRecorder: channel-1-display] Checking delta of presentation time stamp to host time clock. framePTS=553252.147833208 hostTime=553252.151517166 id=channel-1-display
+2026-06-13T07:13:25.738+0700 notice   [DisplayRecorder: channel-1-display] Trivial delta between presentation time stamp to host time clock, will trust frame PTS. framePTS=553252.147833208 hostTime=553252.151517166 hostTimeDelta=0.003683958 id=channel-1-display
+2026-06-13T07:13:25.739+0700 notice   [DisplayRecorder: channel-1-display] Ring buffer has a frame id=channel-1-display
+2026-06-13T07:13:25.739+0700 debug    [DisplayRecorder: channel-1-display] Disable verbose SCK logging id=channel-1-display
+2026-06-13T07:13:25.739+0700 notice   [DisplayRecorder: channel-1-display] Setup complete id=channel-1-display
+2026-06-13T07:13:25.739+0700 notice   [Conductor] Did setup all recorders. recorders=3
+2026-06-13T07:13:25.739+0700 debug    [Conductor] Calling prepare on all recorders for session. recorders=3
+2026-06-13T07:13:25.739+0700 debug    [DisplayRecorder: channel-1-display] Creating SessionWriter id=channel-1-display
+2026-06-13T07:13:25.739+0700 notice   [InputRecorder] Preparing session. id=channel-0-input sessions=0
+2026-06-13T07:13:25.739+0700 debug    [SessionWriter: channel-1-display-0] Creating AVAssetWriter id=channel-1-display
+2026-06-13T07:13:25.739+0700 notice   [SessionWriter: channel-1-display-0] Created AVAssetWriter id=channel-1-display
+2026-06-13T07:13:25.739+0700 debug    [SessionWriter: channel-1-display-0] Add AVAssetWriter.error observation id=channel-1-display
+2026-06-13T07:13:25.740+0700 notice   [SessionWriter: channel-1-display-0] Added AVAssetWriter.error observation id=channel-1-display
+2026-06-13T07:13:25.740+0700 debug    [SessionWriter: channel-1-display-0] Creating AVAssetWriterInput id=channel-1-display mediaType=AVMediaType(_rawValue: vide) outputSettings=["AVVideoCodecKey": avc1, "AVVideoCompressionPropertiesKey": {
+    AllowFrameReordering = 1;
+    AverageBitRate = 23423088;
+    AverageNonDroppableFrameRate = 30;
+    ExpectedFrameRate = 120;
+    H264EntropyMode = CABAC;
+    MaxKeyFrameInterval = 30;
+    ProfileLevel = "H264_High_AutoLevel";
+}, "AVVideoEncoderSpecificationKey": {
+    EnableHardwareAcceleratedVideoEncoder = 1;
+}, "AVVideoWidthKey": 3456, "AVVideoHeightKey": 2168, "AVVideoScalingModeKey": AVVideoScalingModeResizeAspect]
+2026-06-13T07:13:25.741+0700 notice   [InputRecorder] Prepared session. id=channel-0-input sessions=1
+2026-06-13T07:13:25.831+0700 debug    [SessionWriter: channel-1-display-0] Adding AVAssetWriterInput to AVAssetWriter. id=channel-1-display
+2026-06-13T07:13:25.831+0700 notice   [SessionWriter: channel-1-display-0] Added AVAssetWriterInput to AVAssetWriter id=channel-1-display
+2026-06-13T07:13:25.859+0700 debug    [DisplayRecorder: channel-1-display] Processing initial samples from buffer. bufferCount=3 id=channel-1-display
+2026-06-13T07:13:25.859+0700 notice   [DisplayRecorder: channel-1-display] Processed initial samples from buffer. bufferCount=3 id=channel-1-display
+2026-06-13T07:13:25.859+0700 notice   [DisplayRecorder: channel-1-display] Created SessionWriter id=channel-1-display
+2026-06-13T07:13:25.859+0700 notice   [Conductor] Called prepare recorders for session. recorders=3
+2026-06-13T07:13:25.859+0700 debug    [Conductor] Broadcasting over stdout that all recorders are prepared. recorders=3
+2026-06-13T07:13:25.859+0700 notice   [Conductor] Broadcasted over stdout that all recorders are prepared. recorders=3
+2026-06-13T07:13:25.861+0700 notice   [SignalHandler] Received SIGCONT.
+2026-06-13T07:13:25.861+0700 debug    [Conductor] Resuming recording.
+2026-06-13T07:13:25.861+0700 notice   [Conductor] Recording resumed. recordFrom=553252.2739287918
+2026-06-13T07:13:25.861+0700 debug    [Conductor] Start async updates for recording.
+2026-06-13T07:13:25.861+0700 notice   [Conductor] Started async updates for recording.
+2026-06-13T07:13:25.861+0700 debug    [Conductor] Update metadata file.
+2026-06-13T07:13:25.862+0700 debug    [polyrecorder] Metadata file updated.
+2026-06-13T07:13:25.862+0700 notice   [Conductor] Updated metadata file.
+2026-06-13T07:13:25.862+0700 debug    [Conductor] Broadcasting over stdout that session started. recorders=3
+2026-06-13T07:13:25.862+0700 notice   [Conductor] Broadcasted over stdout that sessions started. recorders=3
+2026-06-13T07:13:25.867+0700 debug    [SessionWriter: channel-1-display-0] Start session on AVAssetWriter id=channel-1-display sessionStart=CMTime(seconds:553252.273928791 timescale:1000000000 value:553252273928791 flags:valid, hasBeenRounded)
+2026-06-13T07:13:25.867+0700 notice   [SessionWriter: channel-1-display-0] Started session on AVAssetWriter id=channel-1-display sessionStart=CMTime(seconds:553252.273928791 timescale:1000000000 value:553252273928791 flags:valid, hasBeenRounded)
+2026-06-13T07:13:25.867+0700 notice   [SessionWriter: channel-1-display-0] Appending first sample buffer duration=CMTime(seconds:nan timescale:0 value:0 flags:<empty>) id=channel-1-display newPresentationTime=CMTime(seconds:553252.273928791 timescale:1000000000 value:553252273928791 flags:valid, hasBeenRounded) originalDecodeTime=CMTime(seconds:nan timescale:0 value:0 flags:<empty>) originalPresentationTime=CMTime(seconds:553252.247833416 timescale:1000000000 value:553252247833416 flags:valid)
+2026-06-13T07:13:25.871+0700 notice   [SessionWriter: channel-1-display-0] Appending second sample buffer duration=CMTime(seconds:nan timescale:0 value:0 flags:<empty>) id=channel-1-display newPresentationTime=CMTime(seconds:553252.281166791 timescale:1000000000 value:553252281166791 flags:valid) originalDecodeTime=CMTime(seconds:nan timescale:0 value:0 flags:<empty>) originalPresentationTime=CMTime(seconds:553252.281166791 timescale:1000000000 value:553252281166791 flags:valid)
+2026-06-13T07:13:25.872+0700 debug    [polyrecorder] Metadata file updated.
+2026-06-13T07:13:25.893+0700 info     [DiskSpaceInfo] Current disk space update file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25, total: 494,38 GB, available: 188,68 GB, availableForImportantUsage: 210,42 GB, availableForOpportunisticUsage: 180,99 GB available=188676292608 availableImportant=210415238621 availableOppertunistic=180988527104 total=494384795648
+2026-06-13T07:13:27.131+0700 debug    [polyrecorder] Metadata file updated.
+2026-06-13T07:13:27.634+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 698, segmentType:initialization, segmentReport:nil id=channel-1-display
+2026-06-13T07:13:27.634+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0000.mp4 id=channel-1-display
+2026-06-13T07:13:27.636+0700 debug    [polyrecorder] Created playlist writer at file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0.m3u8 id=channel-1-display
+2026-06-13T07:13:27.636+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 992195, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553252.2733333333 timescale:600 value:331951364 flags:valid) duration:CMTime(seconds:1.7283333333333333 timescale:600 value:1037 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553252.2733333333 timescale:600 value:331951364 flags:valid) offset:920 length:116256 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:27.636+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0001.m4s id=channel-1-display
+2026-06-13T07:13:27.637+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0001.m4s: CMTime(seconds:553252.2733333333 timescale:600 value:331951364 flags:valid) id=channel-1-display
+2026-06-13T07:13:29.461+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553255.857775 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553255.858785083
+2026-06-13T07:13:29.523+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553255.915769416 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553255.916825333
+2026-06-13T07:13:29.685+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553256.081802083 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553256.082758583
+2026-06-13T07:13:29.827+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553256.230817291 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553256.234146875
+2026-06-13T07:13:29.848+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 869621, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553254.0016666667 timescale:600 value:331952401 flags:valid) duration:CMTime(seconds:2.22 timescale:600 value:1332 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553254.0016666667 timescale:600 value:331952401 flags:valid, hasBeenRounded) offset:780 length:229487 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:29.848+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0002.m4s id=channel-1-display
+2026-06-13T07:13:29.850+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0002.m4s: CMTime(seconds:553254.0016666667 timescale:600 value:331952401 flags:valid) id=channel-1-display
+2026-06-13T07:13:30.411+0700 debug    [StreamCoordinator: channel-1-display] SCFrameStatus summary for last 5 seconds id=channel-1-display summary=[("complete", 141), ("idle", 253)] total=394
+2026-06-13T07:13:31.057+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553257.4677645 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553257.468814583
+2026-06-13T07:13:31.126+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553257.533735583 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553257.534783583
+2026-06-13T07:13:31.168+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553257.566779333 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553257.568762791
+2026-06-13T07:13:31.228+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553257.624714666 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553257.625754958
+2026-06-13T07:13:31.273+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553257.683794166 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553257.684730083
+2026-06-13T07:13:31.531+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553257.94086525 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553257.941811583
+2026-06-13T07:13:31.622+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553258.013777291 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553258.01582975
+2026-06-13T07:13:31.833+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 328504, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553256.2216666667 timescale:600 value:331953733 flags:valid) duration:CMTime(seconds:1.805 timescale:600 value:1083 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553256.2216666667 timescale:600 value:331953733 flags:valid, hasBeenRounded) offset:236 length:309896 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:31.833+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0003.m4s id=channel-1-display
+2026-06-13T07:13:31.836+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0003.m4s: CMTime(seconds:553256.2216666667 timescale:600 value:331953733 flags:valid) id=channel-1-display
+2026-06-13T07:13:32.530+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553258.938976166 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553258.93980675
+2026-06-13T07:13:32.741+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553259.141776 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553259.142839583
+2026-06-13T07:13:32.805+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553259.216753541 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553259.217815083
+2026-06-13T07:13:32.910+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553259.316779708 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553259.317899916
+2026-06-13T07:13:32.954+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553259.359955041 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553259.360756958
+2026-06-13T07:13:33.044+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553259.450746958 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553259.452817541
+2026-06-13T07:13:33.103+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553259.500774791 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553259.501828125
+2026-06-13T07:13:33.853+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 348708, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553258.0266666666 timescale:600 value:331954816 flags:valid) duration:CMTime(seconds:2.195 timescale:600 value:1317 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553258.0266666666 timescale:600 value:331954816 flags:valid, hasBeenRounded) offset:216 length:282718 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:33.853+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0004.m4s id=channel-1-display
+2026-06-13T07:13:33.857+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0004.m4s: CMTime(seconds:553258.0266666666 timescale:600 value:331954816 flags:valid) id=channel-1-display
+2026-06-13T07:13:34.310+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553260.715788083 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553260.716843625
+2026-06-13T07:13:34.460+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553260.866839583 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553260.867805416
+2026-06-13T07:13:34.682+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553261.075772083 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553261.076754375
+2026-06-13T07:13:34.911+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553261.316786791 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553261.318826125
+2026-06-13T07:13:35.057+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553261.466777125 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553261.468879
+2026-06-13T07:13:35.121+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553261.517773375 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553261.518747958
+2026-06-13T07:13:35.205+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553261.6077645 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553261.608793708
+2026-06-13T07:13:35.289+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553261.6827955 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553261.683810208
+2026-06-13T07:13:35.410+0700 debug    [StreamCoordinator: channel-1-display] SCFrameStatus summary for last 5 seconds id=channel-1-display summary=[("complete", 25), ("idle", 372)] total=397
+2026-06-13T07:13:35.864+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553262.258076708 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553262.264143583
+2026-06-13T07:13:35.953+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 347715, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553260.2216666667 timescale:600 value:331956133 flags:valid) duration:CMTime(seconds:2.0083333333333333 timescale:600 value:1205 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553260.2216666667 timescale:600 value:331956133 flags:valid, hasBeenRounded) offset:216 length:300083 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:35.953+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0005.m4s id=channel-1-display
+2026-06-13T07:13:35.955+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0005.m4s: CMTime(seconds:553260.2216666667 timescale:600 value:331956133 flags:valid) id=channel-1-display
+2026-06-13T07:13:37.842+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 305894, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553262.23 timescale:600 value:331957338 flags:valid) duration:CMTime(seconds:1.9833333333333334 timescale:600 value:1190 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553262.23 timescale:600 value:331957338 flags:valid, hasBeenRounded) offset:172 length:292248 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:37.842+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0006.m4s id=channel-1-display
+2026-06-13T07:13:37.844+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0006.m4s: CMTime(seconds:553262.23 timescale:600 value:331957338 flags:valid) id=channel-1-display
+2026-06-13T07:13:38.097+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553264.490935166 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553264.494930791
+2026-06-13T07:13:38.291+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553264.691787375 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553264.692893583
+2026-06-13T07:13:38.616+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553265.015786458 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553265.016895
+2026-06-13T07:13:39.970+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 367117, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553264.2133333334 timescale:600 value:331958528 flags:valid) duration:CMTime(seconds:2.025 timescale:600 value:1215 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553264.2133333334 timescale:600 value:331958528 flags:valid, hasBeenRounded) offset:264 length:292256 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:39.970+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0007.m4s id=channel-1-display
+2026-06-13T07:13:39.974+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0007.m4s: CMTime(seconds:553264.2133333334 timescale:600 value:331958528 flags:valid) id=channel-1-display
+2026-06-13T07:13:40.078+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553265.075002166 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553266.481119833
+2026-06-13T07:13:40.411+0700 debug    [StreamCoordinator: channel-1-display] SCFrameStatus summary for last 5 seconds id=channel-1-display summary=[("complete", 33), ("idle", 352)] total=385
+2026-06-13T07:13:41.850+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 423572, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553266.2383333333 timescale:600 value:331959743 flags:valid) duration:CMTime(seconds:1.9833333333333334 timescale:600 value:1190 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553266.2383333333 timescale:600 value:331959743 flags:valid, hasBeenRounded) offset:284 length:331718 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:41.850+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0008.m4s id=channel-1-display
+2026-06-13T07:13:41.851+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0008.m4s: CMTime(seconds:553266.2383333333 timescale:600 value:331959743 flags:valid) id=channel-1-display
+2026-06-13T07:13:42.570+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553268.512078416 generatedEvents=2 id=channel-0-input session=0 untilIncluding=553268.980110666
+2026-06-13T07:13:43.393+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553269.791851541 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553269.792839166
+2026-06-13T07:13:43.962+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 1712813, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553268.2216666667 timescale:600 value:331960933 flags:valid) duration:CMTime(seconds:2.025 timescale:600 value:1215 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553268.2216666667 timescale:600 value:331960933 flags:valid, hasBeenRounded) offset:584 length:309019 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:43.962+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0009.m4s id=channel-1-display
+2026-06-13T07:13:43.967+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0009.m4s: CMTime(seconds:553268.2216666667 timescale:600 value:331960933 flags:valid) id=channel-1-display
+2026-06-13T07:13:45.412+0700 debug    [StreamCoordinator: channel-1-display] SCFrameStatus summary for last 5 seconds id=channel-1-display summary=[("complete", 87), ("idle", 324)] total=411
+2026-06-13T07:13:45.580+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553271.97589525 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553271.976846
+2026-06-13T07:13:45.582+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553271.993047375 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553271.993815
+2026-06-13T07:13:45.601+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553272.00079425 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553272.001851291
+2026-06-13T07:13:45.602+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553272.009849875 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553272.010791375
+2026-06-13T07:13:45.707+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553272.100774625 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553272.102809416
+2026-06-13T07:13:45.741+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 639000, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553270.2466666667 timescale:600 value:331962148 flags:valid) duration:CMTime(seconds:1.8666666666666667 timescale:600 value:1120 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553270.2466666667 timescale:600 value:331962148 flags:valid, hasBeenRounded) offset:544 length:293804 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:45.741+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0010.m4s id=channel-1-display
+2026-06-13T07:13:45.743+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0010.m4s: CMTime(seconds:553270.2466666667 timescale:600 value:331962148 flags:valid) id=channel-1-display
+2026-06-13T07:13:46.152+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553272.5517945 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553272.552804625
+2026-06-13T07:13:46.176+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553272.585115 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553272.585882416
+2026-06-13T07:13:47.109+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553273.517937708 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553273.518837375
+2026-06-13T07:13:47.580+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553273.984788958 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553273.985825041
+2026-06-13T07:13:48.024+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 1297451, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553272.1133333333 timescale:600 value:331963268 flags:valid) duration:CMTime(seconds:1.9083333333333334 timescale:600 value:1145 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553272.1133333333 timescale:600 value:331963268 flags:valid, hasBeenRounded) offset:1364 length:299826 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:48.024+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0011.m4s id=channel-1-display
+2026-06-13T07:13:48.027+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0011.m4s: CMTime(seconds:553272.1133333333 timescale:600 value:331963268 flags:valid) id=channel-1-display
+2026-06-13T07:13:48.746+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553274.144105666 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553275.150053041
+2026-06-13T07:13:49.716+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 662028, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553274.0216666666 timescale:600 value:331964413 flags:valid) duration:CMTime(seconds:2.05 timescale:600 value:1230 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553274.0216666666 timescale:600 value:331964413 flags:valid, hasBeenRounded) offset:360 length:297896 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:49.716+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0012.m4s id=channel-1-display
+2026-06-13T07:13:49.718+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0012.m4s: CMTime(seconds:553274.0216666666 timescale:600 value:331964413 flags:valid) id=channel-1-display
+2026-06-13T07:13:50.411+0700 debug    [StreamCoordinator: channel-1-display] SCFrameStatus summary for last 5 seconds id=channel-1-display summary=[("complete", 164), ("idle", 246)] total=410
+2026-06-13T07:13:50.450+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553276.859816958 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553276.861982375
+2026-06-13T07:13:50.472+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553276.8678575 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553276.868779166
+2026-06-13T07:13:50.768+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553277.167862125 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553277.168850291
+2026-06-13T07:13:51.706+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 648362, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553276.0716666667 timescale:600 value:331965643 flags:valid) duration:CMTime(seconds:1.9416666666666667 timescale:600 value:1165 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553276.0716666667 timescale:600 value:331965643 flags:valid, hasBeenRounded) offset:592 length:293092 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:51.706+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0013.m4s id=channel-1-display
+2026-06-13T07:13:51.710+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0013.m4s: CMTime(seconds:553276.0716666667 timescale:600 value:331965643 flags:valid) id=channel-1-display
+2026-06-13T07:13:51.970+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553277.265903541 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553278.381221666
+2026-06-13T07:13:52.589+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553278.9928165 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553278.993849958
+2026-06-13T07:13:52.791+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553279.184852416 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553279.185892291
+2026-06-13T07:13:52.831+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553279.226324458 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553279.226890958
+2026-06-13T07:13:53.132+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553279.534814458 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553279.535807458
+2026-06-13T07:13:53.133+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553279.543803 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553279.544850541
+2026-06-13T07:13:53.499+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553279.892833625 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553279.893792958
+2026-06-13T07:13:53.524+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553279.934843166 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553279.935848125
+2026-06-13T07:13:53.843+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553280.252047541 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553280.252910083
+2026-06-13T07:13:53.882+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553280.27584225 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553280.276905708
+2026-06-13T07:13:53.908+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 687576, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553278.0133333333 timescale:600 value:331966808 flags:valid) duration:CMTime(seconds:2.2083333333333335 timescale:600 value:1325 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553278.0133333333 timescale:600 value:331966808 flags:valid, hasBeenRounded) offset:648 length:310788 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:53.908+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0014.m4s id=channel-1-display
+2026-06-13T07:13:53.910+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0014.m4s: CMTime(seconds:553278.0133333333 timescale:600 value:331966808 flags:valid) id=channel-1-display
+2026-06-13T07:13:55.086+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553280.767278916 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553281.489880166
+2026-06-13T07:13:55.411+0700 debug    [StreamCoordinator: channel-1-display] SCFrameStatus summary for last 5 seconds id=channel-1-display summary=[("complete", 70), ("idle", 334)] total=404
+2026-06-13T07:13:55.663+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553282.063806041 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553282.064808125
+2026-06-13T07:13:55.684+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553282.088796166 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553282.090941041
+2026-06-13T07:13:55.869+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 731165, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553280.2216666667 timescale:600 value:331968133 flags:valid) duration:CMTime(seconds:1.98 timescale:600 value:1188 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553280.2216666667 timescale:600 value:331968133 flags:valid, hasBeenRounded) offset:332 length:153116 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:55.869+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0015.m4s id=channel-1-display
+2026-06-13T07:13:55.871+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0015.m4s: CMTime(seconds:553280.2216666667 timescale:600 value:331968133 flags:valid) id=channel-1-display
+2026-06-13T07:13:55.935+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553282.338865125 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553282.339899208
+2026-06-13T07:13:56.115+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553282.520849708 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553282.522949333
+2026-06-13T07:13:56.157+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553282.547843875 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553282.548838291
+2026-06-13T07:13:56.612+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553283.005941541 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553283.006968
+2026-06-13T07:13:57.037+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553283.437834666 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553283.439888458
+2026-06-13T07:13:57.359+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553283.596053458 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553283.769207416
+2026-06-13T07:13:57.798+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553284.188904041 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553284.189916875
+2026-06-13T07:13:57.983+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 311776, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553282.2016666667 timescale:600 value:331969321 flags:valid) duration:CMTime(seconds:2.1083333333333334 timescale:600 value:1265 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553282.2016666667 timescale:600 value:331969321 flags:valid, hasBeenRounded) offset:288 length:171539 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:13:57.983+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0016.m4s id=channel-1-display
+2026-06-13T07:13:57.985+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0016.m4s: CMTime(seconds:553282.2016666667 timescale:600 value:331969321 flags:valid) id=channel-1-display
+2026-06-13T07:13:58.586+0700 debug    [InputRecorderSession: 0] Generated mouse move events for cursor changes between mouse moves. after=553284.98882 generatedEvents=1 id=channel-0-input session=0 untilIncluding=553284.989887166
+2026-06-13T07:13:59.331+0700 notice   [SignalHandler] Received SIGTERM.
+2026-06-13T07:13:59.331+0700 warning  [Conductor] Pausing the recording to be able to stop.
+2026-06-13T07:13:59.331+0700 debug    [Conductor] Pausing recording.
+2026-06-13T07:13:59.331+0700 notice   [Conductor] Recording paused. recordUntil=553285.7436333334
+2026-06-13T07:13:59.331+0700 debug    [Conductor] Stopping recording.
+2026-06-13T07:13:59.331+0700 debug    [Conductor] Cleaning up recorders. recorders=3
+2026-06-13T07:13:59.331+0700 debug    [CursorRecorder] Stopping display link. id=channel-0-cursor
+2026-06-13T07:13:59.331+0700 debug    [DisplayRecorder: channel-1-display] Completing all session writers id=channel-1-display sessionWriters.count=1
+2026-06-13T07:13:59.331+0700 debug    [InputRecorder] Stopping event monitor. id=channel-0-input
+2026-06-13T07:13:59.331+0700 notice   [CursorRecorder] Stopped display link. id=channel-0-cursor
+2026-06-13T07:13:59.331+0700 notice   [InputRecorder] Stopped eventTapForEvents. id=channel-0-input
+2026-06-13T07:13:59.331+0700 debug    [SessionWriter: channel-1-display-0] Starting new recording completion task id=channel-1-display
+2026-06-13T07:13:59.331+0700 info     [InputRecorder] Event monitor stopped. id=channel-0-input
+2026-06-13T07:13:59.331+0700 debug    [InputRecorder] Finishing sessions. id=channel-0-input
+2026-06-13T07:13:59.331+0700 debug    [SessionWriter: channel-1-display-0] Completing recording. id=channel-1-display
+2026-06-13T07:13:59.331+0700 debug    [InputRecorderSession: 0] Generating mouse move events for stationary cursor changes at end of session. id=channel-0-input session=0
+2026-06-13T07:13:59.331+0700 debug    [polyrecorder] Closing streaming JSON file. fileUrl=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/cursors.json
+2026-06-13T07:13:59.331+0700 debug    [SessionWriter: channel-1-display-0] Waiting for final frames. id=channel-1-display
+2026-06-13T07:13:59.331+0700 notice   [InputRecorderSession: 0] Generated mouse move events for stationary cursor changes at end of session. after=553285.50197825 generatedEvents=0 id=channel-0-input session=0 untilIncluding=553285.7436333334
+2026-06-13T07:13:59.331+0700 debug    [polyrecorder] Closing streaming JSON file. fileUrl=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/mousemoves-0.json id=channel-0-input
+2026-06-13T07:13:59.331+0700 notice   [SessionWriter: channel-1-display-0] Newer item produced recently, waiting for another second. id=channel-1-display lastItemTime=CMTime(seconds:553285.735413041 timescale:1000000000 value:553285735413041 flags:valid) previousLastItemTime=CMTime(seconds:-inf timescale:0 value:0 flags:valid, negativeInfinity)
+2026-06-13T07:13:59.335+0700 info     [polyrecorder] Closed streaming JSON file successfully. fileUrl=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/cursors.json
+2026-06-13T07:13:59.335+0700 notice   [CursorRecorder] Cursor information written to disk. count=38 folder=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/cursors/ id=channel-0-cursor
+2026-06-13T07:13:59.335+0700 info     [polyrecorder] Closed streaming JSON file successfully. fileUrl=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/mousemoves-0.json id=channel-0-input
+2026-06-13T07:13:59.335+0700 debug    [polyrecorder] Closing streaming JSON file. fileUrl=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/mouseclicks-0.json id=channel-0-input
+2026-06-13T07:13:59.337+0700 info     [polyrecorder] Closed streaming JSON file successfully. fileUrl=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/mouseclicks-0.json id=channel-0-input
+2026-06-13T07:13:59.337+0700 debug    [polyrecorder] Closing streaming JSON file. fileUrl=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/keystrokes-0.json id=channel-0-input
+2026-06-13T07:13:59.338+0700 info     [polyrecorder] Closed streaming JSON file successfully. fileUrl=file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/keystrokes-0.json id=channel-0-input
+2026-06-13T07:13:59.338+0700 notice   [InputRecorder] Finished writers. id=channel-0-input
+2026-06-13T07:14:00.343+0700 notice   [SessionWriter: channel-1-display-0] Waiting for final frames completed. id=channel-1-display systemUptime=553286.7558765834
+2026-06-13T07:14:00.343+0700 debug    [SessionWriter: channel-1-display-0] Finishing SessionBoundedRetimer. id=channel-1-display
+2026-06-13T07:14:00.343+0700 notice   [SessionWriter: channel-1-display-0] Finished SessionBoundedRetimer. id=channel-1-display
+2026-06-13T07:14:00.343+0700 debug    [SessionWriter: channel-1-display-0] Flushing all frames from backpressure buffer. id=channel-1-display itemsInBuffer=0
+2026-06-13T07:14:00.343+0700 notice   [SessionWriter: channel-1-display-0] Flushed all frames from backpressure buffer. id=channel-1-display itemsInBuffer=0
+2026-06-13T07:14:00.343+0700 debug    [SessionWriter: channel-1-display-0] End session on AVAssetWriter id=channel-1-display sessionEnd=CMTime(seconds:553285.743633333 timescale:1000000000 value:553285743633333 flags:valid, hasBeenRounded)
+2026-06-13T07:14:00.344+0700 debug    [SegmentedAssetWriterDelegate] Did output segment data: 347045, segmentType:separable, segmentReport:AVAssetSegmentTrackReport(earliestPresentationTimeStamp:CMTime(seconds:553284.31 timescale:600 value:331970586 flags:valid) duration:CMTime(seconds:1.4416666666666667 timescale:600 value:865 flags:valid) firstVideoSampleInformation:(presentationTimeStamp:CMTime(seconds:553284.31 timescale:600 value:331970586 flags:valid, hasBeenRounded) offset:672 length:164996 isSyncSample:true)) id=channel-1-display
+2026-06-13T07:14:00.344+0700 debug    [SegmentedAssetWriterDelegate] Writing segment data: file:///Users/khoasdyn/Library/Application%20Support/Screen%20Studio/Screen%20Studio%20Recordings/Google%20Chrome%202026-06-13%2007:13:25/channel-1-display-0-0017.m4s id=channel-1-display
+2026-06-13T07:14:00.345+0700 info     [SegmentedAssetWriterDelegate] Appending channel-1-display-0-0017.m4s: CMTime(seconds:553284.31 timescale:600 value:331970586 flags:valid) id=channel-1-display
+2026-06-13T07:14:00.346+0700 notice   [SessionWriter: channel-1-display-0] End session on AVAssetWriter id=channel-1-display sessionEnd=CMTime(seconds:553285.743633333 timescale:1000000000 value:553285743633333 flags:valid, hasBeenRounded)
+2026-06-13T07:14:00.346+0700 debug    [SessionWriter: channel-1-display-0] Finishing writing to asset writer. id=channel-1-display
+2026-06-13T07:14:00.349+0700 notice   [SessionWriter: channel-1-display-0] Finished writing to assset writer. id=channel-1-display
+2026-06-13T07:14:00.349+0700 debug    [SessionWriter: channel-1-display-0] Finishing writing to metadata file. id=channel-1-display
+2026-06-13T07:14:00.349+0700 notice   [SessionWriter: channel-1-display-0] Finished writing to metadata file. id=channel-1-display
+2026-06-13T07:14:00.349+0700 notice   [SessionWriter: channel-1-display-0] Completed recording, returning metadata. framesProcessed (excluding initial Ring buffer)=605 id=channel-1-display
+2026-06-13T07:14:00.349+0700 notice   [DisplayRecorder: channel-1-display] Completed all session writers id=channel-1-display sessionWriters.count=1
+2026-06-13T07:14:00.349+0700 debug    [DisplayRecorder: channel-1-display] Stopping stream capture. id=channel-1-display
+2026-06-13T07:14:00.359+0700 notice   [DisplayRecorder: channel-1-display] Stopped stream capture. id=channel-1-display
+2026-06-13T07:14:00.359+0700 debug    [DisplayRecorder: channel-1-display] Clearing frame timeout. id=channel-1-display
+2026-06-13T07:14:00.359+0700 notice   [DisplayRecorder: channel-1-display] Cleared frame timeout. id=channel-1-display
+2026-06-13T07:14:00.359+0700 debug    [DisplayRecorder: channel-1-display] Returning Metadata from cleanup id=channel-1-display totalFramesProcessed=613
+2026-06-13T07:14:00.359+0700 notice   [Conductor] Finalized recorders. errors=0 metadataCount=3 recorders=3 sessionsCount=1
+2026-06-13T07:14:00.359+0700 debug    [Conductor] Writing metadata file. metadataCount=3
+2026-06-13T07:14:00.360+0700 debug    [polyrecorder] Metadata file updated.
+2026-06-13T07:14:00.360+0700 notice   [Conductor] Metadata file written. metadataCount=3
+2026-06-13T07:14:00.360+0700 debug    [Conductor] Ending latency critical activity.
+2026-06-13T07:14:00.360+0700 notice   [Conductor] Ended latency critical activity.
+2026-06-13T07:14:00.360+0700 notice   [Conductor] Recording stopped. errorCount=0 metadataCount=3 recorders=3
+2026-06-13T07:14:00.360+0700 notice   [Conductor] Stopped recording. sessions=[
+from:     553252.274  2026-06-13T07:13:25.861+0700
+until:    553285.744  2026-06-13T07:13:59.331+0700
+duration: 33.470
+]
+2026-06-13T07:14:00.360+0700 notice   [Polyrecorder] Nominal recording ended.

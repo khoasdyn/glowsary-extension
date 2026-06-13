@@ -463,6 +463,76 @@
   .demo-pop__icon svg { display: block; width: 100%; height: 100%; }
   .demo-pop__def { margin: 0; color: var(--wc-subtext); font-size: var(--font-size-text-xs); line-height: var(--line-height-text-xs); }
 
+  /* ---- Hero video (real product footage, click to play) ---- */
+  .hero__video { margin: 26px auto 0; max-width: 760px; }
+  .hero__video-caption {
+    color: var(--text-quaternary);
+    font-size: var(--font-size-text-sm);
+    line-height: var(--line-height-text-sm);
+    margin: 0 0 14px;
+  }
+  .hero__video-caption strong { color: var(--text-tertiary); font-weight: var(--font-weight-medium); }
+  .video-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--card-lg);
+    overflow: hidden;
+    background: var(--bg-primary-solid);
+    box-shadow: 0 1px 2px 0 var(--shadow-xs), 0 16px 40px -12px var(--shadow-skeumorphic-inner-border);
+  }
+  .video-facade {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    display: block;
+  }
+  .video-facade img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .video-facade::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--color-gray-900) 16%, var(--color-base-transparent));
+    transition: background 0.25s ease;
+  }
+  .video-facade:hover img, .video-facade:focus-visible img { transform: scale(1.04); }
+  .video-facade:hover::after, .video-facade:focus-visible::after { background: color-mix(in srgb, var(--color-gray-900) 6%, var(--color-base-transparent)); }
+  .video-facade__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    scale: 1;
+    z-index: 1;
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-base-white);
+    border-radius: var(--cta);
+    color: var(--color-brand-600);
+    box-shadow: 0 8px 24px -4px var(--shadow-skeumorphic-inner-border);
+    transition: scale 0.25s ease;
+  }
+  .video-facade__play svg { width: 30px; height: 30px; margin-left: 3px; display: block; }
+  .video-facade:hover .video-facade__play, .video-facade:focus-visible .video-facade__play { scale: 1.08; }
+  .video-frame__iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
   /* ---- Word marquee ---- */
   .marquee {
     margin-top: 64px;
@@ -975,6 +1045,16 @@
         <p class="demo__hint">This is how your saved words look on every page you read. On a touch screen, tap a word instead.</p>
       </div>
     </div>
+
+    <div class="hero__video reveal">
+      <p class="hero__video-caption"><strong>Prefer to watch?</strong> See Glowsary at work on a real article — about a minute.</p>
+      <div class="video-frame" data-video="1bxnTHSs1WA">
+        <button type="button" class="video-facade" aria-label="Play the Glowsary demo video">
+          <img src="assets/video-thumb.jpg" alt="Glowsary underlining saved words on a real web article" loading="lazy" width="1280" height="720">
+          <span class="video-facade__play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+        </button>
+      </div>
+    </div>
   </section>
 
   <div class="marquee" aria-hidden="true">
@@ -1257,6 +1337,22 @@
     document.addEventListener("click", function (event) {
       if (!event.target.closest(".demo-word")) { closeAll(null); }
     });
+
+    // Hero video: load the YouTube embed only after the user clicks play.
+    var videoFrame = document.querySelector(".video-frame[data-video]");
+    if (videoFrame) {
+      var facade = videoFrame.querySelector(".video-facade");
+      facade.addEventListener("click", function () {
+        var id = videoFrame.getAttribute("data-video");
+        var iframe = document.createElement("iframe");
+        iframe.className = "video-frame__iframe";
+        iframe.src = "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&rel=0";
+        iframe.title = "Glowsary demo video";
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        iframe.setAttribute("allowfullscreen", "");
+        facade.replaceWith(iframe);
+      });
+    }
   })();
 </script>
 

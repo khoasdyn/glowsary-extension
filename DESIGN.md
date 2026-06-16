@@ -22,8 +22,8 @@ Sync rule: when the user shares a Figma link or asks for a check, Claude reads F
 2. Never hardcode a raw value, such as a hex color or a pixel size, inside a component. Always reference the central token.
 3. If a value you need does not exist as a token, do not guess. Stop and tell the user, so the user adds it in Figma first and Claude adds the token.
 4. Token names match across Figma, this file, and the code, so there is no guessing.
-5. This file is maintained only through the design-planner skill. Outside that skill the tokens and this file are read-only and never edited.
-6. Component styles come from Figma and the build plan, not this file. The build plan carries the component's visual spec read from Figma, and that spec references the tokens defined here. When you build or change a component, match the spec in the plan. Do not invent a component style that is not in the plan or in Figma; if one is missing or unclear, stop and tell the user so the design-planner skill adds it from Figma first.
+5. This file changes only through an approved, pasted-back plan. Outside that, the tokens and this file are read-only and never edited.
+6. Component styles come from Figma and the build plan, not this file. The build plan carries the component's visual spec read from Figma, and that spec references the tokens defined here. When you build or change a component, match the spec in the plan. Do not invent a component style that is not in the plan or in Figma; if one is missing or unclear, stop and tell the user so it is read from Figma into a plan first.
 
 ## Typography
 
@@ -110,4 +110,4 @@ Not defined yet. To be added.
 
 ## Components
 
-Component visual specs live in Figma, not in a documentation file. When a component is built or changed, the design-planner skill reads its spec from Figma and writes it into the build plan, which references the token names defined here. DESIGN.md (this file) keeps the design system, the tokens and the rules. The design-planner skill owns this file.
+Component visual specs live in Figma, not in a documentation file. When a component is built or changed, Claude reads its spec from Figma and writes it into the build plan, which references the token names defined here. DESIGN.md (this file) keeps the design system, the tokens and the rules, and changes only through an approved plan.

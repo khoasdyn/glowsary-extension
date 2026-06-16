@@ -1,3 +1,9 @@
+## 2026-06-16
+
+- Reworked the project docs to a single agent that both plans and builds, with CLAUDE.md as the one source of the rules; the plan-then-paste-back gate stays for code changes.
+- Removed the `my-skills` folder (product-planner and design-planner), folded their useful rules and the plan structure into CLAUDE.md, and made working from a Figma link an always-on rule.
+- Shrank AGENTS.md to a pointer to CLAUDE.md and updated DESIGN.md so it changes only through an approved plan, with no mention of other agents anywhere.
+
 ## 2026-06-12
 
 - Updated the extension display name, kept the short Chrome name as "Glowsary", and bumped the version to 1.3.0.

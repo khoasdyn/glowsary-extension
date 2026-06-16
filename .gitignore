@@ -1,5 +1,8 @@
 # macOS
 .DS_Store
 
+# Obsidian vault settings
+.obsidian/
+
 # Local video source files (ScreenStudio projects and raw recordings)
 videos/

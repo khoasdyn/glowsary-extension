@@ -1,12 +1,11 @@
-# Shared Agent Skills
+# Project skills
 
-This folder is the single home for project-local skills used by Codex, Claude, Cursor, and other agents working on Glowsary.
+This folder is the single home for project-local skills used on Glowsary. The project runs on one agent that both plans and builds; read CLAUDE.md for the standing rules.
 
 ## Discovery
 
 1. Skills live at `my-skills/<skill-name>/SKILL.md`.
-2. Agents should read the matching `SKILL.md` before using a named skill, for example product-planner.
-3. Agent-facing metadata lives inside the skill folder, usually under `agents/`.
+2. Read the matching `SKILL.md` before using a named skill, for example product-planner.
 
 ## Skills
 

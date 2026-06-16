@@ -14,7 +14,7 @@ The system has three layers, and updates flow in one direction.
 2b. Layers per category: a category always has a primitive file, and it has a second semantic file only when the design actually defines semantic tokens for it. Color has both. Typography has a primitive scale plus the named text styles, which act as its semantic layer. Spacing and radius are expected to have only a primitive scale for now. Never invent a semantic layer the design does not have.
 3. This file holds the rules and structure: what tokens exist, how they are named, what each is for, and what agents may and may not do. It does not repeat the exact values.
 
-Sync rule: when the user shares a Figma link or asks for a check, Claude reads Figma, hands the updated values to Codex through a plan so Codex updates the central tokens, and keeps this file's rules in step. If Figma and the code tokens ever disagree, Figma is right.
+Sync rule: when the user shares a Figma link or asks for a check, Claude reads Figma and puts the updated values into a plan; after the user pastes the plan back, the build updates the central tokens, and this file's rules are kept in step. If Figma and the code tokens ever disagree, Figma is right.
 
 ## Rules for agents
 
@@ -22,7 +22,7 @@ Sync rule: when the user shares a Figma link or asks for a check, Claude reads F
 2. Never hardcode a raw value, such as a hex color or a pixel size, inside a component. Always reference the central token.
 3. If a value you need does not exist as a token, do not guess. Stop and tell the user, so the user adds it in Figma first and Claude adds the token.
 4. Token names match across Figma, this file, and the code, so there is no guessing.
-5. Only Claude maintains this file. Codex reads the tokens and this file, and never edits this file.
+5. This file is maintained only through the design-planner skill. Outside that skill the tokens and this file are read-only and never edited.
 6. Component styles come from Figma and the build plan, not this file. The build plan carries the component's visual spec read from Figma, and that spec references the tokens defined here. When you build or change a component, match the spec in the plan. Do not invent a component style that is not in the plan or in Figma; if one is missing or unclear, stop and tell the user so the design-planner skill adds it from Figma first.
 
 ## Typography

@@ -148,11 +148,30 @@
     return normalizeAliasList(aliases).map((alias) => alias.displayTerm).join(", ");
   }
 
+  function normalizeImage(image) {
+    if (!image || typeof image !== "object") {
+      return undefined;
+    }
+
+    const type = image.type === "link" ? "link" : image.type === "local" ? "local" : null;
+    const src = typeof image.src === "string" ? image.src.trim() : "";
+
+    if (!type || !src) {
+      return undefined;
+    }
+
+    return { type, src };
+  }
+
   function normalizeEntry(entry) {
+    const { image: rawImage, ...rest } = entry;
+    const image = normalizeImage(rawImage);
+
     return {
-      ...entry,
+      ...rest,
       color: normalizeColor(entry.color),
-      aliases: normalizeAliasList(entry.aliases)
+      aliases: normalizeAliasList(entry.aliases),
+      ...(image ? { image } : {})
     };
   }
 
@@ -519,11 +538,36 @@
     editIcon.setAttribute("aria-hidden", "true");
     editButton.append(editIcon);
 
+    const media = document.createElement("button");
+    media.className = "glowsary-popup__media";
+    media.type = "button";
+    media.setAttribute("aria-label", "View image full size");
+    media.hidden = true;
+
+    const mediaImg = document.createElement("img");
+    mediaImg.className = "glowsary-popup__media-img";
+    mediaImg.alt = "";
+    mediaImg.decoding = "async";
+    media.append(mediaImg);
+
+    mediaImg.addEventListener("error", () => {
+      media.hidden = true;
+    });
+    media.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const source = mediaImg.getAttribute("src");
+      if (source) {
+        window.GlowsaryImageViewer?.open?.(source, { classPrefix: "glowsary" });
+      }
+    });
+
     const definition = document.createElement("div");
     definition.className = "glowsary-popup-definition";
 
     titleGroup.append(soundButton, title);
-    titleRow.append(titleGroup, editButton);
+    titleRow.append(media, titleGroup, editButton);
     wordBlock.append(titleRow, definition);
     popup.append(wordBlock);
 
@@ -719,6 +763,22 @@
     editButton.disabled = !page.entry;
     definition.textContent = page.definition || "";
 
+    const media = element.querySelector(".glowsary-popup__media");
+    const mediaImg = media?.querySelector(".glowsary-popup__media-img");
+
+    if (media && mediaImg) {
+      const image = page.entry?.image;
+
+      if (image?.src) {
+        media.hidden = false;
+        mediaImg.removeAttribute("src");
+        mediaImg.src = image.src;
+      } else {
+        media.hidden = true;
+        mediaImg.removeAttribute("src");
+      }
+    }
+
     if (activePopup.controls) {
       activePopup.controls.previous.disabled = activePopup.pageIndex === 0;
       activePopup.controls.status.textContent = `${activePopup.pageIndex + 1} / ${pages.length}`;
@@ -783,13 +843,31 @@
     };
   }
 
-  async function saveEntry(displayTerm, definition, aliasText = "", color, aliasEnabled = true) {
+  async function persistEntries(nextEntries) {
+    try {
+      await new Promise((resolve, reject) => {
+        chrome.storage.local.set({ [ENTRIES_KEY]: nextEntries }, () => {
+          if (chrome.runtime.lastError) {
+            reject(new Error(chrome.runtime.lastError.message));
+            return;
+          }
+
+          resolve();
+        });
+      });
+    } catch (error) {
+      throw new Error("This word could not be saved. The image may be too large for available storage.");
+    }
+  }
+
+  async function saveEntry(displayTerm, definition, aliasText = "", color, aliasEnabled = true, image = null) {
     const validation = validateEntry(displayTerm, definition, aliasText, aliasEnabled);
 
     if (validation.error) {
       throw new Error(validation.error);
     }
 
+    const normalizedImage = normalizeImage(image);
     const currentEntries = await getEntries();
     const nextEntry = {
       term: validation.normalizedTerm,
@@ -797,11 +875,12 @@
       definition: validation.cleanDefinition,
       aliases: validation.aliases,
       color: normalizeColor(color),
+      ...(normalizedImage ? { image: normalizedImage } : {}),
       createdAt: Date.now()
     };
     const nextEntries = currentEntries.concat(nextEntry).sort((a, b) => a.displayTerm.localeCompare(b.displayTerm));
 
-    await storage.set({ [ENTRIES_KEY]: nextEntries });
+    await persistEntries(nextEntries);
     entries = nextEntries;
     refreshHighlights();
   }
@@ -821,7 +900,7 @@
     ));
   }
 
-  async function updateEntry(targetEntry, displayTerm, definition, aliasText = "", color, aliasEnabled = true) {
+  async function updateEntry(targetEntry, displayTerm, definition, aliasText = "", color, aliasEnabled = true, image = null) {
     const validation = validateEntry(displayTerm, definition, aliasText, aliasEnabled);
 
     if (validation.error) {
@@ -834,18 +913,20 @@
       throw new Error("This word could not be found.");
     }
 
+    const normalizedImage = normalizeImage(image);
     const nextEntry = {
       term: validation.normalizedTerm,
       displayTerm: validation.cleanTerm,
       definition: validation.cleanDefinition,
       aliases: validation.aliases,
       color: normalizeColor(color),
+      ...(normalizedImage ? { image: normalizedImage } : {}),
       createdAt: targetEntry.createdAt || Date.now()
     };
     const nextEntries = entries.map((entry, index) => (index === targetIndex ? nextEntry : entry))
       .sort((a, b) => a.displayTerm.localeCompare(b.displayTerm));
 
-    await storage.set({ [ENTRIES_KEY]: nextEntries });
+    await persistEntries(nextEntries);
     entries = nextEntries;
     refreshHighlights();
   }
@@ -940,6 +1021,10 @@
     const deleteButton = formParts.deleteButton;
     const saveError = backdrop.querySelector(".glowsary-save-error");
     const colorPickerController = window.GlowsaryColorPicker?.init?.(colorPicker, { classPrefix: "glowsary-color-picker" });
+    const imageController = window.GlowsaryImageField?.init?.(formParts.imageMount, {
+      classPrefix: "glowsary",
+      value: isEditMode ? entry.image : null
+    });
     const termHint = formParts.termHint;
     const setTermHint = (message = null) => {
       termHint.textContent = message || "Maximum 50 characters";
@@ -1056,10 +1141,12 @@
       }
 
       try {
+        const imageValue = imageController?.getValue?.() || null;
+
         if (isEditMode) {
-          await updateEntry(entry, termInput.value, definitionInput.value, aliasInput.value, colorPickerController?.getValue?.(), isAliasEnabled());
+          await updateEntry(entry, termInput.value, definitionInput.value, aliasInput.value, colorPickerController?.getValue?.(), isAliasEnabled(), imageValue);
         } else {
-          await saveEntry(termInput.value, definitionInput.value, aliasInput.value, colorPickerController?.getValue?.(), isAliasEnabled());
+          await saveEntry(termInput.value, definitionInput.value, aliasInput.value, colorPickerController?.getValue?.(), isAliasEnabled(), imageValue);
         }
 
         closeDialog();

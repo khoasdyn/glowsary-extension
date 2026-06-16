@@ -1,5 +1,7 @@
 ## 2026-06-16
 
+- Added an optional image to each saved word, shown as a thumbnail in the definition popup and the word card and opening full size on click, from a local file or a pasted link.
+- Added a new `tokens/image-tokens.js` with placeholder image sizes and compression values, flagged for refinement until there is a Figma design.
 - Reworked the project docs to a single agent that both plans and builds, with CLAUDE.md as the one source of the rules; the plan-then-paste-back gate stays for code changes.
 - Removed the `my-skills` folder (product-planner and design-planner), folded their useful rules and the plan structure into CLAUDE.md, and made working from a Figma link an always-on rule.
 - Shrank AGENTS.md to a pointer to CLAUDE.md and updated DESIGN.md so it changes only through an approved plan, with no mention of other agents anywhere.

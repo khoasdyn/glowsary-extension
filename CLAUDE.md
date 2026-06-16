@@ -59,7 +59,7 @@ These steps run once the user has pasted an approved plan back and Claude starts
 
 ## After building
 
-1. Update CHANGELOG.md: add a short entry under today's date describing what changed, in plain language. Add new entries on top. Do not rewrite past entries.
+1. Update CHANGELOG.md: add a short entry under today's date, one readable line per change, in plain language. Say what changed; do not retell what PRD.md already covers. Add new entries on top. Do not rewrite past entries.
 2. Give a short commit message for the change (one line, present tense, for example "Add definition popup hover trigger").
 
 ## Working from Figma

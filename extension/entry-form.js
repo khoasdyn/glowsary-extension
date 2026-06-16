@@ -9,6 +9,7 @@
     aliasToggle: "alias-toggle",
     aliasHint: "alias-hint",
     color: "color-picker",
+    image: "image-field",
     save: "save-entry",
     delete: "delete-entry-from-panel"
   };
@@ -186,7 +187,19 @@
     });
 
     colorField.append(colorLabel, colorPicker);
-    fields.append(term.label, definition.label, alias.label, colorField);
+
+    const imageField = createElement("div", { className: fieldClass });
+    const imageLabel = createElement("span", {
+      className: className(prefix, "field-input__label"),
+      textContent: "Image"
+    });
+    const imageMount = createElement("div", {
+      className: className(prefix, "image-field-mount"),
+      attributes: { id: ids.image }
+    });
+
+    imageField.append(imageLabel, imageMount);
+    fields.append(term.label, definition.label, alias.label, colorField, imageField);
 
     const actions = createElement("div", { className: className(prefix, "form-actions") });
     const saveButton = createElement("button", {
@@ -242,6 +255,7 @@
       aliasToggle: alias.toggle,
       aliasHint: alias.hint,
       colorPicker,
+      imageMount,
       saveButton,
       deleteButton,
       setMode

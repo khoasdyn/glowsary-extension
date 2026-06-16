@@ -33,6 +33,7 @@ A self-directed English learner, often a non-native speaker, who reads English c
 6. As a reader, I want to add a new word by hand in the management view, so I can save a word even when I am not reading it on a page.
 7. As a reader, I want to export my saved words to a file and import them back, so I can back them up or move them to another device.
 8. As a reader, I want to hear how a saved word is pronounced, so I learn the sound of the word, not only its meaning.
+9. As a reader, I want to add an image to a saved word, so a picture helps me remember the word, not only its definition.
 
 ## Functional requirements
 
@@ -84,6 +85,19 @@ A self-directed English learner, often a non-native speaker, who reads English c
 - FR-44d: Clicking the icon while a word is still being spoken stops it and speaks it again from the beginning. Starting speech for one word stops any other word still being spoken. There is no play/stop toggle and no ignored click.
 - FR-44e: Clicking the sound icon never triggers another action. In the popup, it does not open the edit panel, and the popup stays open under the sticky rule (FR-13). On a word card, it does not open the edit panel (FR-18). If the popup closes while a word is being spoken, the speech simply finishes on its own; it does not need to be cut off.
 - FR-44f: When the browser has no usable voice (rare), clicking the icon silently does nothing. The icon is still shown and no error message appears; the case is too rare to deserve extra UI.
+
+### Image for a word
+
+- FR-45: Every saved entry can have one optional image, as a memory aid that supports the definition and never replaces it. An entry can also have no image, which is the default. There is never more than one image per entry.
+- FR-45a: An image is added in one of two ways, chosen by the user each time: importing a local image file from the user's computer, or pasting a web link (URL) to an image. The two ways are stored differently (FR-45b, FR-45c) but appear the same to the reader once set.
+- FR-45b: A local image can be added by browsing for a file, dragging a file onto the form, or pasting an image. Allowed types are PNG, JPEG, and WEBP, and the file must be at most 5MB. Glowsary stores a copy of the image locally, so it is permanent, private, and works offline. To save space, Glowsary shrinks and compresses the stored copy only when the image is large (over a set size or dimension); images already small enough are stored as they are. The compression targets the largest size the image is ever shown at (FR-45d), so the image still looks clear everywhere it appears.
+- FR-45c: A linked image is added by pasting a web link, for example using "Copy image address" on an image on a page. Glowsary stores only the link and renders the image from the web each time it is shown; it does not download or keep a copy, so it cannot shrink or recompress it, and the size limit and type check in FR-45b do not apply. This is the one place the product makes a network request to a third-party server when showing saved content, a deliberate exception to the otherwise local, no-network behavior (FR-20), accepted for the convenience of pasting a link. The trade-offs the user accepted are that a linked image can stop working if the source removes it (link rot), can be blocked by some sites, and needs a network connection to show.
+- FR-45d: When an entry has an image, it is shown in two places: the definition popup (FR-12), near the word title, and the word card in the management view (FR-43). In both places the image shows as a fixed-size thumbnail for a steady layout, and clicking the thumbnail opens a full-size view of the image. On a multi-entry popup (FR-11a), each page shows its own entry's image, and a page whose entry has no image shows no image area.
+- FR-45e: The image field appears in both places that create or edit an entry: the in-page Add word form (FR-2) and the Management form panel (FR-17f, FR-18). After an entry has an image, the user can replace it with a different image or remove it back to no image, using a clear remove control. The image is optional in both add and edit; saving with no image is always allowed.
+- FR-45f: When an imported local file is the wrong type or larger than 5MB, adding the image is blocked and a short message says why (wrong type, or too large), so the user can choose another file. The rest of the form keeps the user's input. This applies only to local imports (FR-45b), not to linked images (FR-45c).
+- FR-45g: When a linked image fails to load (the source removed it, the site blocks it, or the user is offline), Glowsary hides the image area entirely, so the popup and card look like a normal text-only entry and the word keeps working. No broken-image icon and no error message are shown.
+- FR-45h: Glowsary never searches for or suggests an image. Every image comes from the user, either a file they pick or a link they paste. There is no auto-fetch beyond rendering a pasted link (FR-45c).
+- FR-45i: Image data is not part of import and export for now. The CSV export and import stay words-only (FR-34 to FR-37), so images are not included in a backup yet. A backup that also covers images is planned as separate later work.
 
 ### Global on and off
 
@@ -165,11 +179,11 @@ A self-directed English learner, often a non-native speaker, who reads English c
 
 ## Data model
 
-Each saved entry holds the word or phrase, the definition, any aliases, a color, and a created timestamp. A suggested shape:
+Each saved entry holds the word or phrase, the definition, any aliases, a color, an optional image, and a created timestamp. A suggested shape:
 
-> term: the text to match (word or phrase), stored in a normalized lowercase form for matching displayTerm: the text exactly as the user typed it, shown in the list definition: the user’s typed meaning aliases: a list of alternate forms to match, each stored in a normalized lowercase form, with the user’s original text kept for display color: one of the four fixed colors, defaulting to the first color when none is chosen createdAt: when the entry was saved
+> term: the text to match (word or phrase), stored in a normalized lowercase form for matching displayTerm: the text exactly as the user typed it, shown in the list definition: the user’s typed meaning aliases: a list of alternate forms to match, each stored in a normalized lowercase form, with the user’s original text kept for display color: one of the four fixed colors, defaulting to the first color when none is chosen image: an optional image for the entry (FR-45), stored in one of two forms, a local copy that Glowsary saved and may have compressed (FR-45b) or a web link that Glowsary only stores and renders from (FR-45c); the form is recorded so the app knows whether the image is a saved local copy or a remote link, and an entry with no image stores none createdAt: when the entry was saved
 
-Storing a normalized lowercase form for both the term and each alias supports case-insensitive matching (FR-8) and case-insensitive grouping of entries that share the same text in the popup (FR-10b), while keeping the user’s original text for display in the list. An entry with no aliases stores an empty list.
+Storing a normalized lowercase form for both the term and each alias supports case-insensitive matching (FR-8) and case-insensitive grouping of entries that share the same text in the popup (FR-10b), while keeping the user’s original text for display in the list. An entry with no aliases stores an empty list. An entry's image is optional, with at most one per entry; it is either a local copy Glowsary saved (and may have compressed when large) or only a web link Glowsary renders from, and an entry with no image stores none.
 
 Each excluded site holds the whole-site domain (FR-27a), stored in a normalized lowercase form so site matching ignores case. A suggested shape: domain (the normalized whole-site domain to match), and a created timestamp for ordering the list. Every listed site is always active (FR-30); there is no master switch and no per-site active field.
 

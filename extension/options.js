@@ -13,6 +13,7 @@ let editingEntry = null;
 let searchQuery = "";
 let activeManagementTab = "home";
 let entryColorPicker = null;
+let entryImageField = null;
 
 const entryForm = window.GlowsaryEntryForm?.render?.(document.querySelector("#entry-form-mount"), {
   includeDelete: true,
@@ -80,11 +81,30 @@ function normalizeAliasList(aliases = []) {
   })).filter((alias) => alias.term && alias.displayTerm);
 }
 
+function normalizeImage(image) {
+  if (!image || typeof image !== "object") {
+    return undefined;
+  }
+
+  const type = image.type === "link" ? "link" : image.type === "local" ? "local" : null;
+  const src = typeof image.src === "string" ? image.src.trim() : "";
+
+  if (!type || !src) {
+    return undefined;
+  }
+
+  return { type, src };
+}
+
 function normalizeEntry(entry) {
+  const { image: rawImage, ...rest } = entry;
+  const image = normalizeImage(rawImage);
+
   return {
-    ...entry,
+    ...rest,
     color: window.GlowsaryColorPicker?.normalizeColor?.(entry.color) || "purple",
-    aliases: normalizeAliasList(entry.aliases)
+    aliases: normalizeAliasList(entry.aliases),
+    ...(image ? { image } : {})
   };
 }
 
@@ -395,6 +415,10 @@ function initEntryColorPicker() {
   entryColorPicker = window.GlowsaryColorPicker?.init?.(elements.colorPicker);
 }
 
+function initEntryImageField() {
+  entryImageField = window.GlowsaryImageField?.init?.(entryForm?.imageMount, { value: null });
+}
+
 function showEditor(entry = null) {
   editingEntry = entry;
   elements.editorTitle.textContent = entry ? "Edit Word" : "Add Word";
@@ -404,6 +428,7 @@ function showEditor(entry = null) {
   elements.aliasToggle.checked = Boolean(elements.aliasInput.value.trim());
   syncAliasFieldVisibility();
   entryColorPicker?.setValue(entry?.color);
+  entryImageField?.setValue(entry?.image || null);
   entryForm?.setMode(entry ? "edit" : "add");
   setTermHint();
   setDefinitionHint();
@@ -422,6 +447,7 @@ function hideEditor() {
   elements.aliasToggle.checked = false;
   syncAliasFieldVisibility();
   entryColorPicker?.setValue();
+  entryImageField?.reset();
   entryForm?.setMode("add");
   setTermHint();
   setDefinitionHint();
@@ -449,12 +475,30 @@ function hideSiteDialog() {
 }
 
 async function saveEntries(nextEntries) {
-  entries = nextEntries
+  const normalizedEntries = nextEntries
     .map(normalizeEntry)
     .slice()
     .sort((a, b) => a.displayTerm.localeCompare(b.displayTerm));
-  await storage.set({ [ENTRIES_KEY]: entries });
+
+  try {
+    await new Promise((resolve, reject) => {
+      chrome.storage.local.set({ [ENTRIES_KEY]: normalizedEntries }, () => {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError.message));
+          return;
+        }
+
+        resolve();
+      });
+    });
+  } catch (error) {
+    showToast("Could not save. The image may be too large for available storage.", "error");
+    return false;
+  }
+
+  entries = normalizedEntries;
   renderEntries();
+  return true;
 }
 
 async function saveSettings(nextSettings) {
@@ -495,20 +539,25 @@ async function saveEntry() {
     return;
   }
 
+  const imageValue = normalizeImage(entryImageField?.getValue?.());
   const nextEntry = {
     term: validation.normalizedTerm,
     displayTerm: validation.cleanTerm,
     definition: validation.cleanDefinition,
     aliases: validation.aliases,
     color: entryColorPicker?.getValue?.() || window.GlowsaryColorPicker?.defaultColor || "purple",
+    ...(imageValue ? { image: imageValue } : {}),
     createdAt: editingEntry?.createdAt || Date.now()
   };
   const nextEntries = editingEntry
     ? entries.map((entry) => (entry === editingEntry ? nextEntry : entry))
     : entries.concat(nextEntry);
 
-  await saveEntries(nextEntries);
-  hideEditor();
+  const saved = await saveEntries(nextEntries);
+
+  if (saved) {
+    hideEditor();
+  }
 }
 
 async function deleteEntry(targetEntry) {
@@ -701,6 +750,32 @@ function createEntryCard(entry) {
   definition.textContent = entry.definition;
 
   header.append(soundButton, term);
+
+  const image = normalizeImage(entry.image);
+
+  if (image) {
+    const media = document.createElement("button");
+    media.className = "entry-card-media";
+    media.type = "button";
+    media.setAttribute("aria-label", "View image full size");
+
+    const mediaImg = document.createElement("img");
+    mediaImg.className = "entry-card-media-img";
+    mediaImg.alt = "";
+    mediaImg.decoding = "async";
+    mediaImg.src = image.src;
+    media.append(mediaImg);
+
+    mediaImg.addEventListener("error", () => media.remove());
+    media.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      window.GlowsaryImageViewer?.open?.(image.src, { document });
+    });
+
+    header.append(media);
+  }
+
   main.append(header, definition);
 
   const aliases = document.createElement("span");
@@ -905,6 +980,7 @@ async function loadState() {
 async function init() {
   initManagementTabNav();
   initEntryColorPicker();
+  initEntryImageField();
   await loadState();
   renderSettings();
   renderExcludedSites();

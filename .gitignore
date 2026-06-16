@@ -1,0 +1,5 @@
+# macOS
+.DS_Store
+
+# Local video source files (ScreenStudio projects and raw recordings)
+videos/

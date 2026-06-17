@@ -16,6 +16,14 @@
     "image-dropzone-min-height": "92px",
     // Gap between the image controls in the form field.
     "image-field-gap": "8px",
+    // PLACEHOLDER — the working spinner shown while a local image is processed (FR-45j),
+    // undesigned because no Figma exists for the image feature yet.
+    // Spinner ring diameter and stroke thickness.
+    "image-spinner-size": "24px",
+    "image-spinner-thickness": "2px",
+    // Scrim laid over the current thumbnail while a replacement image is processing,
+    // so the old image stays faintly visible underneath the spinner.
+    "image-spinner-overlay-bg": "color-mix(in srgb, var(--bg-primary) 64%, var(--color-base-transparent))",
     // Full-size viewer backdrop and image bounds.
     "image-viewer-backdrop": "color-mix(in srgb, var(--color-base-black) 72%, var(--color-base-transparent))",
     "image-viewer-max-width": "90vw",

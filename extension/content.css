@@ -684,6 +684,56 @@
   line-height: var(--line-height-text-xs);
 }
 
+.glowsary-image-field__processing {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.glowsary-image-field__dropzone.is-processing {
+  cursor: default;
+}
+
+.glowsary-image-field__dropzone.is-processing:hover,
+.glowsary-image-field__dropzone.is-processing.is-dragging {
+  border-color: var(--border-primary);
+}
+
+.glowsary-image-field__dropzone.is-processing .glowsary-image-field__dropzone-text,
+.glowsary-image-field__dropzone.is-processing .glowsary-image-field__dropzone-hint {
+  display: none;
+}
+
+.glowsary-image-field__dropzone.is-processing .glowsary-image-field__processing {
+  display: flex;
+}
+
+.glowsary-image-field__processing-label {
+  color: var(--text-tertiary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-text-sm);
+}
+
+.glowsary-image-field__spinner {
+  display: block;
+  box-sizing: border-box;
+  width: var(--image-spinner-size);
+  height: var(--image-spinner-size);
+  border: var(--image-spinner-thickness) solid var(--border-primary);
+  border-top-color: var(--text-primary);
+  border-radius: 50%;
+  animation: glowsary-image-field-spin 0.7s linear infinite;
+}
+
+@keyframes glowsary-image-field-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .glowsary-image-field__link-row[hidden] {
   display: none;
 }
@@ -704,6 +754,7 @@
 }
 
 .glowsary-image-field__thumb {
+  position: relative;
   display: block;
   flex: 0 0 var(--image-thumb-size);
   width: var(--image-thumb-size);
@@ -711,6 +762,19 @@
   overflow: hidden;
   background: var(--bg-primary);
   border-radius: var(--image-thumb-radius);
+}
+
+.glowsary-image-field__thumb-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--image-spinner-overlay-bg);
+}
+
+.glowsary-image-field__thumb-overlay[hidden] {
+  display: none;
 }
 
 .glowsary-image-field__thumb.is-hidden {

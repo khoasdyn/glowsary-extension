@@ -108,6 +108,10 @@
 
     let currentValue = null;
     let requestId = 0;
+    let isProcessing = false;
+    let spinnerTimer = null;
+    // Short wait before the spinner appears, so fast images never flash it (FR-45j).
+    const SPINNER_DELAY = 150;
 
     const root_ = createElement(doc, "div", { className: className(prefix, "image-field") });
 
@@ -123,6 +127,18 @@
       className: className(prefix, "image-field__dropzone-hint"),
       textContent: "PNG, JPEG or WEBP, up to 5MB"
     }));
+    const dropzoneProcessing = createElement(doc, "span", {
+      className: className(prefix, "image-field__processing")
+    });
+    dropzoneProcessing.append(createElement(doc, "span", {
+      className: className(prefix, "image-field__spinner"),
+      attributes: { "aria-hidden": "true" }
+    }));
+    dropzoneProcessing.append(createElement(doc, "span", {
+      className: className(prefix, "image-field__processing-label"),
+      textContent: "Processing image"
+    }));
+    dropzone.append(dropzoneProcessing);
 
     const linkRow = createElement(doc, "div", { className: className(prefix, "image-field__link-row") });
     const linkInput = createElement(doc, "input", {
@@ -138,6 +154,14 @@
       attributes: { alt: "", decoding: "async" }
     });
     thumb.append(thumbImg);
+    const thumbOverlay = createElement(doc, "span", {
+      className: className(prefix, "image-field__thumb-overlay"),
+      attributes: { hidden: "", "aria-hidden": "true" }
+    });
+    thumbOverlay.append(createElement(doc, "span", {
+      className: className(prefix, "image-field__spinner")
+    }));
+    thumb.append(thumbOverlay);
     const previewBody = createElement(doc, "div", { className: className(prefix, "image-field__preview-body") });
     const previewLabel = createElement(doc, "span", { className: className(prefix, "image-field__preview-label") });
     const previewActions = createElement(doc, "div", { className: className(prefix, "image-field__preview-actions") });
@@ -183,6 +207,42 @@
       }
     }
 
+    function clearSpinnerTimer() {
+      if (spinnerTimer !== null) {
+        clearTimeout(spinnerTimer);
+        spinnerTimer = null;
+      }
+    }
+
+    // Begin processing a local file: lock the field and arm the delayed spinner (FR-45j).
+    // A replace keeps the current thumbnail visible with an overlay; a first add shows
+    // the spinner inside the dropzone in place of its prompt.
+    function startProcessing(isReplace) {
+      isProcessing = true;
+      clearSpinnerTimer();
+      spinnerTimer = setTimeout(() => {
+        spinnerTimer = null;
+
+        if (!isProcessing) {
+          return;
+        }
+
+        if (isReplace) {
+          thumbOverlay.hidden = false;
+        } else {
+          dropzone.classList.add("is-processing");
+        }
+      }, SPINNER_DELAY);
+    }
+
+    // Clear processing state and any spinner; safe to call when not processing.
+    function stopProcessing() {
+      isProcessing = false;
+      clearSpinnerTimer();
+      thumbOverlay.hidden = true;
+      dropzone.classList.remove("is-processing");
+    }
+
     function renderEmpty() {
       preview.hidden = true;
       dropzone.hidden = false;
@@ -210,12 +270,14 @@
     }
 
     async function handleFile(file) {
-      if (!file) {
+      if (!file || isProcessing) {
         return;
       }
 
       const localRequest = ++requestId;
+      const isReplace = Boolean(currentValue);
       setError(null);
+      startProcessing(isReplace);
 
       try {
         const dataUrl = await prepareLocalImage(doc, file);
@@ -231,13 +293,20 @@
           return;
         }
 
+        // On failure the field returns to its previous state: the old preview stays on a
+        // replace, the empty dropzone returns on a first add (FR-45f, FR-45j).
         setError(processingError?.message || READ_ERROR);
+      } finally {
+        if (localRequest === requestId) {
+          stopProcessing();
+        }
       }
     }
 
     function handleLinkValue(rawValue) {
       const trimmed = String(rawValue || "").trim();
       requestId += 1;
+      stopProcessing();
       setError(null);
 
       if (!trimmed) {
@@ -248,16 +317,30 @@
       commit({ type: "link", src: trimmed });
     }
 
-    dropzone.addEventListener("click", () => fileInput.click());
+    dropzone.addEventListener("click", () => {
+      if (isProcessing) {
+        return;
+      }
+      fileInput.click();
+    });
     dropzone.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
+        if (isProcessing) {
+          return;
+        }
         fileInput.click();
       }
     });
-    replaceButton.addEventListener("click", () => fileInput.click());
+    replaceButton.addEventListener("click", () => {
+      if (isProcessing) {
+        return;
+      }
+      fileInput.click();
+    });
     removeButton.addEventListener("click", () => {
       requestId += 1;
+      stopProcessing();
       linkInput.value = "";
       setError(null);
       commit(null);
@@ -272,6 +355,9 @@
     ["dragenter", "dragover"].forEach((type) => {
       dropzone.addEventListener(type, (event) => {
         event.preventDefault();
+        if (isProcessing) {
+          return;
+        }
         dropzone.classList.add("is-dragging");
       });
     });
@@ -280,6 +366,9 @@
     });
     dropzone.addEventListener("drop", (event) => {
       event.preventDefault();
+      if (isProcessing) {
+        return;
+      }
       dropzone.classList.remove("is-dragging");
       const file = event.dataTransfer?.files && event.dataTransfer.files[0];
       handleFile(file);
@@ -318,6 +407,7 @@
 
     function setValue(image) {
       requestId += 1;
+      stopProcessing();
       setError(null);
 
       if (image && (image.type === "local" || image.type === "link") && image.src) {
@@ -331,6 +421,7 @@
 
     function reset() {
       requestId += 1;
+      stopProcessing();
       linkInput.value = "";
       setError(null);
       commit(null);

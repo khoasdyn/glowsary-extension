@@ -118,8 +118,43 @@
   }
 
   const SHADOW_STYLE_SHEETS = ["switch.css", "content.css"];
+  // The design tokens the isolated UI reads. Each was injected into the page's
+  // <head> on :root; we copy them into the shadow root re-scoped to :host so the
+  // panel and popup take their token values from inside the shadow, never from the
+  // host page. Order matches the page so the font-family override stays last and wins.
+  const TOKEN_STYLE_IDS = [
+    "glowsary-color-tokens",
+    "glowsary-semantic-color-tokens",
+    "glowsary-typography-tokens",
+    "glowsary-semantic-typography-tokens",
+    "glowsary-radius-tokens",
+    "glowsary-image-tokens",
+    "glowsary-shadow-tokens",
+    "glowsary-content-typography-overrides"
+  ];
+
+  function buildShadowTokenCss() {
+    const blocks = [];
+
+    for (const id of TOKEN_STYLE_IDS) {
+      const cssText = document.getElementById(id)?.textContent;
+
+      if (cssText) {
+        // Re-scope the :root token definitions to the shadow host. A :host rule
+        // declares the values directly on the host, so it beats whatever the page
+        // inherits in — including a clashing variable the host site defines.
+        blocks.push(cssText.replace(":root", ":host"));
+      }
+    }
+
+    return blocks.join("\n");
+  }
 
   function loadShadowStyles(shadow) {
+    const tokenStyle = document.createElement("style");
+    tokenStyle.textContent = buildShadowTokenCss();
+    shadow.append(tokenStyle);
+
     const style = document.createElement("style");
     shadow.append(style);
 

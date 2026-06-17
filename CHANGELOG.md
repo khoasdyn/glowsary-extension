@@ -2,6 +2,7 @@
 
 - Added a working spinner to the image field while a local image is processed: it shows only after a short delay so fast images never flash it, sits in the dropzone on a first add, and overlays the current thumbnail (which stays visible) on a replace, then clears back to the previous state on success or error. The field is locked against a second file while busy, and pasted image links are unaffected.
 - Added placeholder spinner tokens to `tokens/image-tokens.js` (ring size, stroke thickness, and the overlay scrim), flagged as design debt until there is a Figma design; the delay and spin timing are tuning values set in the build.
+- Moved the design token definitions into the shadow root too, re-scoped to the host, so the Add/Edit panel and definition popup take every color and font value from inside the isolated UI instead of the host page; this fixes the lost white background and the wrong (serif) typeface on the few sites that defined a clashing variable or blocked our page-level styles. No token name or value changed.
 - Moved the in-page Add/Edit panel, the definition popup, and the full-size image viewer into a shadow root so the host site's CSS can no longer change their background, padding, spacing, layout, or sizing; they now render with the correct Glowsary design on every site, including hostile ones. Word highlights stay in the page.
 
 ## 2026-06-16

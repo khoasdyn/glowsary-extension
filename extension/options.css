@@ -614,7 +614,10 @@ button {
 .entry-list {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+  column-gap: 16px;
+  row-gap: 0;
+  grid-auto-rows: 1px;
+  align-items: start;
 }
 
 .entry-list--empty .entry-card--add {
@@ -624,8 +627,6 @@ button {
 .entry-card {
   width: 100%;
   min-width: 0;
-  min-height: 200px;
-  max-height: 200px;
   border-radius: var(--card-md);
   appearance: none;
 }
@@ -672,7 +673,7 @@ button {
 
 .entry-card--word {
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
   gap: 8px;
   align-items: stretch;
   padding: 16px;
@@ -685,7 +686,7 @@ button {
 
 .entry-card-main {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
   gap: 8px;
   min-height: 0;
   width: 100%;
@@ -741,7 +742,7 @@ button {
 }
 
 .entry-definition {
-  display: -webkit-box;
+  display: block;
   width: 100%;
   min-height: 0;
   color: currentColor;
@@ -749,10 +750,7 @@ button {
   font-size: var(--font-size-text-sm);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-text-sm);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5;
+  overflow-wrap: anywhere;
 }
 
 .entry-aliases {
@@ -762,6 +760,10 @@ button {
   min-height: 22px;
   max-height: 40px;
   overflow: hidden;
+}
+
+.entry-aliases:empty {
+  display: none;
 }
 
 .entry-alias-chip {

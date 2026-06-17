@@ -57,6 +57,7 @@
         "tokens/typography-tokens.js",
         "tokens/semantic-typography-tokens.js",
         "tokens/radius-tokens.js",
+        "tokens/spacing-tokens.js",
         "tokens/image-tokens.js",
         "domain-utils.js",
         "icon-button.js",

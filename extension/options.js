@@ -853,7 +853,11 @@ function createEntryCard(entry) {
     mediaImg.src = image.src;
     media.append(mediaImg);
 
-    mediaImg.addEventListener("error", () => media.remove());
+    mediaImg.addEventListener("load", () => scheduleEntryGridLayout());
+    mediaImg.addEventListener("error", () => {
+      media.remove();
+      scheduleEntryGridLayout();
+    });
     media.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -876,6 +880,32 @@ function createEntryCard(entry) {
   return card;
 }
 
+const MASONRY_ROW_GAP = 16;
+let masonryFrame = 0;
+
+function layoutEntryGrid() {
+  const cards = elements.entryList?.querySelectorAll(".entry-card");
+  if (!cards) {
+    return;
+  }
+
+  for (const card of cards) {
+    const height = card.getBoundingClientRect().height;
+    card.style.gridRowEnd = `span ${Math.max(1, Math.ceil(height + MASONRY_ROW_GAP))}`;
+  }
+}
+
+function scheduleEntryGridLayout() {
+  if (masonryFrame) {
+    cancelAnimationFrame(masonryFrame);
+  }
+
+  masonryFrame = requestAnimationFrame(() => {
+    masonryFrame = 0;
+    layoutEntryGrid();
+  });
+}
+
 function renderEntries() {
   const visibleEntries = getVisibleEntries();
   const hasEntries = entries.length > 0;
@@ -891,6 +921,8 @@ function renderEntries() {
   for (const entry of visibleEntries) {
     elements.entryList.append(createEntryCard(entry));
   }
+
+  scheduleEntryGridLayout();
 }
 
 async function deleteExcludedSite(targetSite) {
@@ -995,6 +1027,7 @@ function bindEvents() {
       hideEditor();
     }
   });
+  window.addEventListener("resize", scheduleEntryGridLayout);
   elements.form.addEventListener("submit", (event) => {
     event.preventDefault();
     saveEntry();
@@ -1098,6 +1131,7 @@ async function init() {
   renderEntries();
   bindEvents();
   syncEntrySaveState();
+  document.fonts?.ready?.then?.(scheduleEntryGridLayout);
 }
 
 init();

@@ -2,7 +2,7 @@
 
 This file holds the rules and structure of the Glowsary design system. It does not hold the exact values. The exact values for color, typography, radius, and later spacing live in one central place in the code, as design tokens. Figma is the master source those values come from.
 
-This file currently covers typography, color, and corner radius. Spacing and more come later.
+This file currently covers typography, color, corner radius, shadows, and spacing. More come later.
 
 ## How the design system is organized
 
@@ -57,6 +57,8 @@ The system has two color layers. The first is the primitive layer in `extension/
 
 Semantic tokens use short role names, for example `--text-primary`, `--bg-secondary`, `--fg-error-primary`, and `--border-primary`. They are grouped as Text (text fills), Foreground (icons and graphic marks), Background (surfaces), and Border. The set is small and matches the Figma semantic export exactly. It covers one mode, light, for now; a dark mode would be added later as a second mode.
 
+Three of these roles are defined but not yet adopted by the UI: `--text-placeholder` (Gray/400), the placeholder text color; `--fg-quaternary` (Gray/500), a muted foreground for icons and marks; and `--border-primary_focus` (Gray/900), the border color for a focused input. The last keeps Figma's exact name, including the underscore before the `_focus` state, so it traces straight back to its Figma variable. They emit as CSS variables now, but switching elements to use them is a separate, later step, the same as the rest of the semantic layer.
+
 Adoption note: the semantic layer exists, but the UI still uses primitives directly for now. Switching each screen to the matching semantic role is a separate, later step, done from the Figma screens so each element gets the right role. When that happens, the neutral grays (currently a mix of Slate, Neutral, Gray, and Mist) will settle onto the single Gray family that the semantics use.
 
 Word Card color modes: `semantic-color-tokens.js` also holds a Word Card token group alongside the base semantic tokens. This group is mode-switched: it has five modes — Add New, Purple, Yellow, Green, and Blue — so each word card can render with surfaces, borders, and text tinted to its assigned color. The Add New mode is the neutral gray default (matching existing gray primitives), used when no color has been assigned. The other four modes match the four color picker choices.
@@ -106,7 +108,14 @@ The Icon Button uses an 18 by 18 icon slot. The Text Button trailing icon uses a
 
 ## Spacing
 
-Not defined yet. To be added.
+The exact values live as tokens in `extension/tokens/spacing-tokens.js`, generated from the Figma spacing export. Spacing is primitive-only: Figma defines a single scale of gap values with no semantic layer, so there is no second file. The CSS variable names come directly from the Figma variable names, with no category prefix, the same convention as radius. All four are gaps, used for the space between elements in an auto-layout, and carry pixel values:
+
+- `--section-gap`: 64px. The gap between major sections of a page.
+- `--field-gap`: 24px. The gap between form fields.
+- `--label-field`: 6px. The gap between a field label and its input. The name keeps Figma's exact spelling, which does not end in `-gap` like the others.
+- `--button-gap`: 8px. The gap between buttons in a row, and between a button's text and its icon.
+
+These tokens are defined and emit as CSS variables now, but the UI does not use them yet; adopting them into layouts is a separate, later step done from the Figma screens.
 
 ## Components
 

@@ -54,11 +54,13 @@
         "--text-primary": "--color-gray-900",
         "--text-tertiary": "--color-gray-600",
         "--text-quaternary": "--color-gray-500",
+        "--text-placeholder": "--color-gray-400",
         "--text-error-primary": "--color-red-700"
       },
       foreground: {
         "--fg-primary": "--color-gray-900",
         "--fg-white": "--color-base-white",
+        "--fg-quaternary": "--color-gray-500",
         "--fg-error-white": "--color-red-50",
         "--fg-error-primary": "--color-red-700"
       },
@@ -71,7 +73,8 @@
         "--bg-error-solid": "--color-red-600"
       },
       border: {
-        "--border-primary": "--color-gray-300"
+        "--border-primary": "--color-gray-300",
+        "--border-primary_focus": "--color-gray-900"
       }
     }
   };

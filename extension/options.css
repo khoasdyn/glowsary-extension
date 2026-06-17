@@ -386,6 +386,68 @@ button {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--bg-primary-solid) 16%, var(--color-base-transparent));
 }
 
+.autogenerate-key-field {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.key-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-text-sm);
+  cursor: pointer;
+}
+
+.key-option input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--bg-primary-solid);
+  cursor: pointer;
+}
+
+.autogenerate-custom-key {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+  max-width: 400px;
+}
+
+.autogenerate-custom-key[hidden] {
+  display: none;
+}
+
+.autogenerate-key-save {
+  justify-self: start;
+}
+
+.autogenerate-key-result {
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+  overflow-wrap: anywhere;
+}
+
+/* No success/positive role token exists in the design system yet, so a working key
+   reads in neutral primary text; flagged as design debt for the build output. */
+.autogenerate-key-result.is-success {
+  color: var(--text-primary);
+}
+
+.autogenerate-key-result.is-error {
+  color: var(--text-error-primary);
+}
+
+.autogenerate-key-result[hidden] {
+  display: none;
+}
+
 #excluded-count {
   color: inherit;
   font: inherit;

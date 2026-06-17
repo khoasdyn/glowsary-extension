@@ -4,27 +4,33 @@
   // key: it only asks the background service worker to generate, then fills the field.
   const DEFINITION_MAX_LENGTH = 350;
   const FAILURE_MESSAGE = "Couldn't generate a definition. Please type it in.";
+  const NO_KEY_MESSAGE = "Add your Gemini key in Settings, or type the definition in.";
   const GENERATE_LABEL = "Auto-generate";
   const LOADING_LABEL = "Generating…";
 
-  function request(word, language) {
+  function sendMessage(payload) {
     return new Promise((resolve) => {
       try {
-        root.chrome?.runtime?.sendMessage?.(
-          { type: "GLOWSARY_GENERATE_DEFINITION", word, language },
-          (response) => {
-            if (root.chrome?.runtime?.lastError || !response) {
-              resolve({ ok: false, error: "runtime" });
-              return;
-            }
-
-            resolve(response);
+        root.chrome?.runtime?.sendMessage?.(payload, (response) => {
+          if (root.chrome?.runtime?.lastError || !response) {
+            resolve({ ok: false, error: "runtime" });
+            return;
           }
-        );
+
+          resolve(response);
+        });
       } catch (error) {
         resolve({ ok: false, error: "runtime" });
       }
     });
+  }
+
+  function request(word, language) {
+    return sendMessage({ type: "GLOWSARY_GENERATE_DEFINITION", word, language });
+  }
+
+  function checkKey(key) {
+    return sendMessage({ type: "GLOWSARY_CHECK_KEY", key });
   }
 
   function attach(options = {}) {
@@ -71,7 +77,7 @@
       setLoading(false);
 
       if (!result || !result.ok || !result.definition) {
-        setError(FAILURE_MESSAGE);
+        setError(result?.error === "no-custom-key" ? NO_KEY_MESSAGE : FAILURE_MESSAGE);
         return;
       }
 
@@ -92,5 +98,5 @@
     return { refresh };
   }
 
-  root.GlowsaryAutoGenerate = { attach, request, FAILURE_MESSAGE };
+  root.GlowsaryAutoGenerate = { attach, request, checkKey, FAILURE_MESSAGE };
 })(globalThis);

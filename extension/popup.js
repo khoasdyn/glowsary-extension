@@ -2,7 +2,9 @@ const SETTINGS_KEY = "glowsarySettings";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
   managementSort: "latest",
-  autoGenerateLanguage: "en"
+  autoGenerateLanguage: "en",
+  autoGenerateKeyMode: "shared",
+  autoGenerateCustomKey: ""
 };
 
 let settings = { ...DEFAULT_SETTINGS };
@@ -58,7 +60,9 @@ function normalizeSettings(rawSettings = {}) {
   return {
     highlightingEnabled: rawSettings.highlightingEnabled !== false,
     managementSort: rawSettings.managementSort === "az" ? "az" : "latest",
-    autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en"
+    autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en",
+    autoGenerateKeyMode: rawSettings.autoGenerateKeyMode === "custom" ? "custom" : "shared",
+    autoGenerateCustomKey: typeof rawSettings.autoGenerateCustomKey === "string" ? rawSettings.autoGenerateCustomKey : ""
   };
 }
 

@@ -99,6 +99,37 @@
           </label>
         </section>
 
+        <section class="autogenerate-section autogenerate-key-section" aria-labelledby="autogenerate-key-heading">
+          <div class="settings-section-header">
+            <div class="settings-section-title-group">
+              <div class="settings-section-title-row">
+                <h2 id="autogenerate-key-heading">Auto-generate Key</h2>
+              </div>
+              <p>Use the built-in shared key, or your own Gemini key.</p>
+            </div>
+          </div>
+          <div class="autogenerate-key-field" role="radiogroup" aria-label="Auto-generate key">
+            <label class="key-option">
+              <input type="radio" name="autogenerate-key-mode" value="shared" />
+              <span class="key-option__label">Shared key</span>
+            </label>
+            <label class="key-option">
+              <input type="radio" name="autogenerate-key-mode" value="custom" />
+              <span class="key-option__label">My Gemini key</span>
+            </label>
+          </div>
+          <div class="autogenerate-custom-key" id="autogenerate-custom-key" hidden>
+            <label class="field-input">
+              <span class="field-input__label">Gemini key</span>
+              <input class="field-input__control" id="autogenerate-key-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your Gemini API key" />
+            </label>
+            <button class="text-button text-button--default autogenerate-key-save" id="save-autogenerate-key" type="button">
+              <span class="text-button__label">Save key</span>
+            </button>
+            <p class="autogenerate-key-result" id="autogenerate-key-result" role="status" aria-live="polite" hidden></p>
+          </div>
+        </section>
+
         <section class="backup-section" aria-labelledby="data-tools-heading">
           <div class="settings-section-header">
             <h2 id="data-tools-heading">Backup Data</h2>

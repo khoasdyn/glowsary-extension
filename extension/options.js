@@ -4,7 +4,9 @@ const EXCLUDED_SITES_KEY = "glowsaryExcludedSites";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
   managementSort: "latest",
-  autoGenerateLanguage: "en"
+  autoGenerateLanguage: "en",
+  autoGenerateKeyMode: "shared",
+  autoGenerateCustomKey: ""
 };
 
 let entries = [];
@@ -53,6 +55,11 @@ const elements = {
   searchInput: document.querySelector("#search-input"),
   sortSelect: document.querySelector("#sort-select"),
   autogenerateLanguageSelect: document.querySelector("#autogenerate-language-select"),
+  autogenerateKeyRadios: Array.from(document.querySelectorAll('input[name="autogenerate-key-mode"]')),
+  autogenerateCustomKey: document.querySelector("#autogenerate-custom-key"),
+  autogenerateKeyInput: document.querySelector("#autogenerate-key-input"),
+  saveAutogenerateKey: document.querySelector("#save-autogenerate-key"),
+  autogenerateKeyResult: document.querySelector("#autogenerate-key-result"),
   emptyState: document.querySelector("#empty-state"),
   entryList: document.querySelector("#entry-list"),
   excludedCount: document.querySelector("#excluded-count"),
@@ -140,7 +147,9 @@ function normalizeSettings(rawSettings = {}) {
   return {
     highlightingEnabled: rawSettings.highlightingEnabled !== false,
     managementSort: rawSettings.managementSort === "az" ? "az" : "latest",
-    autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en"
+    autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en",
+    autoGenerateKeyMode: rawSettings.autoGenerateKeyMode === "custom" ? "custom" : "shared",
+    autoGenerateCustomKey: typeof rawSettings.autoGenerateCustomKey === "string" ? rawSettings.autoGenerateCustomKey : ""
   };
 }
 
@@ -669,6 +678,66 @@ async function importEntriesFromFile(file) {
 function renderSettings() {
   elements.sortSelect.value = settings.managementSort === "az" ? "az" : "latest";
   elements.autogenerateLanguageSelect.value = settings.autoGenerateLanguage === "vi" ? "vi" : "en";
+
+  const isCustomKey = settings.autoGenerateKeyMode === "custom";
+  for (const radio of elements.autogenerateKeyRadios) {
+    radio.checked = radio.value === (isCustomKey ? "custom" : "shared");
+  }
+  elements.autogenerateCustomKey.hidden = !isCustomKey;
+  elements.autogenerateKeyInput.value = settings.autoGenerateCustomKey || "";
+}
+
+function hideKeyResult() {
+  elements.autogenerateKeyResult.hidden = true;
+  elements.autogenerateKeyResult.textContent = "";
+  elements.autogenerateKeyResult.classList.remove("is-success", "is-error");
+}
+
+function setKeyResult(message, kind) {
+  elements.autogenerateKeyResult.textContent = message;
+  elements.autogenerateKeyResult.classList.toggle("is-success", kind === "success");
+  elements.autogenerateKeyResult.classList.toggle("is-error", kind === "error");
+  elements.autogenerateKeyResult.hidden = false;
+}
+
+function keyErrorMessage(error) {
+  if (error === "network" || error === "runtime") {
+    return "Couldn't reach Gemini. Check your connection and try again.";
+  }
+
+  return "This key doesn't work. Check it and try again.";
+}
+
+let keyCheckRequest = 0;
+
+async function saveAutoGenerateKey() {
+  const key = elements.autogenerateKeyInput.value.trim();
+  const requestId = ++keyCheckRequest;
+
+  await saveSettings({ ...settings, autoGenerateCustomKey: key });
+
+  if (!key) {
+    hideKeyResult();
+    return;
+  }
+
+  setKeyResult("Checking your key…", "working");
+  elements.saveAutogenerateKey.disabled = true;
+
+  const result = await window.GlowsaryAutoGenerate?.checkKey?.(key);
+
+  if (requestId !== keyCheckRequest) {
+    return;
+  }
+
+  elements.saveAutogenerateKey.disabled = false;
+
+  if (result?.ok) {
+    setKeyResult("Your key works.", "success");
+    return;
+  }
+
+  setKeyResult(keyErrorMessage(result?.error), "error");
 }
 
 function getVisibleEntries() {
@@ -955,6 +1024,23 @@ function bindEvents() {
       autoGenerateLanguage: elements.autogenerateLanguageSelect.value
     });
   });
+  for (const radio of elements.autogenerateKeyRadios) {
+    radio.addEventListener("change", () => {
+      if (!radio.checked) {
+        return;
+      }
+
+      keyCheckRequest += 1;
+      elements.saveAutogenerateKey.disabled = false;
+      hideKeyResult();
+      saveSettings({
+        ...settings,
+        autoGenerateKeyMode: radio.value
+      });
+    });
+  }
+  elements.autogenerateKeyInput.addEventListener("input", hideKeyResult);
+  elements.saveAutogenerateKey.addEventListener("click", saveAutoGenerateKey);
 
   elements.addExcludedSite.addEventListener("click", showSiteDialog);
 

@@ -5,7 +5,9 @@
   const DEFAULT_SETTINGS = {
     highlightingEnabled: true,
     managementSort: "latest",
-    autoGenerateLanguage: "en"
+    autoGenerateLanguage: "en",
+    autoGenerateKeyMode: "shared",
+    autoGenerateCustomKey: ""
   };
   const HIGHLIGHT_CLASS = "glowsary-highlight";
   const POPUP_CLASS = "glowsary-popup";
@@ -291,7 +293,9 @@
     return {
       highlightingEnabled: rawSettings.highlightingEnabled !== false,
       managementSort: rawSettings.managementSort === "az" ? "az" : "latest",
-      autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en"
+      autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en",
+      autoGenerateKeyMode: rawSettings.autoGenerateKeyMode === "custom" ? "custom" : "shared",
+      autoGenerateCustomKey: typeof rawSettings.autoGenerateCustomKey === "string" ? rawSettings.autoGenerateCustomKey : ""
     };
   }
 

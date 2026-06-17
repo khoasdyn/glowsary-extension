@@ -18,9 +18,9 @@
 globalThis.GlowsaryAutoGenerateConfig = {
   // Shared Gemini free-tier key. Empty by default — paste the real key here.
   apiKey: "",
-  // Free-tier model used for generation. (gemini-2.0-flash had 0 free-tier quota on the
-  // shared key; gemini-2.5-flash is the one this key can call.)
-  model: "gemini-2.5-flash",
+  // Free-tier model used for generation. gemini-3.1-flash-lite: light and fast, well
+  // suited to one-line definitions and easy on the shared free-tier quota.
+  model: "gemini-3.1-flash-lite",
   // Generative Language API base; the model and method are appended at call time.
   endpoint: "https://generativelanguage.googleapis.com/v1beta/models",
   // Language code -> the language name sent in the prompt (FR-46d, FR-46h).

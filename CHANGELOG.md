@@ -1,5 +1,6 @@
 ## 2026-06-17
 
+- Switched the auto-generate model to Gemini 3.1 Flash Lite: lighter and faster for short definitions and easier on the shared free-tier quota.
 - Added an optional auto-generate action to the Definition field, in both the in-page Add/Edit form and the Management form. It stays disabled until the Word has at least 3 characters, sends only the word (never the page or surrounding text), generates one short definition in the chosen language, overwrites the field, and keeps the result within the 350-character limit. While it runs the button shows "Generating…" and the Definition field is locked; on failure it shows a short "type it in" message and keeps everything the user entered.
 - Added an Auto-generate Language dropdown (English or Vietnamese) to the Settings tab. The choice is stored locally, restored next time, and only affects future generate actions, never a saved word.
 - Routed the generation through the background worker, which calls Google's Gemini free tier — Glowsary's first network call, a deliberate exception to the local-only rule. The shared key lives in one place, `auto-generate-config.js`, loaded only by the background worker so it is never exposed on the pages the user visits. The key ships empty and must be pasted in before the action works.

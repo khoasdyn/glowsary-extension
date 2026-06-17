@@ -37,6 +37,9 @@
   let activeDialog = null;
   let contentFontsPromise = null;
   let glowsaryRoot = null;
+  let hoverDelegationInstalled = false;
+  let lastPointerX = null;
+  let lastPointerY = null;
 
   const CONTENT_FONT_FACES = [
     ["Glowsary Copse", "fonts/Copse/Copse-Regular.ttf", 400],
@@ -506,7 +509,6 @@
       span.glowsaryPages = match.pages;
       span.textContent = text.slice(match.start, match.end);
       globalThis.GlowsarySemanticColorTokens?.applyWordCardMode?.(span, match.pages[0]?.entry?.color);
-      attachHighlightEvents(span);
       fragment.appendChild(span);
       cursor = match.end;
     }
@@ -545,6 +547,7 @@
     window.clearTimeout(highlightTimer);
     highlightTimer = window.setTimeout(() => {
       highlightRoot(document.body);
+      revealPopupUnderPointer();
     }, 80);
   }
 
@@ -570,22 +573,111 @@
     }
   }
 
-  function attachHighlightEvents(element) {
-    element.addEventListener("mouseenter", () => {
-      showPopup(element);
-    });
+  function highlightFromEventTarget(target) {
+    return target?.nodeType === Node.ELEMENT_NODE ? target.closest?.(`.${HIGHLIGHT_CLASS}`) : null;
+  }
 
-    element.addEventListener("mouseleave", () => {
-      schedulePopupDismiss();
-    });
+  function handleHighlightPointerOver(event) {
+    const highlight = highlightFromEventTarget(event.target);
+
+    if (!highlight) {
+      return;
+    }
+
+    // The pointer is moving within the word that already owns the popup. Keep it
+    // open instead of tearing the popup down and rebuilding it, which would flicker.
+    if (activePopup && activePopup.anchor === highlight) {
+      window.clearTimeout(popupCloseTimer);
+      return;
+    }
+
+    showPopup(highlight);
+  }
+
+  function handleHighlightPointerOut(event) {
+    const highlight = highlightFromEventTarget(event.target);
+
+    if (!highlight) {
+      return;
+    }
+
+    // A move that stays inside the same highlighted word is not a real leave.
+    if (event.relatedTarget && highlight.contains(event.relatedTarget)) {
+      return;
+    }
+
+    schedulePopupDismiss();
+  }
+
+  // When the pointer is already resting on a word at the moment its highlight
+  // first appears (or is rebuilt under the pointer), no mouseover fires. Reveal
+  // the popup from the last known pointer position so the reader does not have to
+  // move away and back.
+  function revealPopupUnderPointer() {
+    if (lastPointerX === null || !canShowHighlights()) {
+      return;
+    }
+
+    if (activePopup) {
+      if (activePopup.anchor.isConnected) {
+        return;
+      }
+
+      // The word the popup belonged to was replaced under a resting pointer; drop
+      // the orphaned popup so it can re-anchor to the rebuilt highlight below.
+      dismissPopup();
+    }
+
+    const highlight = highlightFromEventTarget(document.elementFromPoint(lastPointerX, lastPointerY));
+
+    if (highlight) {
+      showPopup(highlight);
+    }
+  }
+
+  function installHighlightHoverDelegation() {
+    if (hoverDelegationInstalled) {
+      return;
+    }
+
+    hoverDelegationInstalled = true;
+    // Delegated, capture-phase listeners on the document so hover keeps working
+    // even when a host site rebuilds or clones the highlighted node (which drops
+    // any per-node listeners) or stops the event from bubbling on the text.
+    document.addEventListener("pointermove", (event) => {
+      lastPointerX = event.clientX;
+      lastPointerY = event.clientY;
+    }, true);
+    document.addEventListener("mouseover", handleHighlightPointerOver, true);
+    document.addEventListener("mouseout", handleHighlightPointerOut, true);
+  }
+
+  // A host site may rebuild or clone the highlighted node after we created it,
+  // keeping the class and underline but dropping the page data we stored as a JS
+  // property. Recompute the pages from the element's own text so the popup still
+  // has its content, and re-cache them for the next hover.
+  function resolveHighlightPages(element) {
+    if (Array.isArray(element.glowsaryPages) && element.glowsaryPages.length) {
+      return element.glowsaryPages;
+    }
+
+    const text = element.textContent || "";
+    const matches = findMatches(text);
+    const match = matches.find((candidate) => candidate.start === 0 && candidate.end === text.length) || matches[0];
+
+    if (match?.pages?.length) {
+      element.glowsaryPages = match.pages;
+      return match.pages;
+    }
+
+    return null;
   }
 
   function showPopup(anchor) {
     dismissPopup();
 
-    const pages = Array.isArray(anchor.glowsaryPages) && anchor.glowsaryPages.length
-      ? anchor.glowsaryPages
-      : [{ definition: "", displayTerm: anchor.textContent || "", isAlias: false }];
+    const pages = resolveHighlightPages(anchor)
+      || [{ definition: "", displayTerm: anchor.textContent || "", isAlias: false }];
     const popup = document.createElement("div");
     popup.className = POPUP_CLASS;
 
@@ -1314,6 +1406,8 @@
   }
 
   function bindChromeEvents() {
+    installHighlightHoverDelegation();
+
     chrome.runtime.onMessage.addListener((message) => {
       if (message?.type === "GLOWSARY_OPEN_NOTE") {
         openNoteDialog(typeof message.selectedText === "string" ? message.selectedText : "");

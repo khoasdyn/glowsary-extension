@@ -30,6 +30,8 @@
     {
       "resources": [
         "public_suffix_list.dat",
+        "content.css",
+        "switch.css",
         "assets/check.svg",
         "assets/chevron-left.svg",
         "assets/chevron-right.svg",

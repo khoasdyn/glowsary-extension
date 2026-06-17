@@ -36,6 +36,7 @@
   let activePopup = null;
   let activeDialog = null;
   let contentFontsPromise = null;
+  let glowsaryRoot = null;
 
   const CONTENT_FONT_FACES = [
     ["Glowsary Copse", "fonts/Copse/Copse-Regular.ttf", 400],
@@ -114,6 +115,53 @@
 }`).join("\n");
 
     (document.head || document.documentElement).appendChild(style);
+  }
+
+  const SHADOW_STYLE_SHEETS = ["switch.css", "content.css"];
+
+  function loadShadowStyles(shadow) {
+    const style = document.createElement("style");
+    shadow.append(style);
+
+    Promise.all(SHADOW_STYLE_SHEETS.map(async (file) => {
+      try {
+        const response = await fetch(chrome.runtime.getURL(file));
+
+        if (!response.ok) {
+          return "";
+        }
+
+        const cssText = await response.text();
+        // The CSS references icons by chrome-extension://__MSG_@@extension_id__/...;
+        // resolve that token here since it is not substituted for fetched resources.
+        return cssText.replace(/__MSG_@@extension_id__/g, chrome.runtime.id);
+      } catch {
+        // Keep going with whatever sheets did load; a missing sheet just leaves that part unstyled.
+        return "";
+      }
+    })).then((sheets) => {
+      style.textContent = sheets.join("\n");
+    });
+  }
+
+  // The Add/Edit panel and definition popup live inside a shadow root so the host
+  // site's CSS cannot reach them. Highlights stay in the page and are not moved here.
+  function ensureGlowsaryRoot() {
+    if (glowsaryRoot) {
+      return glowsaryRoot;
+    }
+
+    const host = document.createElement("glowsary-host");
+    host.id = "glowsary-ui-root";
+    // Keep the host out of the page's flow and free of any containing block or
+    // stacking context that could move our fixed-positioned surfaces.
+    host.style.cssText = "position: absolute; top: 0; left: 0; width: 0; height: 0; margin: 0; padding: 0; border: 0;";
+
+    glowsaryRoot = host.attachShadow({ mode: "open" });
+    loadShadowStyles(glowsaryRoot);
+    (document.documentElement || document.body).append(host);
+
+    return glowsaryRoot;
   }
 
   function normalizeColor(value) {
@@ -559,7 +607,7 @@
 
       const source = mediaImg.getAttribute("src");
       if (source) {
-        window.GlowsaryImageViewer?.open?.(source, { classPrefix: "glowsary" });
+        window.GlowsaryImageViewer?.open?.(source, { classPrefix: "glowsary", host: ensureGlowsaryRoot() });
       }
     });
 
@@ -577,7 +625,7 @@
       popup.append(controls.pagination);
     }
 
-    document.documentElement.appendChild(popup);
+    ensureGlowsaryRoot().append(popup);
     activePopup = { element: popup, anchor, pages, pageIndex: 0, controls, keepOpenUntil: 0 };
 
     soundButton.addEventListener("click", (event) => {
@@ -1169,7 +1217,7 @@
     syncAliasFieldVisibility();
     syncSaveState();
 
-    document.documentElement.appendChild(backdrop);
+    ensureGlowsaryRoot().append(backdrop);
     activeDialog = backdrop;
     termInput.focus();
     termInput.select();
@@ -1272,6 +1320,7 @@
   async function init() {
     installContentTypographyOverrides();
     installContentFonts();
+    ensureGlowsaryRoot();
     await loadState();
     bindChromeEvents();
     startObserver();

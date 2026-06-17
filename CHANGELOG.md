@@ -1,3 +1,7 @@
+## 2026-06-17
+
+- Moved the in-page Add/Edit panel, the definition popup, and the full-size image viewer into a shadow root so the host site's CSS can no longer change their background, padding, spacing, layout, or sizing; they now render with the correct Glowsary design on every site, including hostile ones. Word highlights stay in the page.
+
 ## 2026-06-16
 
 - Added an optional image to each saved word, shown as a thumbnail in the definition popup and the word card and opening full size on click, from a local file or a pasted link.

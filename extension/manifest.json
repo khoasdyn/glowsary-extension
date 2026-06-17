@@ -63,6 +63,7 @@
         "speech.js",
         "color-picker.js",
         "entry-form.js",
+        "auto-generate.js",
         "image-field.js",
         "image-viewer.js",
         "content.js"

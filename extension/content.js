@@ -4,7 +4,8 @@
   const EXCLUDED_SITES_KEY = "glowsaryExcludedSites";
   const DEFAULT_SETTINGS = {
     highlightingEnabled: true,
-    managementSort: "latest"
+    managementSort: "latest",
+    autoGenerateLanguage: "en"
   };
   const HIGHLIGHT_CLASS = "glowsary-highlight";
   const POPUP_CLASS = "glowsary-popup";
@@ -289,7 +290,8 @@
   function normalizeSettings(rawSettings = {}) {
     return {
       highlightingEnabled: rawSettings.highlightingEnabled !== false,
-      managementSort: rawSettings.managementSort === "az" ? "az" : "latest"
+      managementSort: rawSettings.managementSort === "az" ? "az" : "latest",
+      autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en"
     };
   }
 
@@ -1170,6 +1172,7 @@
         aliasToggle: "glowsary-alias-toggle",
         aliasHint: "glowsary-alias-hint",
         color: "glowsary-color-picker",
+        generate: "glowsary-generate-definition",
         save: "glowsary-save-entry",
         delete: "glowsary-delete-entry"
       },
@@ -1339,6 +1342,17 @@
         closeDialog();
       } catch (error) {
         saveError.textContent = error.message;
+      }
+    });
+    window.GlowsaryAutoGenerate?.attach?.({
+      button: formParts.generateButton,
+      termInput,
+      definitionInput,
+      getLanguage: () => settings.autoGenerateLanguage,
+      setError: (message) => setDefinitionHint(message),
+      onFilled: () => {
+        clearSaveError();
+        syncSaveState();
       }
     });
     syncAliasFieldVisibility();

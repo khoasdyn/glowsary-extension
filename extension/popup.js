@@ -1,7 +1,8 @@
 const SETTINGS_KEY = "glowsarySettings";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
-  managementSort: "latest"
+  managementSort: "latest",
+  autoGenerateLanguage: "en"
 };
 
 let settings = { ...DEFAULT_SETTINGS };
@@ -56,7 +57,8 @@ function renderSettings() {
 function normalizeSettings(rawSettings = {}) {
   return {
     highlightingEnabled: rawSettings.highlightingEnabled !== false,
-    managementSort: rawSettings.managementSort === "az" ? "az" : "latest"
+    managementSort: rawSettings.managementSort === "az" ? "az" : "latest",
+    autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en"
   };
 }
 

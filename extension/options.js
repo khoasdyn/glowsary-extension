@@ -3,7 +3,8 @@ const SETTINGS_KEY = "glowsarySettings";
 const EXCLUDED_SITES_KEY = "glowsaryExcludedSites";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
-  managementSort: "latest"
+  managementSort: "latest",
+  autoGenerateLanguage: "en"
 };
 
 let entries = [];
@@ -14,6 +15,7 @@ let searchQuery = "";
 let activeManagementTab = "home";
 let entryColorPicker = null;
 let entryImageField = null;
+let entryGenerateControl = null;
 
 const entryForm = window.GlowsaryEntryForm?.render?.(document.querySelector("#entry-form-mount"), {
   includeDelete: true,
@@ -50,6 +52,7 @@ const elements = {
   addExcludedSite: document.querySelector("#add-excluded-site"),
   searchInput: document.querySelector("#search-input"),
   sortSelect: document.querySelector("#sort-select"),
+  autogenerateLanguageSelect: document.querySelector("#autogenerate-language-select"),
   emptyState: document.querySelector("#empty-state"),
   entryList: document.querySelector("#entry-list"),
   excludedCount: document.querySelector("#excluded-count"),
@@ -136,7 +139,8 @@ async function normalizeExcludedSitesToWholeSiteDomains(sites = []) {
 function normalizeSettings(rawSettings = {}) {
   return {
     highlightingEnabled: rawSettings.highlightingEnabled !== false,
-    managementSort: rawSettings.managementSort === "az" ? "az" : "latest"
+    managementSort: rawSettings.managementSort === "az" ? "az" : "latest",
+    autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en"
   };
 }
 
@@ -419,6 +423,17 @@ function initEntryImageField() {
   entryImageField = window.GlowsaryImageField?.init?.(entryForm?.imageMount, { value: null });
 }
 
+function initEntryGenerate() {
+  entryGenerateControl = window.GlowsaryAutoGenerate?.attach?.({
+    button: entryForm?.generateButton,
+    termInput: elements.termInput,
+    definitionInput: elements.definitionInput,
+    getLanguage: () => settings.autoGenerateLanguage,
+    setError: (message) => setDefinitionHint(message),
+    onFilled: () => syncEntrySaveState()
+  });
+}
+
 function showEditor(entry = null) {
   editingEntry = entry;
   elements.editorTitle.textContent = entry ? "Edit Word" : "Add Word";
@@ -434,6 +449,7 @@ function showEditor(entry = null) {
   setDefinitionHint();
   setAliasHint();
   syncEntrySaveState();
+  entryGenerateControl?.refresh();
   elements.editorPanel.hidden = false;
   syncModalOpenState();
   elements.termInput.focus();
@@ -453,6 +469,7 @@ function hideEditor() {
   setDefinitionHint();
   setAliasHint();
   syncEntrySaveState();
+  entryGenerateControl?.refresh();
 }
 
 function syncModalOpenState() {
@@ -651,6 +668,7 @@ async function importEntriesFromFile(file) {
 
 function renderSettings() {
   elements.sortSelect.value = settings.managementSort === "az" ? "az" : "latest";
+  elements.autogenerateLanguageSelect.value = settings.autoGenerateLanguage === "vi" ? "vi" : "en";
 }
 
 function getVisibleEntries() {
@@ -931,6 +949,12 @@ function bindEvents() {
     });
     renderEntries();
   });
+  elements.autogenerateLanguageSelect.addEventListener("change", () => {
+    saveSettings({
+      ...settings,
+      autoGenerateLanguage: elements.autogenerateLanguageSelect.value
+    });
+  });
 
   elements.addExcludedSite.addEventListener("click", showSiteDialog);
 
@@ -981,6 +1005,7 @@ async function init() {
   initManagementTabNav();
   initEntryColorPicker();
   initEntryImageField();
+  initEntryGenerate();
   await loadState();
   renderSettings();
   renderExcludedSites();

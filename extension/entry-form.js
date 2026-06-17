@@ -10,6 +10,7 @@
     aliasHint: "alias-hint",
     color: "color-picker",
     image: "image-field",
+    generate: "generate-definition",
     save: "save-entry",
     delete: "delete-entry-from-panel"
   };
@@ -66,6 +67,50 @@
     label.append(labelText, control, hint);
 
     return { label, control, hint };
+  }
+
+  function createDefinitionField(config, prefix) {
+    const wrapper = createElement("div", { className: config.wrapperClass });
+    const header = createElement("div", { className: className(prefix, "field-input__header") });
+    const labelText = createElement("label", {
+      className: className(prefix, "field-input__label"),
+      textContent: "Definition",
+      attributes: { for: config.id }
+    });
+    const generateButton = createElement("button", {
+      className: className(prefix, "field-input__generate"),
+      attributes: {
+        id: config.generateId,
+        type: "button",
+        disabled: "",
+        "aria-label": "Auto-generate definition"
+      }
+    });
+    generateButton.append(createElement("span", {
+      className: className(prefix, "field-input__generate-label"),
+      textContent: "Auto-generate",
+      attributes: { "data-generate-label": "" }
+    }));
+    const control = createElement("textarea", {
+      className: config.controlClass,
+      attributes: {
+        id: config.id,
+        name: "definition",
+        maxlength: 350,
+        placeholder: "Describe what this word means"
+      }
+    });
+    const hint = createElement("p", {
+      className: className(prefix, "field-input__hint"),
+      textContent: "Maximum 350 characters",
+      attributes: { id: config.hintId }
+    });
+
+    control.value = config.value || "";
+    header.append(labelText, generateButton);
+    wrapper.append(header, control, hint);
+
+    return { label: wrapper, control, hint, generateButton };
   }
 
   function createAliasField(config, prefix) {
@@ -148,17 +193,12 @@
       value: values.term
     }, prefix);
 
-    const definition = createField({
+    const definition = createDefinitionField({
       wrapperClass: `${fieldClass} ${className(prefix, "multiline-input")}`,
       controlClass: `${controlClass} ${className(prefix, "multiline-input__control")}`,
-      tagName: "textarea",
       id: ids.definition,
-      name: "definition",
-      maxLength: 350,
-      placeholder: "Describe what this word means",
-      label: "Definition",
-      hint: "Maximum 350 characters",
       hintId: ids.definitionHint,
+      generateId: ids.generate,
       value: values.definition
     }, prefix);
 
@@ -251,6 +291,7 @@
       termHint: term.hint,
       definitionInput: definition.control,
       definitionHint: definition.hint,
+      generateButton: definition.generateButton,
       aliasInput: alias.control,
       aliasToggle: alias.toggle,
       aliasHint: alias.hint,

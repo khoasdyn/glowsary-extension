@@ -141,6 +141,7 @@ button {
 }
 
 .excluded-section,
+.autogenerate-section,
 .backup-section {
   margin-bottom: 32px;
 }

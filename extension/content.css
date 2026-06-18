@@ -675,9 +675,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 12px;
   box-sizing: border-box;
-  min-height: var(--image-dropzone-min-height);
+  height: var(--image-box-height);
   padding: 12px;
   text-align: center;
   background: var(--bg-secondary);
@@ -699,16 +699,17 @@
   outline: auto;
 }
 
-.glowsary-image-field__dropzone-text {
-  color: var(--text-primary);
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-text-sm);
-  font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-text-sm);
+.glowsary-image-field__dropzone-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  background: var(--text-quaternary);
+  -webkit-mask: url("chrome-extension://__MSG_@@extension_id__/assets/image-03.svg") center / contain no-repeat;
+  mask: url("chrome-extension://__MSG_@@extension_id__/assets/image-03.svg") center / contain no-repeat;
 }
 
 .glowsary-image-field__dropzone-hint {
-  color: var(--text-tertiary);
+  color: var(--text-quaternary);
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-xs);
   font-weight: var(--font-weight-regular);
@@ -731,7 +732,7 @@
   border-color: var(--border-primary);
 }
 
-.glowsary-image-field__dropzone.is-processing .glowsary-image-field__dropzone-text,
+.glowsary-image-field__dropzone.is-processing .glowsary-image-field__dropzone-icon,
 .glowsary-image-field__dropzone.is-processing .glowsary-image-field__dropzone-hint {
   display: none;
 }
@@ -765,16 +766,68 @@
   }
 }
 
+.glowsary-image-field__link-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
 .glowsary-image-field__link-row[hidden] {
   display: none;
 }
 
+.glowsary-image-field__link-input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.glowsary-image-field__link-input::placeholder {
+  color: var(--text-placeholder);
+  opacity: 1;
+}
+
+.glowsary-image-field__link-submit {
+  display: inline-flex;
+  flex: 0 0 40px;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: var(--bg-primary-solid);
+  border: 0;
+  border-radius: var(--cta);
+  cursor: pointer;
+  appearance: none;
+}
+
+.glowsary-image-field__link-submit:focus-visible {
+  outline: auto;
+}
+
+.glowsary-image-field__link-submit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.glowsary-image-field__link-submit-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  background: var(--fg-white);
+  -webkit-mask: url("chrome-extension://__MSG_@@extension_id__/assets/arrow-up.svg") center / contain no-repeat;
+  mask: url("chrome-extension://__MSG_@@extension_id__/assets/arrow-up.svg") center / contain no-repeat;
+}
+
 .glowsary-image-field__preview {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
   box-sizing: border-box;
-  padding: 8px;
+  height: var(--image-box-height);
+  overflow: hidden;
   background: var(--bg-secondary);
   border: 1px solid var(--border-primary);
   border-radius: var(--box);
@@ -784,115 +837,54 @@
   display: none;
 }
 
-.glowsary-image-field__thumb {
-  position: relative;
+.glowsary-image-field__preview-img {
   display: block;
-  flex: 0 0 var(--image-thumb-size);
-  width: var(--image-thumb-size);
-  height: var(--image-thumb-size);
-  overflow: hidden;
-  background: var(--bg-primary);
-  border-radius: var(--image-thumb-radius);
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 
-.glowsary-image-field__thumb-overlay {
+.glowsary-image-field__preview-overlay {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--image-spinner-overlay-bg);
+  background: var(--image-overlay-hover-bg);
+  opacity: 0;
+  transition: opacity 0.15s ease;
 }
 
-.glowsary-image-field__thumb-overlay[hidden] {
-  display: none;
-}
-
-.glowsary-image-field__thumb.is-hidden {
-  visibility: hidden;
-}
-
-.glowsary-image-field__thumb-img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.glowsary-image-field__preview-body {
-  display: flex;
-  flex: 1 1 auto;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  min-width: 0;
-}
-
-.glowsary-image-field__preview-label {
-  min-width: 0;
-  color: var(--text-primary);
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-text-sm);
-  font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-text-sm);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.glowsary-image-field__preview-actions {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: 8px;
-}
-
-.glowsary-image-field__replace {
-  box-sizing: border-box;
-  padding: 4px 12px;
-  color: var(--text-primary);
-  background: var(--color-base-transparent);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--cta);
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-text-sm);
-  font-weight: var(--font-weight-medium);
-  line-height: var(--line-height-text-sm);
-  cursor: pointer;
-  appearance: none;
-}
-
-.glowsary-image-field__replace:hover {
-  background: var(--bg-primary);
+.glowsary-image-field__preview:hover .glowsary-image-field__preview-overlay {
+  opacity: 1;
 }
 
 .glowsary-image-field__remove {
   display: inline-flex;
-  flex: 0 0 24px;
+  flex: 0 0 40px;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 40px;
+  height: 40px;
   padding: 0;
-  color: var(--fg-primary);
-  background: var(--color-base-transparent);
+  background: var(--bg-error-solid);
   border: 0;
-  border-radius: var(--box);
+  border-radius: var(--cta);
   cursor: pointer;
   appearance: none;
 }
 
-.glowsary-image-field__remove:hover {
-  background: var(--bg-primary);
+.glowsary-image-field__remove:focus-visible {
+  outline: auto;
 }
 
 .glowsary-image-field__remove-icon {
   display: block;
-  width: 20px;
-  height: 20px;
-  background: currentColor;
-  -webkit-mask: url("chrome-extension://__MSG_@@extension_id__/assets/x-close.svg") center / contain no-repeat;
-  mask: url("chrome-extension://__MSG_@@extension_id__/assets/x-close.svg") center / contain no-repeat;
+  width: 18px;
+  height: 18px;
+  background: var(--fg-white);
+  -webkit-mask: url("chrome-extension://__MSG_@@extension_id__/assets/trash-03.svg") center / contain no-repeat;
+  mask: url("chrome-extension://__MSG_@@extension_id__/assets/trash-03.svg") center / contain no-repeat;
 }
 
 .glowsary-image-field__error {

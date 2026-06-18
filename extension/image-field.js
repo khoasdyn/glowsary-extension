@@ -115,13 +115,15 @@
 
     const root_ = createElement(doc, "div", { className: className(prefix, "image-field") });
 
+    // Empty state, top box: a drop area that takes a local file by click, drag, or paste.
+    // It shows only a photo icon and the format hint; the spinner replaces them while busy.
     const dropzone = createElement(doc, "div", {
       className: className(prefix, "image-field__dropzone"),
       attributes: { role: "button", tabindex: "0", "aria-label": "Add an image" }
     });
     dropzone.append(createElement(doc, "span", {
-      className: className(prefix, "image-field__dropzone-text"),
-      textContent: "Drag an image here, click to browse, or paste"
+      className: className(prefix, "image-field__dropzone-icon"),
+      attributes: { "aria-hidden": "true" }
     }));
     dropzone.append(createElement(doc, "span", {
       className: className(prefix, "image-field__dropzone-hint"),
@@ -140,35 +142,32 @@
     }));
     dropzone.append(dropzoneProcessing);
 
+    // Empty state, bottom row: a link input and a round submit button (FR-45c, FR-45e).
     const linkRow = createElement(doc, "div", { className: className(prefix, "image-field__link-row") });
     const linkInput = createElement(doc, "input", {
       className: `${className(prefix, "field-input__control")} ${className(prefix, "image-field__link-input")}`,
       attributes: { type: "url", inputmode: "url", autocomplete: "off", placeholder: "Or paste an image link", "aria-label": "Image link" }
     });
-    linkRow.append(linkInput);
+    const linkSubmit = createElement(doc, "button", {
+      className: className(prefix, "image-field__link-submit"),
+      attributes: { type: "button", disabled: "", "aria-label": "Add image from link", title: "Add image from link" }
+    });
+    linkSubmit.append(createElement(doc, "span", {
+      className: className(prefix, "image-field__link-submit-icon"),
+      attributes: { "aria-hidden": "true" }
+    }));
+    linkRow.append(linkInput, linkSubmit);
 
+    // Uploaded state: the whole image is shown inside a fixed box. Hovering it dims the
+    // image and reveals a round delete button (FR-45d, FR-45e).
     const preview = createElement(doc, "div", { className: className(prefix, "image-field__preview"), attributes: { hidden: "" } });
-    const thumb = createElement(doc, "span", { className: className(prefix, "image-field__thumb") });
-    const thumbImg = createElement(doc, "img", {
-      className: className(prefix, "image-field__thumb-img"),
+    const previewImg = createElement(doc, "img", {
+      className: className(prefix, "image-field__preview-img"),
       attributes: { alt: "", decoding: "async" }
     });
-    thumb.append(thumbImg);
-    const thumbOverlay = createElement(doc, "span", {
-      className: className(prefix, "image-field__thumb-overlay"),
-      attributes: { hidden: "", "aria-hidden": "true" }
-    });
-    thumbOverlay.append(createElement(doc, "span", {
-      className: className(prefix, "image-field__spinner")
-    }));
-    thumb.append(thumbOverlay);
-    const previewBody = createElement(doc, "div", { className: className(prefix, "image-field__preview-body") });
-    const previewLabel = createElement(doc, "span", { className: className(prefix, "image-field__preview-label") });
-    const previewActions = createElement(doc, "div", { className: className(prefix, "image-field__preview-actions") });
-    const replaceButton = createElement(doc, "button", {
-      className: className(prefix, "image-field__replace"),
-      attributes: { type: "button" },
-      textContent: "Replace"
+    const previewOverlay = createElement(doc, "span", {
+      className: className(prefix, "image-field__preview-overlay"),
+      attributes: { "aria-hidden": "true" }
     });
     const removeButton = createElement(doc, "button", {
       className: className(prefix, "image-field__remove"),
@@ -178,9 +177,8 @@
       className: className(prefix, "image-field__remove-icon"),
       attributes: { "aria-hidden": "true" }
     }));
-    previewActions.append(replaceButton, removeButton);
-    previewBody.append(previewLabel, previewActions);
-    preview.append(thumb, previewBody);
+    previewOverlay.append(removeButton);
+    preview.append(previewImg, previewOverlay);
 
     const error = createElement(doc, "p", {
       className: `${className(prefix, "field-input__hint")} ${className(prefix, "image-field__error")}`,
@@ -207,6 +205,11 @@
       }
     }
 
+    // The submit button is active only when the input has text and nothing is processing.
+    function syncSubmitState() {
+      linkSubmit.disabled = isProcessing || !linkInput.value.trim();
+    }
+
     function clearSpinnerTimer() {
       if (spinnerTimer !== null) {
         clearTimeout(spinnerTimer);
@@ -214,11 +217,11 @@
       }
     }
 
-    // Begin processing a local file: lock the field and arm the delayed spinner (FR-45j).
-    // A replace keeps the current thumbnail visible with an overlay; a first add shows
-    // the spinner inside the dropzone in place of its prompt.
-    function startProcessing(isReplace) {
+    // Lock the field and arm the delayed spinner inside the box (FR-45j). The same flow runs
+    // for a local file (read, decode, shrink) and a pasted link (loading from the web).
+    function startProcessing() {
       isProcessing = true;
+      syncSubmitState();
       clearSpinnerTimer();
       spinnerTimer = setTimeout(() => {
         spinnerTimer = null;
@@ -227,11 +230,7 @@
           return;
         }
 
-        if (isReplace) {
-          thumbOverlay.hidden = false;
-        } else {
-          dropzone.classList.add("is-processing");
-        }
+        dropzone.classList.add("is-processing");
       }, SPINNER_DELAY);
     }
 
@@ -239,8 +238,8 @@
     function stopProcessing() {
       isProcessing = false;
       clearSpinnerTimer();
-      thumbOverlay.hidden = true;
       dropzone.classList.remove("is-processing");
+      syncSubmitState();
     }
 
     function renderEmpty() {
@@ -250,12 +249,10 @@
     }
 
     function renderPreview(value) {
-      thumbImg.src = value.src;
-      previewLabel.textContent = value.type === "link" ? "Linked image" : "Imported image";
-      thumb.classList.remove("is-hidden");
+      previewImg.src = value.src;
       preview.hidden = false;
       dropzone.hidden = true;
-      linkRow.hidden = value.type !== "link";
+      linkRow.hidden = true;
     }
 
     function commit(value) {
@@ -275,9 +272,8 @@
       }
 
       const localRequest = ++requestId;
-      const isReplace = Boolean(currentValue);
       setError(null);
-      startProcessing(isReplace);
+      startProcessing();
 
       try {
         const dataUrl = await prepareLocalImage(doc, file);
@@ -287,15 +283,16 @@
         }
 
         linkInput.value = "";
+        syncSubmitState();
         commit({ type: "local", src: dataUrl });
       } catch (processingError) {
         if (localRequest !== requestId) {
           return;
         }
 
-        // On failure the field returns to its previous state: the old preview stays on a
-        // replace, the empty dropzone returns on a first add (FR-45f, FR-45j).
+        // A bad local file returns the field to the empty state with a message (FR-45f, FR-45j).
         setError(processingError?.message || READ_ERROR);
+        commit(null);
       } finally {
         if (localRequest === requestId) {
           stopProcessing();
@@ -303,18 +300,41 @@
       }
     }
 
-    function handleLinkValue(rawValue) {
-      const trimmed = String(rawValue || "").trim();
-      requestId += 1;
-      stopProcessing();
-      setError(null);
+    // The link loads only on submit or Enter (FR-45e). The spinner shows while it loads; a
+    // link that does not load returns the field to the empty state with a message (FR-45j).
+    async function handleLinkSubmit() {
+      const trimmed = linkInput.value.trim();
 
-      if (!trimmed) {
-        commit(null);
+      if (!trimmed || isProcessing) {
         return;
       }
 
-      commit({ type: "link", src: trimmed });
+      const localRequest = ++requestId;
+      setError(null);
+      startProcessing();
+
+      try {
+        await loadImage(doc, trimmed);
+
+        if (localRequest !== requestId) {
+          return;
+        }
+
+        commit({ type: "link", src: trimmed });
+      } catch (loadError) {
+        if (localRequest !== requestId) {
+          return;
+        }
+
+        setError(LINK_ERROR);
+        linkInput.value = "";
+        syncSubmitState();
+        commit(null);
+      } finally {
+        if (localRequest === requestId) {
+          stopProcessing();
+        }
+      }
     }
 
     dropzone.addEventListener("click", () => {
@@ -332,17 +352,12 @@
         fileInput.click();
       }
     });
-    replaceButton.addEventListener("click", () => {
-      if (isProcessing) {
-        return;
-      }
-      fileInput.click();
-    });
     removeButton.addEventListener("click", () => {
       requestId += 1;
       stopProcessing();
       linkInput.value = "";
       setError(null);
+      syncSubmitState();
       commit(null);
     });
 
@@ -389,32 +404,35 @@
       }
     });
 
-    linkInput.addEventListener("input", () => handleLinkValue(linkInput.value));
-    linkInput.addEventListener("change", () => handleLinkValue(linkInput.value));
-
-    thumbImg.addEventListener("error", () => {
-      if (currentValue?.type === "link") {
-        thumb.classList.add("is-hidden");
-        setError(LINK_ERROR);
+    linkInput.addEventListener("input", syncSubmitState);
+    linkInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handleLinkSubmit();
       }
     });
-    thumbImg.addEventListener("load", () => {
-      thumb.classList.remove("is-hidden");
+    linkSubmit.addEventListener("click", handleLinkSubmit);
+
+    // Defensive: if a committed link image still fails in the box, return to empty (FR-45e).
+    previewImg.addEventListener("error", () => {
       if (currentValue?.type === "link") {
-        setError(null);
+        setError(LINK_ERROR);
+        linkInput.value = "";
+        syncSubmitState();
+        commit(null);
       }
     });
 
     function setValue(image) {
       requestId += 1;
       stopProcessing();
+      linkInput.value = "";
       setError(null);
+      syncSubmitState();
 
       if (image && (image.type === "local" || image.type === "link") && image.src) {
-        linkInput.value = image.type === "link" ? image.src : "";
         commit({ type: image.type, src: image.src });
       } else {
-        linkInput.value = "";
         commit(null);
       }
     }
@@ -424,6 +442,7 @@
       stopProcessing();
       linkInput.value = "";
       setError(null);
+      syncSubmitState();
       commit(null);
     }
 

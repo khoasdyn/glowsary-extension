@@ -239,7 +239,9 @@
     });
 
     imageField.append(imageLabel, imageMount);
-    fields.append(term.label, definition.label, alias.label, colorField, imageField);
+    // Field order (FR-45e): Word, Definition, Image, Alias, Color. Image sits right below
+    // Definition; DOM order also sets the keyboard tab order.
+    fields.append(term.label, definition.label, imageField, alias.label, colorField);
 
     const actions = createElement("div", { className: className(prefix, "form-actions") });
     const saveButton = createElement("button", {

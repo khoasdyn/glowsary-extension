@@ -1,29 +1,25 @@
 (function registerGlowsaryImageTokens(root) {
-  // PLACEHOLDER VALUES — chosen by Claude because no Figma design exists yet for the image
-  // feature. These are the single place to refine the look and compression of saved images.
-  // The "dimensions" map below injects CSS variables; the "config" map holds the
-  // compression and validation values read by the image-field logic.
-  // FR-45b (5MB limit, allowed types) and FR-45d (largest display size) drive these.
+  // The "dimensions" map below injects CSS variables for the image field and previews; the
+  // "config" map holds the compression and validation values read by the image-field logic.
+  // FR-45b (5MB limit, allowed types) and FR-45d (largest display size) drive these. The
+  // image-field box and overlay come from the Figma image-field design; the compression
+  // values below are still placeholders (design debt) until a sizing decision is made.
 
   const dimensions = {
-    // Thumbnail shown in the definition popup and inside the add/edit form preview.
-    "image-thumb-size": "56px",
     // Smaller thumbnail shown in the management word card header, to fit its fixed height.
     "image-thumb-size-card": "40px",
-    // Corner radius for every image thumbnail.
-    "image-thumb-radius": "var(--card-sm)",
-    // The drop area shown before an image is set.
-    "image-dropzone-min-height": "92px",
+    // Drop area and uploaded-image box in the add/edit form share one fixed height
+    // (Figma image-field frame 352x150; height from the field redesign).
+    "image-box-height": "150px",
     // Gap between the image controls in the form field.
     "image-field-gap": "8px",
-    // PLACEHOLDER — the working spinner shown while a local image is processed (FR-45j),
-    // undesigned because no Figma exists for the image feature yet.
-    // Spinner ring diameter and stroke thickness.
+    // The working spinner shown while an image is prepared (FR-45j); icon and animation
+    // unchanged. Spinner ring diameter and stroke thickness.
     "image-spinner-size": "24px",
     "image-spinner-thickness": "2px",
-    // Scrim laid over the current thumbnail while a replacement image is processing,
-    // so the old image stays faintly visible underneath the spinner.
-    "image-spinner-overlay-bg": "color-mix(in srgb, var(--bg-primary) 64%, var(--color-base-transparent))",
+    // NEW (image-field redesign): dark scrim laid over the uploaded image on hover, behind
+    // the round delete button. Equals rgba(0,0,0,0.6), expressed through the black primitive.
+    "image-overlay-hover-bg": "color-mix(in srgb, var(--color-base-black) 60%, var(--color-base-transparent))",
     // Full-size viewer backdrop and image bounds.
     "image-viewer-backdrop": "color-mix(in srgb, var(--color-base-black) 72%, var(--color-base-transparent))",
     "image-viewer-max-width": "90vw",

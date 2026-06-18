@@ -2,7 +2,8 @@
   const spacing = {
     "section-gap": "64px",
     "field-gap": "24px",
-    "label-field": "6px",
+    "card-gap": "16px",
+    "label-field-gap": "6px",
     "button-gap": "8px"
   };
 

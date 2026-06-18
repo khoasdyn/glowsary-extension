@@ -55,7 +55,8 @@
         "--text-tertiary": "--color-gray-600",
         "--text-quaternary": "--color-gray-500",
         "--text-placeholder": "--color-gray-400",
-        "--text-error-primary": "--color-red-700"
+        "--text-error-primary": "--color-red-700",
+        "--text-success-primary": "--color-green-700"
       },
       foreground: {
         "--fg-primary": "--color-gray-900",

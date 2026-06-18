@@ -1,3 +1,9 @@
+## 2026-06-18 (token sync)
+
+- Added `--text-success-primary` semantic color token (Green/700, #15803D) from the Figma Semantic Colors export.
+- Added `--card-gap` spacing token (16px) from the Figma Spacing export.
+- Renamed the `--label-field` spacing token to `--label-field-gap` to match the Figma Spacing export name.
+
 ## 2026-06-18
 
 - Redesigned the Definition field's auto-generate action into a special gradient "Generate" button, in both the in-page Add/Edit form and the Management panel. It is renamed from "Auto-generate" to "Generate", shown as a fully-rounded pink-to-purple gradient pill with white text and the new `star-06` sparkle icon on its right. On hover (when active) the button lifts slightly, glows in soft pink/purple, the gradient shimmers, and the star rotates and grows — a catchy, premium feel. The accessible name stays "Generate definition". No generate behavior changed: it still unlocks at 3+ characters, sends only the word, shows "Generating…" while it runs, and falls back to manual typing on failure.

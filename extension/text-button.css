@@ -60,11 +60,20 @@
   --text-button-icon: var(--fg-error-primary);
 }
 
+.text-button--xs {
+  height: 32px;
+  padding: 8px 16px;
+}
+
+.text-button--xs svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+
 .text-button--disabled,
 .text-button:disabled {
-  --text-button-bg: var(--bg-quaternary);
-  --text-button-label: var(--text-white);
-  --text-button-icon: var(--fg-white);
+  opacity: 0.5;
   cursor: default;
   pointer-events: none;
 }

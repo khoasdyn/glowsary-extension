@@ -1,3 +1,8 @@
+## 2026-06-18 (button update)
+
+- Added `xs` size variant to the fill button: 32px tall, 16px horizontal padding, 16px icon — matching the Figma button component.
+- Fixed the disabled state: all button kinds now go to 50% opacity when disabled, instead of overriding to a gray background with white text.
+
 ## 2026-06-18 (token sync)
 
 - Added `--text-success-primary` semantic color token (Green/700, #15803D) from the Figma Semantic Colors export.

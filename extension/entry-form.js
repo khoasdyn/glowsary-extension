@@ -83,13 +83,17 @@
         id: config.generateId,
         type: "button",
         disabled: "",
-        "aria-label": "Auto-generate definition"
+        "aria-label": "Generate definition"
       }
     });
     generateButton.append(createElement("span", {
       className: className(prefix, "field-input__generate-label"),
-      textContent: "Auto-generate",
+      textContent: "Generate",
       attributes: { "data-generate-label": "" }
+    }));
+    generateButton.append(createElement("span", {
+      className: className(prefix, "field-input__generate-icon"),
+      attributes: { "aria-hidden": "true" }
     }));
     const control = createElement("textarea", {
       className: config.controlClass,

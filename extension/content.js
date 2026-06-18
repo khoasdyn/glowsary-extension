@@ -134,6 +134,7 @@
     "glowsary-typography-tokens",
     "glowsary-semantic-typography-tokens",
     "glowsary-radius-tokens",
+    "glowsary-gradient-tokens",
     "glowsary-image-tokens",
     "glowsary-shadow-tokens",
     "glowsary-content-typography-overrides"

@@ -5,7 +5,7 @@
   const DEFINITION_MAX_LENGTH = 350;
   const FAILURE_MESSAGE = "Couldn't generate a definition. Please type it in.";
   const NO_KEY_MESSAGE = "Add your Gemini key in Settings, or type the definition in.";
-  const GENERATE_LABEL = "Auto-generate";
+  const GENERATE_LABEL = "Generate";
   const LOADING_LABEL = "Generating…";
 
   function sendMessage(payload) {

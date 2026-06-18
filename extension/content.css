@@ -487,11 +487,18 @@
 .glowsary-field-input__generate {
   box-sizing: border-box;
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   margin-left: auto;
-  padding: 4px 12px;
-  color: var(--text-primary);
-  background: var(--color-base-transparent);
-  border: 1px solid var(--border-primary);
+  height: 32px;
+  padding: 0 16px;
+  color: var(--text-white);
+  background: var(--gradient-generate);
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  border: 0;
   border-radius: var(--cta);
   font-family: var(--font-family-body);
   font-size: var(--font-size-text-sm);
@@ -500,19 +507,84 @@
   white-space: nowrap;
   cursor: pointer;
   appearance: none;
+  transition: transform 0.2s ease, box-shadow 0.3s ease, background-position 0.6s ease;
 }
 
-.glowsary-field-input__generate:hover {
-  background: var(--bg-primary);
+.glowsary-field-input__generate-icon {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  -webkit-mask: url("chrome-extension://__MSG_@@extension_id__/assets/star-06.svg") center / contain no-repeat;
+  mask: url("chrome-extension://__MSG_@@extension_id__/assets/star-06.svg") center / contain no-repeat;
+  transition: transform 0.3s ease;
+}
+
+.glowsary-field-input__generate:hover:not(:disabled) {
+  animation: glowsary-generate-shimmer 2.4s ease-in-out infinite;
+  box-shadow:
+    0 6px 18px color-mix(in srgb, var(--color-fuchsia-400) 55%, transparent),
+    0 2px 8px color-mix(in srgb, var(--color-purple-400) 45%, transparent);
+  transform: translateY(-1px);
+}
+
+.glowsary-field-input__generate:hover:not(:disabled) .glowsary-field-input__generate-icon {
+  transform: rotate(18deg) scale(1.18);
 }
 
 .glowsary-field-input__generate:focus-visible {
-  outline: auto;
+  outline: 2px solid var(--border-primary_focus);
+  outline-offset: 2px;
 }
 
 .glowsary-field-input__generate:disabled {
   color: var(--text-quaternary);
+  background: var(--bg-quaternary);
+  box-shadow: none;
+  transform: none;
   cursor: default;
+}
+
+.glowsary-field-input__generate.is-loading {
+  color: var(--text-white);
+  background: var(--gradient-generate);
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+}
+
+.glowsary-field-input__generate.is-loading .glowsary-field-input__generate-icon {
+  animation: glowsary-generate-spin 0.9s linear infinite;
+}
+
+@keyframes glowsary-generate-shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes glowsary-generate-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glowsary-field-input__generate,
+  .glowsary-field-input__generate-icon {
+    transition: none;
+  }
+
+  .glowsary-field-input__generate:hover:not(:disabled) {
+    animation: none;
+    background-position: 100% 50%;
+    transform: none;
+  }
+
+  .glowsary-field-input__generate:hover:not(:disabled) .glowsary-field-input__generate-icon {
+    transform: none;
+  }
+
+  .glowsary-field-input__generate.is-loading .glowsary-field-input__generate-icon {
+    animation: none;
+  }
 }
 
 .glowsary-form-actions {

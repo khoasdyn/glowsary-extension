@@ -971,6 +971,52 @@
     }
   }
 
+  function isPointerOnPopupOrWord() {
+    if (!activePopup) {
+      return false;
+    }
+
+    // Prefer a real hit-test from the last pointer position over :hover, which a
+    // host site's scripts or a node rebuilt under the pointer can leave stale.
+    if (lastPointerX !== null) {
+      const element = document.elementFromPoint(lastPointerX, lastPointerY);
+
+      if (!element) {
+        return false;
+      }
+
+      // A point over the popup resolves to our shadow host, because events and
+      // hit-tests do not pierce the shadow boundary; treat that as "on the popup".
+      const host = glowsaryRoot?.host;
+
+      if (host && (element === host || host.contains(element))) {
+        return true;
+      }
+
+      const highlight = highlightFromEventTarget(element);
+
+      if (!highlight) {
+        return false;
+      }
+
+      if (highlight === activePopup.anchor) {
+        return true;
+      }
+
+      // The word was rebuilt under a resting pointer: re-anchor to the new node
+      // so the same popup keeps following the same word instead of closing.
+      if (highlight.textContent === activePopup.anchor.textContent) {
+        activePopup.anchor = highlight;
+        return true;
+      }
+
+      return false;
+    }
+
+    // Fall back to :hover only when no pointer position has been seen yet.
+    return Boolean(activePopup.anchor.matches?.(":hover") || activePopup.element.matches?.(":hover"));
+  }
+
   function schedulePopupDismiss() {
     window.clearTimeout(popupCloseTimer);
     popupCloseTimer = window.setTimeout(() => {
@@ -983,7 +1029,7 @@
         return;
       }
 
-      if (activePopup.anchor.matches(":hover") || activePopup.element.matches(":hover")) {
+      if (isPointerOnPopupOrWord()) {
         return;
       }
 
@@ -1458,7 +1504,21 @@
       }
     });
 
-    window.addEventListener("scroll", dismissPopup, true);
+    window.addEventListener("scroll", (event) => {
+      if (!activePopup) {
+        return;
+      }
+
+      // Only close when the page or the container that actually holds the hovered
+      // word scrolls. A carousel, ticker, or other widget scrolling elsewhere on
+      // the page must not tear the popup down. event.target is the document for a
+      // window/page scroll.
+      const scrolledNode = event.target === document ? document.documentElement : event.target;
+
+      if (scrolledNode?.contains?.(activePopup.anchor)) {
+        dismissPopup();
+      }
+    }, true);
     window.addEventListener("resize", dismissPopup);
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {

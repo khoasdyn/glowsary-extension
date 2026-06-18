@@ -1,3 +1,7 @@
+## 2026-06-18 (custom key tutorial link)
+
+- The "here" tutorial link in the Custom API Key section now opens the real tutorial video (https://youtu.be/YMmi7SJO23I) instead of the placeholder YouTube home page.
+
 ## 2026-06-18 (add card height + custom key toggle reset)
 
 - Gave the "Add New Word" card a fixed 120px height so it never grows or shrinks with content, matching the Figma design.

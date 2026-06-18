@@ -708,7 +708,7 @@ function renderSettings() {
 const KEY_SUCCESS_MESSAGE = "You are using this key for auto-generate feature.";
 const KEY_SAVE_LABEL = "Save";
 const KEY_CHECKING_LABEL = "Checking…";
-const TUTORIAL_LINK = `<a class="autogenerate-key-tutorial-link" href="https://youtube.com" target="_blank" rel="noopener noreferrer">here</a>`;
+const TUTORIAL_LINK = `<a class="autogenerate-key-tutorial-link" href="https://youtu.be/YMmi7SJO23I" target="_blank" rel="noopener noreferrer">here</a>`;
 const KEY_SUBTITLE_OFF = `You're using the default key. See how to add your own key ${TUTORIAL_LINK}.`;
 const KEY_SUBTITLE_ON = `Only Gemini is supported for now. See how to add your own key ${TUTORIAL_LINK}.`;
 

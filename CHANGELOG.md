@@ -1,3 +1,11 @@
+## 2026-06-18 (settings layout refinements)
+
+- Moved the "Add New" button in Excluded Sites from below the heading to the right side of the header row, vertically centered against the title and subtitle.
+- Moved the Auto-generate Language dropdown onto the same row as its heading, on the right side, instead of sitting below it.
+- Increased the spacing between settings sections from 32px to the `--section-gap` token (64px).
+- Updated the shared dropdown (Auto-generate Language and the Home "Sort" dropdown): fixed 200px width, 20px horizontal padding, chevron 20px from the right edge, and 16px Medium label text (was 14px).
+- On narrow screens both the "Add New" button and the language dropdown stack full width below their headings.
+
 ## 2026-06-18 (custom API key follow-up)
 
 - Switched the Custom API Key toggle to the small size (39×20) to match the alias toggle.

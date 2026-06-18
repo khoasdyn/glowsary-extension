@@ -143,7 +143,7 @@ button {
 .excluded-section,
 .autogenerate-section,
 .backup-section {
-  margin-bottom: 32px;
+  margin-bottom: var(--section-gap);
 }
 
 .settings-section-header p {
@@ -252,6 +252,18 @@ button {
 
 .settings-section-title-row {
   justify-content: flex-start;
+}
+
+.settings-section-header--with-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.settings-section-header--with-action .settings-section-title-group {
+  flex: 1 1 auto;
 }
 
 .list-heading-actions {
@@ -371,11 +383,14 @@ button {
 }
 
 .sort-field select {
-  min-width: 126px;
-  padding: 12px 56px 12px 24px;
+  width: 200px;
+  padding: 12px 44px 12px 20px;
+  font-size: var(--font-size-text-md);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-text-md);
   appearance: none;
   background-image: url("assets/chevron-down.svg");
-  background-position: right 24px center;
+  background-position: right 20px center;
   background-repeat: no-repeat;
   background-size: 24px 24px;
 }
@@ -469,7 +484,11 @@ button {
 }
 
 .excluded-add-button {
-  margin-top: 20px;
+  flex: 0 0 auto;
+}
+
+.autogenerate-language-field {
+  flex: 0 0 auto;
 }
 
 .excluded-list {
@@ -851,6 +870,15 @@ button {
   }
 
   .sort-field select {
+    width: 100%;
+  }
+
+  .settings-section-header--with-action {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .autogenerate-language-field {
     width: 100%;
   }
 

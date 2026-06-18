@@ -69,36 +69,36 @@
 
       <section class="management-tab-panel" id="management-panel-settings" role="tabpanel" aria-labelledby="management-tab-settings" data-tab-panel="settings" hidden>
         <section class="excluded-section" aria-labelledby="excluded-heading">
-          <div class="settings-section-header">
+          <div class="settings-section-header settings-section-header--with-action">
             <div class="settings-section-title-group">
               <div class="settings-section-title-row">
                 <h2 id="excluded-heading">Excluded Sites (<span id="excluded-count">0</span>)</h2>
               </div>
               <p>Pause highlighting on sites where saved words are noise.</p>
             </div>
+            <button class="text-button text-button--default excluded-add-button" id="add-excluded-site" type="button">
+              <span class="text-button__label">Add New</span>
+            </button>
           </div>
-          <button class="text-button text-button--default excluded-add-button" id="add-excluded-site" type="button">
-            <span class="text-button__label">Add New</span>
-          </button>
           <div class="excluded-list" id="excluded-list"></div>
         </section>
 
         <section class="autogenerate-section" aria-labelledby="autogenerate-heading">
-          <div class="settings-section-header">
+          <div class="settings-section-header settings-section-header--with-action">
             <div class="settings-section-title-group">
               <div class="settings-section-title-row">
                 <h2 id="autogenerate-heading">Auto-generate Language</h2>
               </div>
               <p>The language used when you auto-generate a definition.</p>
             </div>
+            <label class="sort-field autogenerate-language-field">
+              <span class="visually-hidden">Auto-generate language</span>
+              <select id="autogenerate-language-select">
+                <option value="en">English</option>
+                <option value="vi">Vietnamese</option>
+              </select>
+            </label>
           </div>
-          <label class="sort-field autogenerate-language-field">
-            <span class="visually-hidden">Auto-generate language</span>
-            <select id="autogenerate-language-select">
-              <option value="en">English</option>
-              <option value="vi">Vietnamese</option>
-            </select>
-          </label>
         </section>
 
         <section class="autogenerate-section autogenerate-key-section" aria-labelledby="autogenerate-key-heading">

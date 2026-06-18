@@ -911,6 +911,21 @@ function renderEntries() {
   const hasEntries = entries.length > 0;
   const hasSearchMatches = visibleEntries.length > 0;
 
+  // Rebuilding the list empties it for a moment, which collapses the page
+  // height and makes the browser snap the scroll back to the top. Saving also
+  // re-renders a second time through the storage-change listener, so simply
+  // capturing and restoring the scroll position races with that second render.
+  // Instead, pin the list to its current height across the rebuild so the page
+  // never collapses and the scroll is never lost, then release the pin once the
+  // new masonry layout is in place.
+  const scroller = document.scrollingElement || document.documentElement;
+  const previousScrollTop = scroller.scrollTop;
+  const previousListHeight = elements.entryList.getBoundingClientRect().height;
+
+  if (previousListHeight > 0) {
+    elements.entryList.style.minHeight = `${previousListHeight}px`;
+  }
+
   elements.entryList.replaceChildren();
   elements.entryList.classList.toggle("entry-list--empty", !hasEntries);
   elements.entryList.append(createAddEntryCard());
@@ -923,6 +938,12 @@ function renderEntries() {
   }
 
   scheduleEntryGridLayout();
+
+  requestAnimationFrame(() => {
+    layoutEntryGrid();
+    elements.entryList.style.minHeight = "";
+    scroller.scrollTop = previousScrollTop;
+  });
 }
 
 async function deleteExcludedSite(targetSite) {

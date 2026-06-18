@@ -1,3 +1,7 @@
+## 2026-06-18 (auto-generate failure messages)
+
+- The auto-generate definition hint now names the real cause in plain words instead of one generic line: "The daily limit was reached.", "The key was rejected.", "Can't reach the service.", and so on. The user sees only the plain message; the internal cause code stays in the code for debugging.
+
 ## 2026-06-18 (custom key tutorial link)
 
 - The "here" tutorial link in the Custom API Key section now opens the real tutorial video (https://youtu.be/YMmi7SJO23I) instead of the placeholder YouTube home page.

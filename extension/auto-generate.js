@@ -3,10 +3,43 @@
   // in-page Add/Edit form (content.js) and the Management form (options.js). It holds no
   // key: it only asks the background service worker to generate, then fills the field.
   const DEFINITION_MAX_LENGTH = 350;
-  const FAILURE_MESSAGE = "Couldn't generate a definition. Please type it in.";
+  // Plain-language failure hint per cause (FR-46i). The keys are the internal codes
+  // returned by the background service worker; only the values are ever shown to the
+  // user, so the cause stays debuggable from the code while the UI stays human.
+  const FAILURE_MESSAGES = {
+    network: "Can't reach the service.",
+    "http-401": "The key was rejected.",
+    "http-403": "The key has no access.",
+    "http-429": "The daily limit was reached.",
+    "http-400": "The request couldn't be processed.",
+    "http-404": "The AI model is unavailable.",
+    "bad-response": "The reply couldn't be read.",
+    empty: "No definition came back.",
+    "missing-key": "Auto-generate isn't set up yet.",
+    runtime: "Something went wrong."
+  };
+  // Shown for any 5xx status and for any code not in the map above.
+  const SERVICE_ERROR_MESSAGE = "The service is having trouble.";
+  const FAILURE_MESSAGE = "Couldn't generate a definition.";
   const KEY_FAILED_MESSAGE = "Your key didn't work, so the shared key was used.";
   const GENERATE_LABEL = "Generate";
   const LOADING_LABEL = "Generating…";
+
+  // Map an internal failure code to the user-facing hint. Unknown codes and 5xx
+  // statuses fall back to a safe generic message rather than exposing raw detail.
+  function messageForError(code) {
+    const key = String(code || "");
+
+    if (FAILURE_MESSAGES[key]) {
+      return FAILURE_MESSAGES[key];
+    }
+
+    if (/^http-5\d\d$/.test(key)) {
+      return SERVICE_ERROR_MESSAGE;
+    }
+
+    return FAILURE_MESSAGE;
+  }
 
   function sendMessage(payload) {
     return new Promise((resolve) => {
@@ -77,7 +110,7 @@
       setLoading(false);
 
       if (!result || !result.ok || !result.definition) {
-        setError(FAILURE_MESSAGE);
+        setError(messageForError(result?.error));
         return;
       }
 

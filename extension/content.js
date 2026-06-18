@@ -719,37 +719,34 @@
     editIcon.setAttribute("aria-hidden", "true");
     editButton.append(editIcon);
 
-    const media = document.createElement("button");
+    const media = document.createElement("div");
     media.className = "glowsary-popup__media";
-    media.type = "button";
-    media.setAttribute("aria-label", "View image full size");
     media.hidden = true;
+
+    const mediaSkeleton = document.createElement("div");
+    mediaSkeleton.className = "glowsary-popup__media-skeleton";
+    mediaSkeleton.setAttribute("aria-hidden", "true");
 
     const mediaImg = document.createElement("img");
     mediaImg.className = "glowsary-popup__media-img";
     mediaImg.alt = "";
     mediaImg.decoding = "async";
-    media.append(mediaImg);
+    media.append(mediaSkeleton, mediaImg);
 
+    mediaImg.addEventListener("load", () => {
+      media.classList.remove("is-loading");
+    });
     mediaImg.addEventListener("error", () => {
       media.hidden = true;
-    });
-    media.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-
-      const source = mediaImg.getAttribute("src");
-      if (source) {
-        window.GlowsaryImageViewer?.open?.(source, { classPrefix: "glowsary", host: ensureGlowsaryRoot() });
-      }
+      media.classList.remove("is-loading");
     });
 
     const definition = document.createElement("div");
     definition.className = "glowsary-popup-definition";
 
     titleGroup.append(soundButton, title);
-    titleRow.append(media, titleGroup, editButton);
-    wordBlock.append(titleRow, definition);
+    titleRow.append(titleGroup, editButton);
+    wordBlock.append(titleRow, definition, media);
     popup.append(wordBlock);
 
     const controls = pages.length > 1 ? createPopupPagination() : null;
@@ -952,10 +949,12 @@
 
       if (image?.src) {
         media.hidden = false;
+        media.classList.add("is-loading");
         mediaImg.removeAttribute("src");
         mediaImg.src = image.src;
       } else {
         media.hidden = true;
+        media.classList.remove("is-loading");
         mediaImg.removeAttribute("src");
       }
     }

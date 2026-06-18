@@ -862,82 +862,46 @@ button {
 }
 
 .entry-card-media {
-  display: inline-flex;
-  flex: 0 0 var(--image-thumb-size-card);
-  align-items: center;
-  justify-content: center;
-  width: var(--image-thumb-size-card);
-  height: var(--image-thumb-size-card);
-  padding: 0;
-  overflow: hidden;
-  background: var(--wc-bg-alias-chip);
-  border: 0;
-  border-radius: var(--image-thumb-radius);
-  cursor: zoom-in;
-  appearance: none;
-}
-
-.entry-card-media-img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.image-viewer-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: var(--image-viewer-backdrop);
-  box-sizing: border-box;
-  cursor: zoom-out;
-}
-
-.image-viewer-frame {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: var(--image-viewer-max-width);
-  max-height: var(--image-viewer-max-height);
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  border-radius: var(--box);
 }
 
-.image-viewer-image {
+.entry-card-media-img {
   display: block;
-  max-width: var(--image-viewer-max-width);
-  max-height: var(--image-viewer-max-height);
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
-  border-radius: var(--card-md);
-  cursor: default;
 }
 
-.image-viewer-close {
+.entry-card-media.is-loading .entry-card-media-img {
+  visibility: hidden;
+}
+
+.entry-card-media-skeleton {
+  display: none;
+}
+
+.entry-card-media.is-loading .entry-card-media-skeleton {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  color: var(--fg-white);
-  background: color-mix(in srgb, var(--color-base-black) 50%, var(--color-base-transparent));
-  border: 0;
-  border-radius: 9999px;
-  cursor: pointer;
-  appearance: none;
+  inset: 0;
+  display: block;
+  background: var(--bg-quaternary);
+  animation: entry-card-media-skeleton-pulse 1.2s ease-in-out infinite;
 }
 
-.image-viewer-close__icon {
-  display: block;
-  width: 20px;
-  height: 20px;
-  background: currentColor;
-  -webkit-mask: url("assets/x-close.svg") center / contain no-repeat;
-  mask: url("assets/x-close.svg") center / contain no-repeat;
+@keyframes entry-card-media-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.85;
+  }
 }

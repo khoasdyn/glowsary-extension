@@ -838,36 +838,36 @@ function createEntryCard(entry) {
 
   header.append(soundButton, term);
 
+  main.append(header, definition);
+
   const image = normalizeImage(entry.image);
 
   if (image) {
-    const media = document.createElement("button");
-    media.className = "entry-card-media";
-    media.type = "button";
-    media.setAttribute("aria-label", "View image full size");
+    const media = document.createElement("div");
+    media.className = "entry-card-media is-loading";
+
+    const mediaSkeleton = document.createElement("div");
+    mediaSkeleton.className = "entry-card-media-skeleton";
+    mediaSkeleton.setAttribute("aria-hidden", "true");
 
     const mediaImg = document.createElement("img");
     mediaImg.className = "entry-card-media-img";
     mediaImg.alt = "";
     mediaImg.decoding = "async";
-    mediaImg.src = image.src;
-    media.append(mediaImg);
+    media.append(mediaSkeleton, mediaImg);
 
-    mediaImg.addEventListener("load", () => scheduleEntryGridLayout());
+    mediaImg.addEventListener("load", () => {
+      media.classList.remove("is-loading");
+      scheduleEntryGridLayout();
+    });
     mediaImg.addEventListener("error", () => {
       media.remove();
       scheduleEntryGridLayout();
     });
-    media.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      window.GlowsaryImageViewer?.open?.(image.src, { document });
-    });
 
-    header.append(media);
+    mediaImg.src = image.src;
+    main.append(media);
   }
-
-  main.append(header, definition);
 
   const aliases = document.createElement("span");
   aliases.className = "entry-aliases";

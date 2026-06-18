@@ -908,19 +908,15 @@
 }
 
 .glowsary-popup__media {
-  display: inline-flex;
-  flex: 0 0 var(--image-thumb-size-card);
+  position: relative;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--image-thumb-size-card);
-  height: var(--image-thumb-size-card);
-  padding: 0;
+  width: 100%;
+  height: 120px;
   overflow: hidden;
-  background: var(--wc-bg-alias-chip);
-  border: 0;
-  border-radius: var(--image-thumb-radius);
-  cursor: zoom-in;
-  appearance: none;
+  background: var(--bg-secondary);
+  border-radius: var(--box);
 }
 
 .glowsary-popup__media[hidden] {
@@ -929,65 +925,33 @@
 
 .glowsary-popup__media-img {
   display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.glowsary-image-viewer-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 2147483647;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: var(--image-viewer-backdrop);
-  box-sizing: border-box;
-  cursor: zoom-out;
-}
-
-.glowsary-image-viewer-frame {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-width: var(--image-viewer-max-width);
-  max-height: var(--image-viewer-max-height);
-}
-
-.glowsary-image-viewer-image {
-  display: block;
-  max-width: var(--image-viewer-max-width);
-  max-height: var(--image-viewer-max-height);
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
-  border-radius: var(--card-md);
-  cursor: default;
 }
 
-.glowsary-image-viewer-close {
+.glowsary-popup__media.is-loading .glowsary-popup__media-img {
+  visibility: hidden;
+}
+
+.glowsary-popup__media-skeleton {
+  display: none;
+}
+
+.glowsary-popup__media.is-loading .glowsary-popup__media-skeleton {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  color: var(--fg-white);
-  background: color-mix(in srgb, var(--color-base-black) 50%, var(--color-base-transparent));
-  border: 0;
-  border-radius: 9999px;
-  cursor: pointer;
-  appearance: none;
+  inset: 0;
+  display: block;
+  background: var(--bg-quaternary);
+  animation: glowsary-image-skeleton-pulse 1.2s ease-in-out infinite;
 }
 
-.glowsary-image-viewer-close__icon {
-  display: block;
-  width: 20px;
-  height: 20px;
-  background: currentColor;
-  -webkit-mask: url("chrome-extension://__MSG_@@extension_id__/assets/x-close.svg") center / contain no-repeat;
-  mask: url("chrome-extension://__MSG_@@extension_id__/assets/x-close.svg") center / contain no-repeat;
+@keyframes glowsary-image-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.85;
+  }
 }

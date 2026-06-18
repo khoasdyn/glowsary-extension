@@ -1,3 +1,8 @@
+## 2026-06-18 (release 1.4.0)
+
+- Bumped the extension manifest version to 1.4.0 for the Chrome Web Store release.
+- Updated the store listing copy and README to promote the two new features in this release: AI auto-generate definitions (with an optional custom Gemini key) and adding an image to a saved word.
+
 ## 2026-06-18 (auto-generate failure messages)
 
 - The auto-generate definition hint now names the real cause in plain words instead of one generic line: "The daily limit was reached.", "The key was rejected.", "Can't reach the service.", and so on. The user sees only the plain message; the internal cause code stays in the code for debugging.

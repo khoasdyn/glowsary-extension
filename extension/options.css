@@ -675,6 +675,8 @@ button {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-height: 120px;
+  max-height: 120px;
   padding: 16px;
   color: var(--wc-subtext);
   background: var(--wc-bg-card);

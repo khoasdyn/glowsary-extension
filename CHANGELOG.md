@@ -1,3 +1,8 @@
+## 2026-06-18 (add card height + custom key toggle reset)
+
+- Gave the "Add New Word" card a fixed 120px height so it never grows or shrinks with content, matching the Figma design.
+- The Custom API Key toggle now resets to off whenever it would otherwise be on with no validated key saved: on page load/refresh and when the user switches away from the Settings tab. A saved validated key is never affected.
+
 ## 2026-06-18 (saved words grid fix)
 
 - Fixed the Saved Words grid collapsing after changing a setting on the Settings tab and returning to Home. The masonry layout no longer runs while the Home tab is hidden (where cards measure as zero height), and it is recomputed whenever the Home tab becomes visible again, so the grid is always intact on return.

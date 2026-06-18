@@ -149,15 +149,19 @@ async function normalizeExcludedSitesToWholeSiteDomains(sites = []) {
 
 function normalizeSettings(rawSettings = {}) {
   const isLegacyKeySchema = "autoGenerateKeyMode" in rawSettings;
+  // FR-46s migration: settings carrying the old "autoGenerateKeyMode" predate the
+  // toggle, so any key stored under the old flow is discarded; the new model only
+  // keeps a key that passed the check (FR-46p).
+  const autoGenerateCustomKey = isLegacyKeySchema || typeof rawSettings.autoGenerateCustomKey !== "string" ? "" : rawSettings.autoGenerateCustomKey;
   return {
     highlightingEnabled: rawSettings.highlightingEnabled !== false,
     managementSort: rawSettings.managementSort === "az" ? "az" : "latest",
     autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en",
-    // FR-46s migration: settings carrying the old "autoGenerateKeyMode" predate the
-    // toggle. Reset such users to the toggle off and discard any key stored under the
-    // old flow, since the new model only keeps a key that passed the check (FR-46p).
-    autoGenerateCustomKeyEnabled: !isLegacyKeySchema && rawSettings.autoGenerateCustomKeyEnabled === true,
-    autoGenerateCustomKey: isLegacyKeySchema || typeof rawSettings.autoGenerateCustomKey !== "string" ? "" : rawSettings.autoGenerateCustomKey
+    // The toggle resets to off for legacy users (FR-46s) and, per FR-46t, whenever it
+    // would otherwise load as on with no validated key saved, so the section never
+    // starts in a half-finished "on without a key" state.
+    autoGenerateCustomKeyEnabled: !isLegacyKeySchema && rawSettings.autoGenerateCustomKeyEnabled === true && autoGenerateCustomKey !== "",
+    autoGenerateCustomKey
   };
 }
 
@@ -418,6 +422,15 @@ function handleManagementTabChange(event) {
 
   if (nextTab !== activeManagementTab && currentPanel?.contains(document.activeElement)) {
     document.activeElement.blur();
+  }
+
+  // FR-46t: leaving the Settings tab with the toggle on but no validated key saved
+  // resets the toggle to off, so the section never lingers in a half-finished
+  // "on without a key" state when the user returns.
+  if (activeManagementTab === "settings" && nextTab !== "settings"
+    && settings.autoGenerateCustomKeyEnabled === true && !settings.autoGenerateCustomKey) {
+    keyCheckRequest += 1;
+    saveSettings({ ...settings, autoGenerateCustomKeyEnabled: false });
   }
 
   activeManagementTab = nextTab;

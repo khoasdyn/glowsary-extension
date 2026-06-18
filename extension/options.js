@@ -425,6 +425,12 @@ function handleManagementTabChange(event) {
   for (const panel of elements.managementTabPanels) {
     panel.hidden = panel.dataset.tabPanel !== activeManagementTab;
   }
+
+  // The masonry layout is skipped while Home is hidden, so any grid change made
+  // on another tab leaves stale spans. Recompute once Home becomes visible.
+  if (activeManagementTab === "home") {
+    scheduleEntryGridLayout();
+  }
 }
 
 function initManagementTabNav() {
@@ -947,6 +953,14 @@ let masonryFrame = 0;
 function layoutEntryGrid() {
   const cards = elements.entryList?.querySelectorAll(".entry-card");
   if (!cards) {
+    return;
+  }
+
+  // The masonry spans come from live height measurements, which read as zero
+  // when the Home panel is not the active tab (display:none). Skip the pass in
+  // that case so a settings change made on another tab can't corrupt the grid;
+  // it is recomputed when the Home tab becomes visible again.
+  if (elements.entryList.offsetParent === null) {
     return;
   }
 

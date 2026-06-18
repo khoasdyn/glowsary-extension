@@ -1,3 +1,7 @@
+## 2026-06-18 (saved words grid fix)
+
+- Fixed the Saved Words grid collapsing after changing a setting on the Settings tab and returning to Home. The masonry layout no longer runs while the Home tab is hidden (where cards measure as zero height), and it is recomputed whenever the Home tab becomes visible again, so the grid is always intact on return.
+
 ## 2026-06-18 (settings layout refinements)
 
 - Moved the "Add New" button in Excluded Sites from below the heading to the right side of the header row, vertically centered against the title and subtitle.

@@ -3,7 +3,7 @@ const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
   managementSort: "latest",
   autoGenerateLanguage: "en",
-  autoGenerateKeyMode: "shared",
+  autoGenerateCustomKeyEnabled: false,
   autoGenerateCustomKey: ""
 };
 
@@ -57,12 +57,16 @@ function renderSettings() {
 }
 
 function normalizeSettings(rawSettings = {}) {
+  // Keep this in step with the same function in options.js, including the FR-46s
+  // migration, so this context never resurrects the old key fields or clobbers the
+  // toggle and validated key when it re-saves settings.
+  const isLegacyKeySchema = "autoGenerateKeyMode" in rawSettings;
   return {
     highlightingEnabled: rawSettings.highlightingEnabled !== false,
     managementSort: rawSettings.managementSort === "az" ? "az" : "latest",
     autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en",
-    autoGenerateKeyMode: rawSettings.autoGenerateKeyMode === "custom" ? "custom" : "shared",
-    autoGenerateCustomKey: typeof rawSettings.autoGenerateCustomKey === "string" ? rawSettings.autoGenerateCustomKey : ""
+    autoGenerateCustomKeyEnabled: !isLegacyKeySchema && rawSettings.autoGenerateCustomKeyEnabled === true,
+    autoGenerateCustomKey: isLegacyKeySchema || typeof rawSettings.autoGenerateCustomKey !== "string" ? "" : rawSettings.autoGenerateCustomKey
   };
 }
 

@@ -6,9 +6,9 @@ const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
   managementSort: "latest",
   autoGenerateLanguage: "en",
-  // Which key auto-generate uses: the shared key built into the extension, or a custom
-  // Gemini key the user pastes in Settings (FR-46j to FR-46m). Defaults to shared.
-  autoGenerateKeyMode: "shared",
+  // Auto-generate key option (FR-46j to FR-46q). When the toggle is on and a validated
+  // key is stored, that key is used; in every other case the shared key is used.
+  autoGenerateCustomKeyEnabled: false,
   autoGenerateCustomKey: ""
 };
 const DEFINITION_MAX_LENGTH = 350;
@@ -119,20 +119,9 @@ async function callGemini(apiKey, prompt, maxOutputTokens) {
   return { ok: true, text };
 }
 
-// Resolve the API key for the active key option (FR-46j to FR-46m). Custom with no key
-// returns no-custom-key so the action points the user to Settings instead of falling
-// back to the shared key.
-async function resolveAutoGenerateKey() {
-  const config = globalThis.GlowsaryAutoGenerateConfig || {};
-  const settings = await getSettings();
-
-  if (settings.autoGenerateKeyMode === "custom") {
-    const customKey = String(settings.autoGenerateCustomKey || "").trim();
-    return customKey ? { key: customKey } : { error: "no-custom-key" };
-  }
-
-  const sharedKey = String(config.apiKey || "").trim();
-  return sharedKey ? { key: sharedKey } : { error: "missing-key" };
+// Trim a Gemini reply into a clean definition that respects the field limit (FR-46f).
+function cleanDefinition(text) {
+  return String(text || "").replace(/^["']+|["']+$/g, "").trim().slice(0, DEFINITION_MAX_LENGTH).trim();
 }
 
 async function generateDefinition(word, languageCode) {
@@ -143,24 +132,50 @@ async function generateDefinition(word, languageCode) {
     return { ok: false, error: "invalid-word" };
   }
 
-  const resolved = await resolveAutoGenerateKey();
-
-  if (!resolved.key) {
-    return { ok: false, error: resolved.error };
-  }
+  const settings = await getSettings();
+  const sharedKey = String(config.apiKey || "").trim();
+  const useCustomKey = settings.autoGenerateCustomKeyEnabled === true;
+  const customKey = useCustomKey ? String(settings.autoGenerateCustomKey || "").trim() : "";
 
   const languageName = config.languageNames?.[languageCode]
     || config.languageNames?.[config.defaultLanguage]
     || "English";
   const prompt = `Write a short dictionary-style definition of the word or phrase "${cleanWord}" in ${languageName}, for an English learner. Reply with only the definition itself: do not repeat the word, do not add quotes, labels, or extra notes. Keep it under 300 characters.`;
 
-  const result = await callGemini(resolved.key, prompt, 300);
+  // Try the validated custom key first; if it fails (revoked, quota, billing, offline),
+  // fall back to the shared key so the definition still generates, and tell the caller
+  // the key failed (FR-46q). With no validated custom key, use the shared key (FR-46m).
+  if (customKey) {
+    const customResult = await callGemini(customKey, prompt, 300);
+    const definition = customResult.ok ? cleanDefinition(customResult.text) : "";
+
+    if (definition) {
+      return { ok: true, definition };
+    }
+
+    if (sharedKey) {
+      const fallback = await callGemini(sharedKey, prompt, 300);
+      const fallbackDefinition = fallback.ok ? cleanDefinition(fallback.text) : "";
+
+      if (fallbackDefinition) {
+        return { ok: true, definition: fallbackDefinition, customKeyFailed: true };
+      }
+    }
+
+    return customResult.ok ? { ok: false, error: "empty" } : customResult;
+  }
+
+  if (!sharedKey) {
+    return { ok: false, error: "missing-key" };
+  }
+
+  const result = await callGemini(sharedKey, prompt, 300);
 
   if (!result.ok) {
     return result;
   }
 
-  const definition = String(result.text || "").replace(/^["']+|["']+$/g, "").trim().slice(0, DEFINITION_MAX_LENGTH).trim();
+  const definition = cleanDefinition(result.text);
 
   if (!definition) {
     return { ok: false, error: "empty" };

@@ -386,58 +386,73 @@ button {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--bg-primary-solid) 16%, var(--color-base-transparent));
 }
 
-.autogenerate-key-field {
-  display: grid;
+.autogenerate-key-title-row {
   gap: 12px;
-  margin-top: 16px;
 }
 
-.key-option {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text-primary);
-  font-size: var(--font-size-text-sm);
-  font-weight: var(--font-weight-medium);
-  line-height: var(--line-height-text-sm);
-  cursor: pointer;
+.autogenerate-key-toggle {
+  flex: 0 0 auto;
 }
 
-.key-option input {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  accent-color: var(--bg-primary-solid);
-  cursor: pointer;
+.autogenerate-key-tutorial-link {
+  color: inherit;
+  text-decoration: underline;
 }
 
 .autogenerate-custom-key {
   display: grid;
-  gap: 12px;
+  gap: var(--label-field-gap);
   margin-top: 16px;
-  max-width: 400px;
 }
 
 .autogenerate-custom-key[hidden] {
   display: none;
 }
 
-.autogenerate-key-save {
-  justify-self: start;
+.autogenerate-key-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.autogenerate-key-field {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.autogenerate-key-control {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-text-sm);
+}
+
+.autogenerate-key-control:read-only {
+  background: var(--bg-quaternary);
+  cursor: default;
+}
+
+.autogenerate-key-save,
+.autogenerate-key-delete {
+  flex: 0 0 auto;
+}
+
+.autogenerate-key-save[hidden],
+.autogenerate-key-delete[hidden] {
+  display: none;
 }
 
 .autogenerate-key-result {
   margin: 0;
   color: var(--text-tertiary);
-  font-size: var(--font-size-text-sm);
-  line-height: var(--line-height-text-sm);
+  font-size: var(--font-size-text-xs);
+  line-height: var(--line-height-text-xs);
   overflow-wrap: anywhere;
 }
 
-/* No success/positive role token exists in the design system yet, so a working key
-   reads in neutral primary text; flagged as design debt for the build output. */
 .autogenerate-key-result.is-success {
-  color: var(--text-primary);
+  color: var(--text-success-primary);
 }
 
 .autogenerate-key-result.is-error {

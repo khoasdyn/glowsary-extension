@@ -4,7 +4,7 @@
   // key: it only asks the background service worker to generate, then fills the field.
   const DEFINITION_MAX_LENGTH = 350;
   const FAILURE_MESSAGE = "Couldn't generate a definition. Please type it in.";
-  const NO_KEY_MESSAGE = "Add your Gemini key in Settings, or type the definition in.";
+  const KEY_FAILED_MESSAGE = "Your key didn't work, so the shared key was used.";
   const GENERATE_LABEL = "Generate";
   const LOADING_LABEL = "Generating…";
 
@@ -77,13 +77,19 @@
       setLoading(false);
 
       if (!result || !result.ok || !result.definition) {
-        setError(result?.error === "no-custom-key" ? NO_KEY_MESSAGE : FAILURE_MESSAGE);
+        setError(FAILURE_MESSAGE);
         return;
       }
 
       definitionInput.value = String(result.definition).slice(0, DEFINITION_MAX_LENGTH);
       definitionInput.dispatchEvent(new Event("input", { bubbles: true }));
       onFilled();
+
+      // The validated custom key failed at request time, so the shared key produced this
+      // definition; let the user know their key did not work (FR-46q).
+      if (result.customKeyFailed) {
+        setError(KEY_FAILED_MESSAGE);
+      }
     }
 
     button.addEventListener("click", (event) => {

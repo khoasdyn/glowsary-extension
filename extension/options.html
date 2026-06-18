@@ -104,30 +104,28 @@
         <section class="autogenerate-section autogenerate-key-section" aria-labelledby="autogenerate-key-heading">
           <div class="settings-section-header">
             <div class="settings-section-title-group">
-              <div class="settings-section-title-row">
-                <h2 id="autogenerate-key-heading">Auto-generate Key</h2>
+              <div class="settings-section-title-row autogenerate-key-title-row">
+                <h2 id="autogenerate-key-heading">Custom API Key</h2>
+                <span class="glowsary-switch-row glowsary-switch-row--md autogenerate-key-toggle">
+                  <input type="checkbox" id="autogenerate-key-toggle" role="switch" aria-label="Use a custom API key" />
+                </span>
               </div>
-              <p>Use the built-in shared key, or your own Gemini key.</p>
+              <p id="autogenerate-key-subtitle"></p>
             </div>
           </div>
-          <div class="autogenerate-key-field" role="radiogroup" aria-label="Auto-generate key">
-            <label class="key-option">
-              <input type="radio" name="autogenerate-key-mode" value="shared" />
-              <span class="key-option__label">Shared key</span>
-            </label>
-            <label class="key-option">
-              <input type="radio" name="autogenerate-key-mode" value="custom" />
-              <span class="key-option__label">My Gemini key</span>
-            </label>
-          </div>
           <div class="autogenerate-custom-key" id="autogenerate-custom-key" hidden>
-            <label class="field-input">
-              <span class="field-input__label">Gemini key</span>
-              <input class="field-input__control" id="autogenerate-key-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your Gemini API key" />
-            </label>
-            <button class="text-button text-button--default autogenerate-key-save" id="save-autogenerate-key" type="button">
-              <span class="text-button__label">Save key</span>
-            </button>
+            <div class="autogenerate-key-row">
+              <label class="field-input autogenerate-key-field">
+                <span class="visually-hidden">Gemini API key</span>
+                <input class="field-input__control autogenerate-key-control" id="autogenerate-key-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your Gemini API key" />
+              </label>
+              <button class="text-button text-button--default autogenerate-key-save" id="save-autogenerate-key" type="button">
+                <span class="text-button__label">Save</span>
+              </button>
+              <button class="text-button text-button--destructive autogenerate-key-delete" id="delete-autogenerate-key" type="button" hidden>
+                <span class="text-button__label">Delete</span>
+              </button>
+            </div>
             <p class="autogenerate-key-result" id="autogenerate-key-result" role="status" aria-live="polite" hidden></p>
           </div>
         </section>

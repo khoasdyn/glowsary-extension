@@ -1,3 +1,17 @@
+## 2026-06-18 (custom API key follow-up)
+
+- Switched the Custom API Key toggle to the small size (39×20) to match the alias toggle.
+- Tightened the gap between the title and toggle from 16px to 12px.
+- Made the subtitle state-dependent: toggle off shows "You're using the default key. See how to add your own key here." and toggle on shows "Only Gemini is supported for now. See how to add your own key here." — "here" links to the tutorial in both states.
+
+## 2026-06-18 (custom API key)
+
+- Redesigned the Auto-generate Key area in Settings into a "Custom API Key" section driven by a single toggle, replacing the old shared/custom radio choice. Off (the default) uses the built-in shared key; on lets the user save their own Gemini key. The subtitle now reads "You can use your own API key. Only Gemini is supported now. See the video tutorial here.", where "here" links to youtube.com in a new tab as a placeholder.
+- The section shows four states: toggle off (title, toggle, subtitle only); toggle on with no key (input with the "Paste your Gemini API key" placeholder and a Save button that stays disabled until there is text); toggle on with a typed key that failed the check (the text is kept, Save stays active, a red error shows below); and toggle on with a validated key (a read-only grey field showing the full key, a Delete action, and a green "You are using this key for auto-generate feature." message).
+- Save now checks the key first and only stores it if it passes; while checking, the button reads "Checking…" and the field is locked. A failed or unchecked key is never stored. Delete clears the key at once with no confirm, returning to the empty input with the toggle still on. Turning the toggle off keeps the saved key and switches auto-generate back to the shared key; turning it on again restores the key with no re-check.
+- Added runtime fallback: when a validated custom key is active but the generate request fails because of that key, the request retries with the shared key so the definition still appears, and a short "Your key didn't work, so the shared key was used." note shows. When the toggle is on with no validated key, auto-generate silently uses the shared key. Note: this fallback note reuses the existing definition message slot, so it currently shows in the red error style even though the definition was filled.
+- Migration: on update every existing user is reset to the toggle off and any previously stored custom key is discarded, applied consistently in the options, popup, and content settings so the old field is never written back. No design token value was added or changed; the stale "no success token exists" note in the key styles was removed since `--text-success-primary` now exists and is used for the success message.
+
 ## 2026-06-18 (button update)
 
 - Added `xs` size variant to the fill button: 32px tall, 16px horizontal padding, 16px icon — matching the Figma button component.

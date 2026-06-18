@@ -5,7 +5,9 @@ const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
   managementSort: "latest",
   autoGenerateLanguage: "en",
-  autoGenerateKeyMode: "shared",
+  // Whether auto-generate uses the user's own Gemini key (FR-46j). Off uses the shared
+  // key. autoGenerateCustomKey only ever holds a key that passed the check (FR-46p).
+  autoGenerateCustomKeyEnabled: false,
   autoGenerateCustomKey: ""
 };
 
@@ -55,10 +57,12 @@ const elements = {
   searchInput: document.querySelector("#search-input"),
   sortSelect: document.querySelector("#sort-select"),
   autogenerateLanguageSelect: document.querySelector("#autogenerate-language-select"),
-  autogenerateKeyRadios: Array.from(document.querySelectorAll('input[name="autogenerate-key-mode"]')),
+  autogenerateKeyToggle: document.querySelector("#autogenerate-key-toggle"),
+  autogenerateKeySubtitle: document.querySelector("#autogenerate-key-subtitle"),
   autogenerateCustomKey: document.querySelector("#autogenerate-custom-key"),
   autogenerateKeyInput: document.querySelector("#autogenerate-key-input"),
   saveAutogenerateKey: document.querySelector("#save-autogenerate-key"),
+  deleteAutogenerateKey: document.querySelector("#delete-autogenerate-key"),
   autogenerateKeyResult: document.querySelector("#autogenerate-key-result"),
   emptyState: document.querySelector("#empty-state"),
   entryList: document.querySelector("#entry-list"),
@@ -144,12 +148,16 @@ async function normalizeExcludedSitesToWholeSiteDomains(sites = []) {
 }
 
 function normalizeSettings(rawSettings = {}) {
+  const isLegacyKeySchema = "autoGenerateKeyMode" in rawSettings;
   return {
     highlightingEnabled: rawSettings.highlightingEnabled !== false,
     managementSort: rawSettings.managementSort === "az" ? "az" : "latest",
     autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en",
-    autoGenerateKeyMode: rawSettings.autoGenerateKeyMode === "custom" ? "custom" : "shared",
-    autoGenerateCustomKey: typeof rawSettings.autoGenerateCustomKey === "string" ? rawSettings.autoGenerateCustomKey : ""
+    // FR-46s migration: settings carrying the old "autoGenerateKeyMode" predate the
+    // toggle. Reset such users to the toggle off and discard any key stored under the
+    // old flow, since the new model only keeps a key that passed the check (FR-46p).
+    autoGenerateCustomKeyEnabled: !isLegacyKeySchema && rawSettings.autoGenerateCustomKeyEnabled === true,
+    autoGenerateCustomKey: isLegacyKeySchema || typeof rawSettings.autoGenerateCustomKey !== "string" ? "" : rawSettings.autoGenerateCustomKey
   };
 }
 
@@ -679,12 +687,56 @@ function renderSettings() {
   elements.sortSelect.value = settings.managementSort === "az" ? "az" : "latest";
   elements.autogenerateLanguageSelect.value = settings.autoGenerateLanguage === "vi" ? "vi" : "en";
 
-  const isCustomKey = settings.autoGenerateKeyMode === "custom";
-  for (const radio of elements.autogenerateKeyRadios) {
-    radio.checked = radio.value === (isCustomKey ? "custom" : "shared");
+  renderAutoGenerateKey();
+}
+
+const KEY_SUCCESS_MESSAGE = "You are using this key for auto-generate feature.";
+const KEY_SAVE_LABEL = "Save";
+const KEY_CHECKING_LABEL = "Checking…";
+const TUTORIAL_LINK = `<a class="autogenerate-key-tutorial-link" href="https://youtube.com" target="_blank" rel="noopener noreferrer">here</a>`;
+const KEY_SUBTITLE_OFF = `You're using the default key. See how to add your own key ${TUTORIAL_LINK}.`;
+const KEY_SUBTITLE_ON = `Only Gemini is supported for now. See how to add your own key ${TUTORIAL_LINK}.`;
+
+// Paint the Custom API Key section from settings (FR-46n). The validated key in settings
+// is the only persisted state; the typed-but-failed and loading states are transient and
+// set directly by the save flow, never from here.
+function renderAutoGenerateKey() {
+  const enabled = settings.autoGenerateCustomKeyEnabled === true;
+  elements.autogenerateKeyToggle.checked = enabled;
+  elements.autogenerateKeySubtitle.innerHTML = enabled ? KEY_SUBTITLE_ON : KEY_SUBTITLE_OFF;
+  elements.autogenerateCustomKey.hidden = !enabled;
+
+  if (!enabled) {
+    return;
   }
-  elements.autogenerateCustomKey.hidden = !isCustomKey;
-  elements.autogenerateKeyInput.value = settings.autoGenerateCustomKey || "";
+
+  const savedKey = settings.autoGenerateCustomKey || "";
+  keyCheckRequest += 1;
+  setKeySaveLabel(KEY_SAVE_LABEL);
+  elements.saveAutogenerateKey.disabled = false;
+
+  if (savedKey) {
+    elements.autogenerateKeyInput.value = savedKey;
+    elements.autogenerateKeyInput.readOnly = true;
+    elements.saveAutogenerateKey.hidden = true;
+    elements.deleteAutogenerateKey.hidden = false;
+    setKeyResult(KEY_SUCCESS_MESSAGE, "success");
+    return;
+  }
+
+  elements.autogenerateKeyInput.value = "";
+  elements.autogenerateKeyInput.readOnly = false;
+  elements.saveAutogenerateKey.hidden = false;
+  elements.deleteAutogenerateKey.hidden = true;
+  elements.saveAutogenerateKey.disabled = true;
+  hideKeyResult();
+}
+
+function setKeySaveLabel(label) {
+  const labelElement = elements.saveAutogenerateKey.querySelector(".text-button__label");
+  if (labelElement) {
+    labelElement.textContent = label;
+  }
 }
 
 function hideKeyResult() {
@@ -710,19 +762,20 @@ function keyErrorMessage(error) {
 
 let keyCheckRequest = 0;
 
+// Check the typed key with one request (FR-46l). Only a key that passes is stored, which
+// re-renders the section into the read-only validated view; a failed key is never saved.
 async function saveAutoGenerateKey() {
   const key = elements.autogenerateKeyInput.value.trim();
-  const requestId = ++keyCheckRequest;
-
-  await saveSettings({ ...settings, autoGenerateCustomKey: key });
 
   if (!key) {
-    hideKeyResult();
     return;
   }
 
-  setKeyResult("Checking your key…", "working");
+  const requestId = ++keyCheckRequest;
+  setKeySaveLabel(KEY_CHECKING_LABEL);
   elements.saveAutogenerateKey.disabled = true;
+  elements.autogenerateKeyInput.readOnly = true;
+  hideKeyResult();
 
   const result = await window.GlowsaryAutoGenerate?.checkKey?.(key);
 
@@ -730,14 +783,22 @@ async function saveAutoGenerateKey() {
     return;
   }
 
-  elements.saveAutogenerateKey.disabled = false;
-
   if (result?.ok) {
-    setKeyResult("Your key works.", "success");
+    await saveSettings({ ...settings, autoGenerateCustomKey: key });
     return;
   }
 
+  setKeySaveLabel(KEY_SAVE_LABEL);
+  elements.autogenerateKeyInput.readOnly = false;
+  elements.saveAutogenerateKey.disabled = false;
   setKeyResult(keyErrorMessage(result?.error), "error");
+}
+
+// Remove the validated key at once, no confirm and no undo (FR-46o), returning the
+// section to the empty input state with the toggle still on.
+async function deleteAutoGenerateKey() {
+  keyCheckRequest += 1;
+  await saveSettings({ ...settings, autoGenerateCustomKey: "" });
 }
 
 function getVisibleEntries() {
@@ -1078,23 +1139,23 @@ function bindEvents() {
       autoGenerateLanguage: elements.autogenerateLanguageSelect.value
     });
   });
-  for (const radio of elements.autogenerateKeyRadios) {
-    radio.addEventListener("change", () => {
-      if (!radio.checked) {
-        return;
-      }
-
-      keyCheckRequest += 1;
-      elements.saveAutogenerateKey.disabled = false;
-      hideKeyResult();
-      saveSettings({
-        ...settings,
-        autoGenerateKeyMode: radio.value
-      });
+  elements.autogenerateKeyToggle.addEventListener("change", () => {
+    keyCheckRequest += 1;
+    saveSettings({
+      ...settings,
+      autoGenerateCustomKeyEnabled: elements.autogenerateKeyToggle.checked
     });
-  }
-  elements.autogenerateKeyInput.addEventListener("input", hideKeyResult);
+  });
+  elements.autogenerateKeyInput.addEventListener("input", () => {
+    if (elements.autogenerateKeyInput.readOnly) {
+      return;
+    }
+
+    hideKeyResult();
+    elements.saveAutogenerateKey.disabled = elements.autogenerateKeyInput.value.trim() === "";
+  });
   elements.saveAutogenerateKey.addEventListener("click", saveAutoGenerateKey);
+  elements.deleteAutogenerateKey.addEventListener("click", deleteAutoGenerateKey);
 
   elements.addExcludedSite.addEventListener("click", showSiteDialog);
 

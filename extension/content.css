@@ -916,6 +916,40 @@
   object-fit: contain;
 }
 
+.glowsary-image-field__preview.is-error .glowsary-image-field__preview-img {
+  display: none;
+}
+
+.glowsary-image-field__preview-placeholder {
+  display: none;
+}
+
+.glowsary-image-field__preview.is-error .glowsary-image-field__preview-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.glowsary-image-field__preview-placeholder-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  background: var(--text-quaternary);
+  -webkit-mask: url("chrome-extension://__MSG_@@extension_id__/assets/alert-triangle.svg") center / contain no-repeat;
+  mask: url("chrome-extension://__MSG_@@extension_id__/assets/alert-triangle.svg") center / contain no-repeat;
+}
+
+.glowsary-image-field__preview-placeholder-text {
+  color: var(--text-quaternary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-text-xs);
+  text-align: center;
+}
+
 .glowsary-image-field__preview-overlay {
   position: absolute;
   inset: 0;
@@ -996,6 +1030,40 @@
 
 .glowsary-popup__media.is-loading .glowsary-popup__media-img {
   visibility: hidden;
+}
+
+.glowsary-popup__media.is-error .glowsary-popup__media-img {
+  display: none;
+}
+
+.glowsary-popup__media-placeholder {
+  display: none;
+}
+
+.glowsary-popup__media.is-error .glowsary-popup__media-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.glowsary-popup__media-placeholder-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  background: var(--text-quaternary);
+  -webkit-mask: url("chrome-extension://__MSG_@@extension_id__/assets/alert-triangle.svg") center / contain no-repeat;
+  mask: url("chrome-extension://__MSG_@@extension_id__/assets/alert-triangle.svg") center / contain no-repeat;
+}
+
+.glowsary-popup__media-placeholder-text {
+  color: var(--text-quaternary);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-text-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-text-xs);
+  text-align: center;
 }
 
 .glowsary-popup__media-skeleton {

@@ -736,14 +736,28 @@
     mediaImg.className = "glowsary-popup__media-img";
     mediaImg.alt = "";
     mediaImg.decoding = "async";
-    media.append(mediaSkeleton, mediaImg);
+
+    const mediaPlaceholder = document.createElement("div");
+    mediaPlaceholder.className = "glowsary-popup__media-placeholder";
+
+    const mediaPlaceholderIcon = document.createElement("span");
+    mediaPlaceholderIcon.className = "glowsary-popup__media-placeholder-icon";
+    mediaPlaceholderIcon.setAttribute("aria-hidden", "true");
+
+    const mediaPlaceholderText = document.createElement("span");
+    mediaPlaceholderText.className = "glowsary-popup__media-placeholder-text";
+    mediaPlaceholderText.textContent = "Error loading this image.";
+
+    mediaPlaceholder.append(mediaPlaceholderIcon, mediaPlaceholderText);
+    media.append(mediaSkeleton, mediaImg, mediaPlaceholder);
 
     mediaImg.addEventListener("load", () => {
       media.classList.remove("is-loading");
     });
     mediaImg.addEventListener("error", () => {
-      media.hidden = true;
+      // A saved image that no longer loads shows the error placeholder, never an empty box (FR-45g).
       media.classList.remove("is-loading");
+      media.classList.add("is-error");
     });
 
     const definition = document.createElement("div");
@@ -954,12 +968,13 @@
 
       if (image?.src) {
         media.hidden = false;
+        media.classList.remove("is-error");
         media.classList.add("is-loading");
         mediaImg.removeAttribute("src");
         mediaImg.src = image.src;
       } else {
         media.hidden = true;
-        media.classList.remove("is-loading");
+        media.classList.remove("is-loading", "is-error");
         mediaImg.removeAttribute("src");
       }
     }

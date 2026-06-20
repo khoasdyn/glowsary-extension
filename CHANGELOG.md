@@ -1,3 +1,9 @@
+## 2026-06-20 (image error placeholder)
+
+- A saved image that no longer loads now shows an error placeholder instead of disappearing: a centered warning icon above the muted text "Error loading this image.", filling the same image box. It appears in all three places an image shows: the definition popup, the word card, and the edit form.
+- In the edit form, the placeholder behaves like any set image: hovering it reveals the delete overlay, so the user can remove the broken image and add another. The popup and card placeholders stay display-only.
+- The add-time link check is unchanged: a link that fails when pasted still shows a message below the field and leaves it empty, never the placeholder.
+
 ## 2026-06-18 (release 1.4.0)
 
 - Bumped the extension manifest version to 1.4.0 for the Chrome Web Store release.

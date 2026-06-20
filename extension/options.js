@@ -930,14 +930,29 @@ function createEntryCard(entry) {
     mediaImg.className = "entry-card-media-img";
     mediaImg.alt = "";
     mediaImg.decoding = "async";
-    media.append(mediaSkeleton, mediaImg);
+
+    const mediaPlaceholder = document.createElement("div");
+    mediaPlaceholder.className = "entry-card-media-placeholder";
+
+    const mediaPlaceholderIcon = document.createElement("span");
+    mediaPlaceholderIcon.className = "entry-card-media-placeholder-icon";
+    mediaPlaceholderIcon.setAttribute("aria-hidden", "true");
+
+    const mediaPlaceholderText = document.createElement("span");
+    mediaPlaceholderText.className = "entry-card-media-placeholder-text";
+    mediaPlaceholderText.textContent = "Error loading this image.";
+
+    mediaPlaceholder.append(mediaPlaceholderIcon, mediaPlaceholderText);
+    media.append(mediaSkeleton, mediaImg, mediaPlaceholder);
 
     mediaImg.addEventListener("load", () => {
       media.classList.remove("is-loading");
       scheduleEntryGridLayout();
     });
     mediaImg.addEventListener("error", () => {
-      media.remove();
+      // A saved image that no longer loads shows the error placeholder, never an empty box (FR-45g).
+      media.classList.remove("is-loading");
+      media.classList.add("is-error");
       scheduleEntryGridLayout();
     });
 

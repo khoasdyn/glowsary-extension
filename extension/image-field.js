@@ -165,6 +165,22 @@
       className: className(prefix, "image-field__preview-img"),
       attributes: { alt: "", decoding: "async" }
     });
+    // An edited entry whose saved image no longer loads shows the error placeholder in place of the
+    // image, while the hover delete overlay still works so the broken image can be removed (FR-45g).
+    previewImg.addEventListener("error", () => {
+      preview.classList.add("is-error");
+    });
+    const previewPlaceholder = createElement(doc, "div", {
+      className: className(prefix, "image-field__preview-placeholder")
+    });
+    previewPlaceholder.append(createElement(doc, "span", {
+      className: className(prefix, "image-field__preview-placeholder-icon"),
+      attributes: { "aria-hidden": "true" }
+    }));
+    previewPlaceholder.append(createElement(doc, "span", {
+      className: className(prefix, "image-field__preview-placeholder-text"),
+      textContent: "Error loading this image."
+    }));
     const previewOverlay = createElement(doc, "span", {
       className: className(prefix, "image-field__preview-overlay"),
       attributes: { "aria-hidden": "true" }
@@ -178,7 +194,7 @@
       attributes: { "aria-hidden": "true" }
     }));
     previewOverlay.append(removeButton);
-    preview.append(previewImg, previewOverlay);
+    preview.append(previewImg, previewPlaceholder, previewOverlay);
 
     const error = createElement(doc, "p", {
       className: `${className(prefix, "field-input__hint")} ${className(prefix, "image-field__error")}`,
@@ -249,6 +265,8 @@
     }
 
     function renderPreview(value) {
+      // Reset the error state before trying a new image, so a recovered link shows the real image.
+      preview.classList.remove("is-error");
       previewImg.src = value.src;
       preview.hidden = false;
       dropzone.hidden = true;

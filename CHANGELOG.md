@@ -1,3 +1,11 @@
+## 2026-06-20 (image link in CSV backup)
+
+- The CSV backup now carries the color and image-link columns it was always meant to have, so it is five columns by position: term, definition, aliases, color, and image link. Color was previously dropped on export and ignored on import; it now survives a round trip.
+- A linked image is saved to the backup as its URL and comes back as a linked image on import. A locally imported picture is not included, so its word returns with no image after an export and import; the picture itself is untouched in the user's own browser.
+- Export now shows a short note that linked images are saved and imported pictures are not included, so the user knows what the file holds.
+- Import reads the image link without any network check, so it stays offline and fast; a link that no longer works simply shows the error placeholder when the entry is later viewed. Color and the image link are not part of duplicate detection, so re-importing a backup never doubles the list or changes an existing entry.
+- Older backups still import by position: a four-column file (no image link) comes in with no image, and a three-column file (no color and no image link) comes in with the default color and no image.
+
 ## 2026-06-20 (image error placeholder)
 
 - A saved image that no longer loads now shows an error placeholder instead of disappearing: a centered warning icon above the muted text "Error loading this image.", filling the same image box. It appears in all three places an image shows: the definition popup, the word card, and the edit form.

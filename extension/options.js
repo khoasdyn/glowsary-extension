@@ -207,7 +207,11 @@ function serializeEntriesToCsv(savedEntries) {
   return savedEntries.map((entry) => [
     entry.displayTerm || entry.term || "",
     entry.definition || "",
-    formatAliases(entry.aliases)
+    formatAliases(entry.aliases),
+    window.GlowsaryColorPicker?.normalizeColor?.(entry.color) || "purple",
+    // FR-45i: only a linked image travels in the backup, as its URL. A local image
+    // (or no image) exports as an empty cell, the same as a word with no image.
+    entry.image && entry.image.type === "link" ? entry.image.src || "" : ""
   ].map(quoteCsvField).join(",")).join("\r\n");
 }
 
@@ -632,7 +636,9 @@ function downloadCsv(csvText) {
 
 function exportEntriesToCsv() {
   downloadCsv(serializeEntriesToCsv(entries));
-  showToast(`Exported ${entries.length} ${entries.length === 1 ? "entry" : "entries"}.`);
+  // FR-34/FR-45i: tell the user what images the backup carries, regardless of whether
+  // they actually have any images, since the note describes export in general.
+  showToast(`Exported ${entries.length} ${entries.length === 1 ? "entry" : "entries"}. Linked images are saved; imported pictures are not included.`);
 }
 
 function readFileAsText(file) {
@@ -661,7 +667,11 @@ async function importEntriesFromFile(file) {
   let invalidCount = 0;
 
   for (const row of rows) {
-    if (row.length < 2 || row.length > 3) {
+    // Read by position: term, definition, aliases, color, image link (FR-35, FR-36).
+    // Older backups still line up: a four-column row has no image link, and a
+    // three-column row has neither color nor image link. More than five columns is
+    // malformed and skipped (FR-36c).
+    if (row.length < 2 || row.length > 5) {
       invalidCount += 1;
       continue;
     }
@@ -673,11 +683,18 @@ async function importEntriesFromFile(file) {
       continue;
     }
 
+    // FR-36: a missing or unknown color falls back to the default; a non-empty image
+    // link is restored as a linked image without any fetch or check, and an empty
+    // cell means no image (FR-45i). A link that no longer works shows the error
+    // placeholder only when the entry is later viewed (FR-45g).
+    const imageSrc = String(row[4] || "").trim();
     const nextEntry = {
       term: validation.normalizedTerm,
       displayTerm: validation.cleanTerm,
       definition: validation.cleanDefinition,
       aliases: validation.aliases,
+      color: window.GlowsaryColorPicker?.normalizeColor?.(row[3]) || "purple",
+      ...(imageSrc ? { image: { type: "link", src: imageSrc } } : {}),
       createdAt: importTime
     };
     const duplicateKey = getDuplicateKey(nextEntry);

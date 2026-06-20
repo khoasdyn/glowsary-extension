@@ -5,13 +5,16 @@ const SETTINGS_KEY = "glowsarySettings";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
   managementSort: "latest",
-  autoGenerateLanguage: "en",
   // Auto-generate key option (FR-46j to FR-46q). When the toggle is on and a validated
   // key is stored, that key is used; in every other case the shared key is used.
   autoGenerateCustomKeyEnabled: false,
   autoGenerateCustomKey: ""
 };
 const DEFINITION_MAX_LENGTH = 350;
+// The built-in Auto-generate Prompt (FR-46h), used as the fallback when a request arrives
+// with no prompt. The pages keep their own copy in auto-generate.js; the service worker
+// does not load that file, so it holds the prompt here.
+const DEFAULT_PROMPT = "Write a short dictionary-style definition of the word or phrase in Vietnamese, for an English learner. Reply with only the definition itself: do not repeat the word, do not add quotes, labels, or extra notes. Keep it under 300 characters.";
 const ON_ICON_PATHS = {
   16: "icons/icon-16.png",
   32: "icons/icon-32.png",
@@ -124,7 +127,7 @@ function cleanDefinition(text) {
   return String(text || "").replace(/^["']+|["']+$/g, "").trim().slice(0, DEFINITION_MAX_LENGTH).trim();
 }
 
-async function generateDefinition(word, languageCode) {
+async function generateDefinition(word, promptText) {
   const config = globalThis.GlowsaryAutoGenerateConfig || {};
   const cleanWord = String(word || "").trim();
 
@@ -137,10 +140,10 @@ async function generateDefinition(word, languageCode) {
   const useCustomKey = settings.autoGenerateCustomKeyEnabled === true;
   const customKey = useCustomKey ? String(settings.autoGenerateCustomKey || "").trim() : "";
 
-  const languageName = config.languageNames?.[languageCode]
-    || config.languageNames?.[config.defaultLanguage]
-    || "English";
-  const prompt = `Write a short dictionary-style definition of the word or phrase "${cleanWord}" in ${languageName}, for an English learner. Reply with only the definition itself: do not repeat the word, do not add quotes, labels, or extra notes. Keep it under 300 characters.`;
+  // The user's Auto-generate Prompt is the instruction (FR-46d); the word travels with it
+  // (FR-46c). A missing or blank prompt falls back to the default so the action still works.
+  const instruction = String(promptText || "").trim() || DEFAULT_PROMPT;
+  const prompt = `${instruction}\n\nWord or phrase: "${cleanWord}"`;
 
   // Try the validated custom key first; if it fails (revoked, quota, billing, offline),
   // fall back to the shared key so the definition still generates, and tell the caller
@@ -200,7 +203,7 @@ async function checkCustomKey(key) {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.type === "GLOWSARY_GENERATE_DEFINITION") {
-    generateDefinition(message.word, message.language).then(sendResponse);
+    generateDefinition(message.word, message.prompt).then(sendResponse);
     return true;
   }
 

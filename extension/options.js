@@ -1,10 +1,17 @@
 const ENTRIES_KEY = "glowsaryEntries";
 const SETTINGS_KEY = "glowsarySettings";
 const EXCLUDED_SITES_KEY = "glowsaryExcludedSites";
+// The built-in Auto-generate Prompt (FR-46h), read from the shared client so the pages
+// keep one copy. The literal is a safety net if the client has not loaded yet.
+const DEFAULT_PROMPT = window.GlowsaryAutoGenerate?.DEFAULT_PROMPT
+  || "Write a short dictionary-style definition of the word or phrase in Vietnamese, for an English learner. Reply with only the definition itself: do not repeat the word, do not add quotes, labels, or extra notes. Keep it under 300 characters.";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
   managementSort: "latest",
-  autoGenerateLanguage: "en",
+  // The interface language (FR-40a). English is the only option for now.
+  appLanguage: "en",
+  // The user's Auto-generate Prompt (FR-46h), defaulting to the built-in prompt.
+  autoGeneratePrompt: DEFAULT_PROMPT,
   // Whether auto-generate uses the user's own Gemini key (FR-46j). Off uses the shared
   // key. autoGenerateCustomKey only ever holds a key that passed the check (FR-46p).
   autoGenerateCustomKeyEnabled: false,
@@ -56,7 +63,12 @@ const elements = {
   addExcludedSite: document.querySelector("#add-excluded-site"),
   searchInput: document.querySelector("#search-input"),
   sortSelect: document.querySelector("#sort-select"),
-  autogenerateLanguageSelect: document.querySelector("#autogenerate-language-select"),
+  appLanguageSelect: document.querySelector("#app-language-select"),
+  autogeneratePromptInput: document.querySelector("#autogenerate-prompt-input"),
+  editAutogeneratePrompt: document.querySelector("#edit-autogenerate-prompt"),
+  resetAutogeneratePrompt: document.querySelector("#reset-autogenerate-prompt"),
+  cancelAutogeneratePrompt: document.querySelector("#cancel-autogenerate-prompt"),
+  saveAutogeneratePrompt: document.querySelector("#save-autogenerate-prompt"),
   autogenerateKeyToggle: document.querySelector("#autogenerate-key-toggle"),
   autogenerateKeySubtitle: document.querySelector("#autogenerate-key-subtitle"),
   autogenerateCustomKey: document.querySelector("#autogenerate-custom-key"),
@@ -152,7 +164,11 @@ function normalizeSettings(rawSettings = {}) {
   return {
     highlightingEnabled: rawSettings.highlightingEnabled !== false,
     managementSort: rawSettings.managementSort === "az" ? "az" : "latest",
-    autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en",
+    appLanguage: typeof rawSettings.appLanguage === "string" && rawSettings.appLanguage ? rawSettings.appLanguage : "en",
+    // FR-46v: a settings object with no stored prompt (every existing user on update, or
+    // anyone whose prompt was blank) falls back to the default, so everyone starts from the
+    // same default and any earlier auto-generate language choice is simply dropped.
+    autoGeneratePrompt: typeof rawSettings.autoGeneratePrompt === "string" && rawSettings.autoGeneratePrompt.trim() ? rawSettings.autoGeneratePrompt : DEFAULT_PROMPT,
     // FR-46s migration: settings carrying the old "autoGenerateKeyMode" predate the
     // toggle. Reset such users to the toggle off and discard any key stored under the
     // old flow, since the new model only keeps a key that passed the check (FR-46p).
@@ -464,7 +480,7 @@ function initEntryGenerate() {
     button: entryForm?.generateButton,
     termInput: elements.termInput,
     definitionInput: elements.definitionInput,
-    getLanguage: () => settings.autoGenerateLanguage,
+    getPrompt: () => settings.autoGeneratePrompt,
     setError: (message) => setDefinitionHint(message),
     onFilled: () => syncEntrySaveState()
   });
@@ -717,9 +733,63 @@ async function importEntriesFromFile(file) {
 
 function renderSettings() {
   elements.sortSelect.value = settings.managementSort === "az" ? "az" : "latest";
-  elements.autogenerateLanguageSelect.value = settings.autoGenerateLanguage === "vi" ? "vi" : "en";
+  elements.appLanguageSelect.value = "en";
 
+  renderAutoGeneratePrompt();
   renderAutoGenerateKey();
+}
+
+// The Auto-generate Prompt section has two modes (FR-46u). This is its read-only baseline:
+// the field shows the saved prompt and only Edit and Reset are visible. Editing is local
+// UI state and never persists until Save, so every settings render returns here.
+let isEditingPrompt = false;
+
+function setPromptEditing(editing) {
+  isEditingPrompt = editing;
+  elements.autogeneratePromptInput.readOnly = !editing;
+  elements.editAutogeneratePrompt.hidden = editing;
+  elements.resetAutogeneratePrompt.hidden = editing;
+  elements.cancelAutogeneratePrompt.hidden = !editing;
+  elements.saveAutogeneratePrompt.hidden = !editing;
+}
+
+// Save is blocked while the field is empty or only spaces, so a blank prompt can never
+// be saved (FR-46u).
+function syncPromptSaveState() {
+  elements.saveAutogeneratePrompt.disabled = elements.autogeneratePromptInput.value.trim() === "";
+}
+
+function renderAutoGeneratePrompt() {
+  elements.autogeneratePromptInput.value = settings.autoGeneratePrompt;
+  setPromptEditing(false);
+  syncPromptSaveState();
+}
+
+function startEditingPrompt() {
+  setPromptEditing(true);
+  syncPromptSaveState();
+  elements.autogeneratePromptInput.focus();
+}
+
+// Cancel discards any unsaved change and restores the last saved prompt (FR-46u).
+function cancelEditingPrompt() {
+  elements.autogeneratePromptInput.value = settings.autoGeneratePrompt;
+  setPromptEditing(false);
+}
+
+async function savePrompt() {
+  const value = elements.autogeneratePromptInput.value;
+
+  if (!value.trim()) {
+    return;
+  }
+
+  await saveSettings({ ...settings, autoGeneratePrompt: value });
+}
+
+// Reset restores the built-in prompt at once, no confirmation (FR-46u).
+async function resetPrompt() {
+  await saveSettings({ ...settings, autoGeneratePrompt: DEFAULT_PROMPT });
 }
 
 const KEY_SUCCESS_MESSAGE = "You are using this key for auto-generate feature.";
@@ -1188,11 +1258,22 @@ function bindEvents() {
     });
     renderEntries();
   });
-  elements.autogenerateLanguageSelect.addEventListener("change", () => {
+  elements.appLanguageSelect.addEventListener("change", () => {
     saveSettings({
       ...settings,
-      autoGenerateLanguage: elements.autogenerateLanguageSelect.value
+      appLanguage: elements.appLanguageSelect.value
     });
+  });
+  elements.editAutogeneratePrompt.addEventListener("click", startEditingPrompt);
+  elements.cancelAutogeneratePrompt.addEventListener("click", cancelEditingPrompt);
+  elements.saveAutogeneratePrompt.addEventListener("click", savePrompt);
+  elements.resetAutogeneratePrompt.addEventListener("click", resetPrompt);
+  elements.autogeneratePromptInput.addEventListener("input", () => {
+    if (!isEditingPrompt) {
+      return;
+    }
+
+    syncPromptSaveState();
   });
   elements.autogenerateKeyToggle.addEventListener("change", () => {
     keyCheckRequest += 1;

@@ -2,10 +2,13 @@
   const ENTRIES_KEY = "glowsaryEntries";
   const SETTINGS_KEY = "glowsarySettings";
   const EXCLUDED_SITES_KEY = "glowsaryExcludedSites";
+  const DEFAULT_PROMPT = window.GlowsaryAutoGenerate?.DEFAULT_PROMPT
+    || "Write a short dictionary-style definition of the word or phrase in Vietnamese, for an English learner. Reply with only the definition itself: do not repeat the word, do not add quotes, labels, or extra notes. Keep it under 300 characters.";
   const DEFAULT_SETTINGS = {
     highlightingEnabled: true,
     managementSort: "latest",
-    autoGenerateLanguage: "en",
+    appLanguage: "en",
+    autoGeneratePrompt: DEFAULT_PROMPT,
     autoGenerateCustomKeyEnabled: false,
     autoGenerateCustomKey: ""
   };
@@ -298,7 +301,11 @@
     return {
       highlightingEnabled: rawSettings.highlightingEnabled !== false,
       managementSort: rawSettings.managementSort === "az" ? "az" : "latest",
-      autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en",
+      appLanguage: typeof rawSettings.appLanguage === "string" && rawSettings.appLanguage ? rawSettings.appLanguage : "en",
+      // FR-46v: a settings object with no stored prompt (every existing user on update, or
+      // anyone whose prompt was blank) falls back to the default, so everyone starts from
+      // the same default and any earlier auto-generate language choice is simply dropped.
+      autoGeneratePrompt: typeof rawSettings.autoGeneratePrompt === "string" && rawSettings.autoGeneratePrompt.trim() ? rawSettings.autoGeneratePrompt : DEFAULT_PROMPT,
       autoGenerateCustomKeyEnabled: !isLegacyKeySchema && rawSettings.autoGenerateCustomKeyEnabled === true,
       autoGenerateCustomKey: isLegacyKeySchema || typeof rawSettings.autoGenerateCustomKey !== "string" ? "" : rawSettings.autoGenerateCustomKey
     };
@@ -1417,7 +1424,7 @@
       button: formParts.generateButton,
       termInput,
       definitionInput,
-      getLanguage: () => settings.autoGenerateLanguage,
+      getPrompt: () => settings.autoGeneratePrompt,
       setError: (message) => setDefinitionHint(message),
       onFilled: () => {
         clearSaveError();

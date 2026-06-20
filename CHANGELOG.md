@@ -1,3 +1,10 @@
+## 2026-06-20 (app language selector and auto-generate prompt)
+
+- The Settings tab now opens with a Language section that sets the language of Glowsary's own interface. English is the only option for now; the choice is saved and restored, but with only English available, picking it has no visible effect yet.
+- The old "Auto-generate Language" dropdown is replaced by an "Auto-generate Prompt" section: a single multi-line field holding the instruction sent with each word you generate. It controls the style, tone, and language of the result, so there is no separate language setting anymore.
+- The field is read-only by default, showing the current prompt with Reset and Edit buttons. Edit makes it editable and swaps the buttons to Cancel and Save (Reset hides while editing). Save stores the text and is blocked while the field is blank; Cancel throws away the unsaved change; Reset puts the default prompt back at once.
+- On update, everyone is reset to the default prompt and any earlier auto-generate language choice is dropped, so the auto-generate action now follows the stored prompt instead of a language code. The default prompt produces a short Vietnamese definition for an English learner; a generated definition still respects the 350-character limit no matter what the prompt asks for.
+
 ## 2026-06-20 (image link in CSV backup)
 
 - The CSV backup now carries the color and image-link columns it was always meant to have, so it is five columns by position: term, definition, aliases, color, and image link. Color was previously dropped on export and ignored on import; it now survives a round trip.

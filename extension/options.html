@@ -68,6 +68,23 @@
       </section>
 
       <section class="management-tab-panel" id="management-panel-settings" role="tabpanel" aria-labelledby="management-tab-settings" data-tab-panel="settings" hidden>
+        <section class="language-section" aria-labelledby="language-heading">
+          <div class="settings-section-header settings-section-header--with-action">
+            <div class="settings-section-title-group">
+              <div class="settings-section-title-row">
+                <h2 id="language-heading">Language</h2>
+              </div>
+              <p>The language Glowsary's interface is shown in.</p>
+            </div>
+            <label class="sort-field app-language-field">
+              <span class="visually-hidden">App language</span>
+              <select id="app-language-select">
+                <option value="en">English</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
         <section class="excluded-section" aria-labelledby="excluded-heading">
           <div class="settings-section-header settings-section-header--with-action">
             <div class="settings-section-title-group">
@@ -83,22 +100,33 @@
           <div class="excluded-list" id="excluded-list"></div>
         </section>
 
-        <section class="autogenerate-section" aria-labelledby="autogenerate-heading">
+        <section class="autogenerate-section autogenerate-prompt-section" aria-labelledby="autogenerate-prompt-heading">
           <div class="settings-section-header settings-section-header--with-action">
             <div class="settings-section-title-group">
               <div class="settings-section-title-row">
-                <h2 id="autogenerate-heading">Auto-generate Language</h2>
+                <h2 id="autogenerate-prompt-heading">Auto-generate Prompt</h2>
               </div>
-              <p>The language used when you auto-generate a definition.</p>
+              <p>The instruction sent with each word you generate. Make it any style, tone, or language you want.</p>
             </div>
-            <label class="sort-field autogenerate-language-field">
-              <span class="visually-hidden">Auto-generate language</span>
-              <select id="autogenerate-language-select">
-                <option value="en">English</option>
-                <option value="vi">Vietnamese</option>
-              </select>
-            </label>
+            <div class="autogenerate-prompt-actions">
+              <button class="text-button text-button--secondary autogenerate-prompt-action" id="reset-autogenerate-prompt" type="button">
+                <span class="text-button__label">Reset</span>
+              </button>
+              <button class="text-button text-button--default autogenerate-prompt-action" id="edit-autogenerate-prompt" type="button">
+                <span class="text-button__label">Edit</span>
+              </button>
+              <button class="text-button text-button--secondary autogenerate-prompt-action" id="cancel-autogenerate-prompt" type="button" hidden>
+                <span class="text-button__label">Cancel</span>
+              </button>
+              <button class="text-button text-button--default autogenerate-prompt-action" id="save-autogenerate-prompt" type="button" hidden>
+                <span class="text-button__label">Save</span>
+              </button>
+            </div>
           </div>
+          <label class="autogenerate-prompt-field">
+            <span class="visually-hidden">Auto-generate prompt</span>
+            <textarea class="autogenerate-prompt-control" id="autogenerate-prompt-input" readonly></textarea>
+          </label>
         </section>
 
         <section class="autogenerate-section autogenerate-key-section" aria-labelledby="autogenerate-key-heading">

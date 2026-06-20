@@ -1,8 +1,13 @@
 const SETTINGS_KEY = "glowsarySettings";
+// The built-in Auto-generate Prompt (FR-46h). The popup does not edit it, but its
+// normalizeSettings re-saves the whole settings object, so it must carry the prompt
+// through unchanged rather than dropping it.
+const DEFAULT_PROMPT = "Write a short dictionary-style definition of the word or phrase in Vietnamese, for an English learner. Reply with only the definition itself: do not repeat the word, do not add quotes, labels, or extra notes. Keep it under 300 characters.";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
   managementSort: "latest",
-  autoGenerateLanguage: "en",
+  appLanguage: "en",
+  autoGeneratePrompt: DEFAULT_PROMPT,
   autoGenerateCustomKeyEnabled: false,
   autoGenerateCustomKey: ""
 };
@@ -64,7 +69,10 @@ function normalizeSettings(rawSettings = {}) {
   return {
     highlightingEnabled: rawSettings.highlightingEnabled !== false,
     managementSort: rawSettings.managementSort === "az" ? "az" : "latest",
-    autoGenerateLanguage: rawSettings.autoGenerateLanguage === "vi" ? "vi" : "en",
+    appLanguage: typeof rawSettings.appLanguage === "string" && rawSettings.appLanguage ? rawSettings.appLanguage : "en",
+    // FR-46v: keep the stored prompt as-is, falling back to the default only when none is
+    // saved, so opening or toggling from the popup never wipes the user's prompt.
+    autoGeneratePrompt: typeof rawSettings.autoGeneratePrompt === "string" && rawSettings.autoGeneratePrompt.trim() ? rawSettings.autoGeneratePrompt : DEFAULT_PROMPT,
     autoGenerateCustomKeyEnabled: !isLegacyKeySchema && rawSettings.autoGenerateCustomKeyEnabled === true,
     autoGenerateCustomKey: isLegacyKeySchema || typeof rawSettings.autoGenerateCustomKey !== "string" ? "" : rawSettings.autoGenerateCustomKey
   };

@@ -14,7 +14,7 @@ const DEFINITION_MAX_LENGTH = 350;
 // The built-in Auto-generate Prompt (FR-46h), used as the fallback when a request arrives
 // with no prompt. The pages keep their own copy in auto-generate.js; the service worker
 // does not load that file, so it holds the prompt here.
-const DEFAULT_PROMPT = "Write a short dictionary-style definition of the word or phrase in Vietnamese, for an English learner. Reply with only the definition itself: do not repeat the word, do not add quotes, labels, or extra notes. Keep it under 300 characters.";
+const DEFAULT_PROMPT = "Write a short dictionary-style definition of the word or phrase in Vietnamese, for an English learner. Reply with only the definition itself: do not repeat the word, do not add quotes, labels, or extra notes. Keep it under 350 characters.";
 const ON_ICON_PATHS = {
   16: "icons/icon-16.png",
   32: "icons/icon-32.png",

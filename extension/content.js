@@ -49,13 +49,13 @@
 
   const CONTENT_FONT_FACES = [
     ["Glowsary Copse", "fonts/Copse/Copse-Regular.ttf", 400],
-    ["Glowsary Poppins", "fonts/Poppins/Poppins-Regular.ttf", 400],
-    ["Glowsary Poppins", "fonts/Poppins/Poppins-Medium.ttf", 500],
-    ["Glowsary Poppins", "fonts/Poppins/Poppins-SemiBold.ttf", 600]
+    ["Glowsary Google Sans Flex", "fonts/GoogleSansFlex/GoogleSansFlex_24pt-Regular.ttf", 400],
+    ["Glowsary Google Sans Flex", "fonts/GoogleSansFlex/GoogleSansFlex_24pt-Medium.ttf", 500],
+    ["Glowsary Google Sans Flex", "fonts/GoogleSansFlex/GoogleSansFlex_24pt-SemiBold.ttf", 600]
   ];
   const CONTENT_TYPOGRAPHY_OVERRIDE_CSS = `:root {
   --font-family-heading: "Glowsary Copse", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-family-body: "Glowsary Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-family-body: "Glowsary Google Sans Flex", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }`;
 
   function installContentTypographyOverrides() {

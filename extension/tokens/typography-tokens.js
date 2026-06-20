@@ -6,7 +6,7 @@
     },
     Body: {
       cssName: "--font-family-body",
-      value: "\"Poppins\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+      value: "\"Google Sans Flex\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
     }
   };
 

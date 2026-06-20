@@ -1,3 +1,10 @@
+## 2026-06-20 (body font switched to Google Sans Flex)
+
+- The body font changes from Poppins to Google Sans Flex across the whole extension: the in-page UI, the toolbar popup, and the options view. Titles still use the Copse serif. Google Sans Flex was chosen because it covers Vietnamese fully, so definitions now show correct tone marks and đ/Đ.
+- Three new font files ship at the 24pt optical size: Google Sans Flex Regular, Medium, and SemiBold (about 390 KB total). The variable font and all other optical sizes are not included. All Poppins files and references are removed.
+- A new named text style, Word Definition, is added (body font, regular, text-sm size and line height) and applied to the definition sentence in the in-page popup and on the word card. It matches Body Text's values for now but is its own style so definition text can change later.
+- The in-page popup definition now renders at 14px to match the Figma Word Definition style; it was previously 12px. The word card definition is unchanged.
+
 ## 2026-06-20 (default prompt character count fix)
 
 - The built-in Auto-generate Prompt now says "Keep it under 350 characters" everywhere. The earlier update had only changed it in the background service worker, so the options page still showed and used the old "300" wording. All copies now match the 350-character limit the rest of the app already uses.

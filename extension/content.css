@@ -17,7 +17,7 @@
 
 .glowsary-popup {
   --font-family-heading: "Glowsary Copse", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-family-body: "Glowsary Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-family-body: "Glowsary Google Sans Flex", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   position: fixed;
   z-index: 2147483647;
@@ -147,10 +147,10 @@
 .glowsary-popup-definition {
   width: 100%;
   color: var(--wc-subtext);
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-text-xs);
-  font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-text-xs);
+  font-family: var(--text-style-word-definition-font-family);
+  font-size: var(--text-style-word-definition-font-size);
+  font-weight: var(--text-style-word-definition-font-weight);
+  line-height: var(--text-style-word-definition-line-height);
   overflow: visible;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -244,7 +244,7 @@
 
 .glowsary-dialog {
   --font-family-heading: "Glowsary Copse", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-family-body: "Glowsary Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-family-body: "Glowsary Google Sans Flex", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   display: flex;
   flex: 1 1 auto;

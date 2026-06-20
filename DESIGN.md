@@ -27,11 +27,11 @@ Sync rule: when the user shares a Figma link or asks for a check, Claude reads F
 
 ## Typography
 
-Two font families: Copse is the heading font, a serif, used for titles. Poppins is the body font, used for body text and all UI controls.
+Two font families: Copse is the heading font, a serif, used for titles. Google Sans Flex is the body font, used for body text and all UI controls; it is chosen for its full Vietnamese coverage.
 
 The exact type values live as tokens, generated from the Figma type scale. There are four token groups: font size (named `--font-size-{step}`, with steps `text-xs` through `display-2xl`), line height (named `--line-height-{step}`, with the same steps), font family, and font weight. The code references these tokens and never writes a raw size or line height.
 
-Font files that ship: Copse Regular (400), Poppins Regular (400), Poppins Medium (500), and Poppins SemiBold (600). Bold (700) and all italic styles exist as tokens in Figma but have no font file, so the UI must not use them yet. Copse ships only Regular, so every title renders at weight 400; heading strength comes from size, not from bold weight.
+Font files that ship: Copse Regular (400), and Google Sans Flex Regular (400), Medium (500), and SemiBold (600) at the 24pt optical size. Only these three static Google Sans Flex files ship; the variable font and every other optical-size bucket are not included. Bold (700) and all italic styles exist as tokens in Figma but have no font file, so the UI must not use them yet. Copse ships only Regular, so every title renders at weight 400; heading strength comes from size, not from bold weight.
 
 Named text styles, taken from Figma. Each one is a font family, a weight, a size token, and the matching line height token:
 
@@ -39,7 +39,8 @@ Named text styles, taken from Figma. Each one is a font family, a weight, a size
 2. Section Title: heading font, regular, the `display-xs` size and line height. Section headings and dialog titles.
 3. Card Title: heading font, regular, the `text-lg` size and line height. The saved word shown on a card.
 4. Subtitle Page: body font, regular, the `text-md` size and line height. The subtitle line under a page title.
-5. Body Text: body font, regular, the `text-sm` size and line height. Body text, definitions, input values, and list text.
+5. Body Text: body font, regular, the `text-sm` size and line height. Body text, input values, and list text.
+6. Word Definition: body font, regular, the `text-sm` size and line height. The definition sentence in the in-page popup and on a word card. It shares Body Text's values but is its own named style, so definition text can change on its own later.
 
 Text that is not a named style uses the scale tokens directly: field labels and button text use the body font at the `text-sm` size with medium weight; hints and helper text use the body font at the `text-xs` size; alias chips use the heading font at the `text-xs` size. These may become named styles later if Figma adds them.
 

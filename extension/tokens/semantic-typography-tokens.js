@@ -34,6 +34,13 @@
       fontWeight: "--font-weight-regular",
       fontSize: "--font-size-text-sm",
       lineHeight: "--line-height-text-sm"
+    },
+    wordDefinition: {
+      cssPrefix: "--text-style-word-definition",
+      fontFamily: "--font-family-body",
+      fontWeight: "--font-weight-regular",
+      fontSize: "--font-size-text-sm",
+      lineHeight: "--line-height-text-sm"
     }
   };
 

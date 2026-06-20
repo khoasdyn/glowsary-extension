@@ -7,24 +7,24 @@
 }
 
 @font-face {
-  font-family: "Poppins";
-  src: url("fonts/Poppins/Poppins-Regular.ttf") format("truetype");
+  font-family: "Google Sans Flex";
+  src: url("fonts/GoogleSansFlex/GoogleSansFlex_24pt-Regular.ttf") format("truetype");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Poppins";
-  src: url("fonts/Poppins/Poppins-Medium.ttf") format("truetype");
+  font-family: "Google Sans Flex";
+  src: url("fonts/GoogleSansFlex/GoogleSansFlex_24pt-Medium.ttf") format("truetype");
   font-style: normal;
   font-weight: 500;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Poppins";
-  src: url("fonts/Poppins/Poppins-SemiBold.ttf") format("truetype");
+  font-family: "Google Sans Flex";
+  src: url("fonts/GoogleSansFlex/GoogleSansFlex_24pt-SemiBold.ttf") format("truetype");
   font-style: normal;
   font-weight: 600;
   font-display: swap;
@@ -833,10 +833,10 @@ button {
   width: 100%;
   min-height: 0;
   color: currentColor;
-  font-family: var(--text-style-body-text-font-family);
-  font-size: var(--font-size-text-sm);
-  font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-text-sm);
+  font-family: var(--text-style-word-definition-font-family);
+  font-size: var(--text-style-word-definition-font-size);
+  font-weight: var(--text-style-word-definition-font-weight);
+  line-height: var(--text-style-word-definition-line-height);
   overflow-wrap: anywhere;
 }
 

@@ -44,9 +44,9 @@
         "assets/volume-max.svg",
         "assets/x-close.svg",
         "fonts/Copse/Copse-Regular.ttf",
-        "fonts/Poppins/Poppins-Regular.ttf",
-        "fonts/Poppins/Poppins-Medium.ttf",
-        "fonts/Poppins/Poppins-SemiBold.ttf"
+        "fonts/GoogleSansFlex/GoogleSansFlex_24pt-Regular.ttf",
+        "fonts/GoogleSansFlex/GoogleSansFlex_24pt-Medium.ttf",
+        "fonts/GoogleSansFlex/GoogleSansFlex_24pt-SemiBold.ttf"
       ],
       "matches": ["<all_urls>"]
     }

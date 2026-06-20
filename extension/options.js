@@ -748,7 +748,9 @@ function setPromptEditing(editing) {
   isEditingPrompt = editing;
   elements.autogeneratePromptInput.readOnly = !editing;
   elements.editAutogeneratePrompt.hidden = editing;
-  elements.resetAutogeneratePrompt.hidden = editing;
+  // Reset only makes sense in the read-only view and only when the saved prompt
+  // differs from the default, so there is actually something to reset (FR-46u).
+  elements.resetAutogeneratePrompt.hidden = editing || settings.autoGeneratePrompt.trim() === DEFAULT_PROMPT.trim();
   elements.cancelAutogeneratePrompt.hidden = !editing;
   elements.saveAutogeneratePrompt.hidden = !editing;
 }

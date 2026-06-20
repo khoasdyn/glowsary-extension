@@ -1,3 +1,7 @@
+## 2026-06-20 (Reset button hidden when prompt is default)
+
+- In the Auto-generate Prompt section, the Reset button now appears only when your saved prompt differs from the default. When the prompt already equals the default (including right after a Reset), Reset is hidden, since there is nothing to reset. It still stays hidden while editing, where Cancel and Save take over.
+
 ## 2026-06-20 (body font switched to Google Sans Flex)
 
 - The body font changes from Poppins to Google Sans Flex across the whole extension: the in-page UI, the toolbar popup, and the options view. Titles still use the Copse serif. Google Sans Flex was chosen because it covers Vietnamese fully, so definitions now show correct tone marks and đ/Đ.

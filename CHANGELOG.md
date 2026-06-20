@@ -1,3 +1,7 @@
+## 2026-06-20 (default prompt character count fix)
+
+- The built-in Auto-generate Prompt now says "Keep it under 350 characters" everywhere. The earlier update had only changed it in the background service worker, so the options page still showed and used the old "300" wording. All copies now match the 350-character limit the rest of the app already uses.
+
 ## 2026-06-20 (app language selector and auto-generate prompt)
 
 - The Settings tab now opens with a Language section that sets the language of Glowsary's own interface. English is the only option for now; the choice is saved and restored, but with only English available, picking it has no visible effect yet.

@@ -6,7 +6,7 @@
   // The built-in Auto-generate Prompt (FR-46h). Used as the default for a new user and as
   // the fallback when no prompt is provided. Frontends (options.js, content.js) read it
   // from here so there is one copy for the pages; the service worker keeps its own copy.
-  const DEFAULT_PROMPT = "Write a short dictionary-style definition of the word or phrase in Vietnamese, for an English learner. Reply with only the definition itself: do not repeat the word, do not add quotes, labels, or extra notes. Keep it under 300 characters.";
+  const DEFAULT_PROMPT = "Write a short dictionary-style definition of the word or phrase in Vietnamese, for an English learner. Reply with only the definition itself: do not repeat the word, do not add quotes, labels, or extra notes. Keep it under 350 characters.";
   // Plain-language failure hint per cause (FR-46i). The keys are the internal codes
   // returned by the background service worker; only the values are ever shown to the
   // user, so the cause stays debuggable from the code while the UI stays human.

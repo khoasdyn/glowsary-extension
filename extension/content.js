@@ -3,7 +3,7 @@
   const SETTINGS_KEY = "glowsarySettings";
   const EXCLUDED_SITES_KEY = "glowsaryExcludedSites";
   const DEFAULT_PROMPT = window.GlowsaryAutoGenerate?.DEFAULT_PROMPT
-    || "Write a short dictionary-style definition of the word or phrase in Vietnamese, for an English learner. Reply with only the definition itself: do not repeat the word, do not add quotes, labels, or extra notes. Keep it under 300 characters.";
+    || "Write a short dictionary-style definition of the word or phrase in Vietnamese, for an English learner. Reply with only the definition itself: do not repeat the word, do not add quotes, labels, or extra notes. Keep it under 350 characters.";
   const DEFAULT_SETTINGS = {
     highlightingEnabled: true,
     managementSort: "latest",

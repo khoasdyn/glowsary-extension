@@ -2,7 +2,7 @@ const SETTINGS_KEY = "glowsarySettings";
 // The built-in Auto-generate Prompt (FR-46h). The popup does not edit it, but its
 // normalizeSettings re-saves the whole settings object, so it must carry the prompt
 // through unchanged rather than dropping it.
-const DEFAULT_PROMPT = "Write a short dictionary-style definition of the word or phrase in Vietnamese, for an English learner. Reply with only the definition itself: do not repeat the word, do not add quotes, labels, or extra notes. Keep it under 300 characters.";
+const DEFAULT_PROMPT = "Write a short dictionary-style definition of the word or phrase in Vietnamese, for an English learner. Reply with only the definition itself: do not repeat the word, do not add quotes, labels, or extra notes. Keep it under 350 characters.";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
   managementSort: "latest",

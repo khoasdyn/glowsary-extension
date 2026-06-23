@@ -1,5 +1,8 @@
 ## 2026-06-23
 
+- Made on-page highlighting re-scan only the part of the page that changed instead of re-walking the whole document body on every DOM mutation, so dynamic sites stay responsive. Same highlights, just less work.
+- Compiled each saved word's and alias's search pattern once when the word list loads or changes and reused it across all text on the page, instead of rebuilding patterns for every block of text. No change to what gets matched.
+- Slimmed color-tokens.js from ~2940 to ~450 lines by storing only the hex for opaque colors and keeping the full data only for the non-opaque ones. The injected color variables and their values are byte-for-byte identical.
 - Embedded the API key tutorial video directly below the key field in Settings, as a full-width 16:9 native YouTube player loaded through youtube-nocookie.com. The old "here" link in the subtitle is removed and the subtitle now reads "Only Gemini is supported for now. Watch the tutorial below.".
 - Fixed the embedded tutorial video failing with "Error 153" inside the extension: a declarativeNetRequest rule now sets a valid Referer on that one embed's frame request, scoped to the tutorial video only, so YouTube allows it to play. This adds the declarativeNetRequestWithHostAccess permission, reusing the host access the extension already has.
 - Swapped the embedded API key tutorial to the new video and updated the referer rule to match it, so the new tutorial plays without the Error 153 fix breaking.

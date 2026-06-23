@@ -31,12 +31,14 @@
   ]);
 
   let entries = [];
+  let compiledMatchers = [];
   let settings = { ...DEFAULT_SETTINGS };
   let excludedSites = [];
   let currentSiteDomain = null;
   let observer = null;
   let suppressMutations = false;
   let highlightTimer = 0;
+  let pendingHighlightRoots = new Set();
   let popupCloseTimer = 0;
   let activePopup = null;
   let activeDialog = null;
@@ -414,17 +416,40 @@
       .join("\\s+");
   }
 
-  function findMatches(text) {
-    const candidates = [];
-
-    for (const entry of entries) {
+  // Build each saved word's and alias's search pattern once, here, instead of
+  // rebuilding them for every text node inside findMatches. The compiled list is
+  // refreshed whenever the saved word list changes so matching always reflects
+  // the current words.
+  function setEntries(nextEntries) {
+    entries = Array.isArray(nextEntries) ? nextEntries : [];
+    compiledMatchers = entries.map((entry) => {
       const sources = [
         { term: entry.term, displayTerm: entry.displayTerm, isAlias: false },
         ...normalizeAliasList(entry.aliases).map((alias) => ({ ...alias, isAlias: true }))
       ].filter((source) => source.term);
 
-      for (const source of sources) {
-        const regex = new RegExp(buildPattern(source.term), "gi");
+      return {
+        entry,
+        sources: sources.map((source) => ({
+          term: source.term,
+          displayTerm: source.displayTerm,
+          isAlias: source.isAlias,
+          regex: new RegExp(buildPattern(source.term), "gi")
+        }))
+      };
+    });
+  }
+
+  function findMatches(text) {
+    const candidates = [];
+
+    for (const matcher of compiledMatchers) {
+      for (const source of matcher.sources) {
+        const regex = source.regex;
+        // The compiled patterns are reused across every text node, so reset the
+        // stateful global regex before each scan or it would resume from the
+        // position the previous text node left it at.
+        regex.lastIndex = 0;
         let match;
 
         while ((match = regex.exec(text)) !== null) {
@@ -437,7 +462,7 @@
               end,
               length: end - start,
               priority: source.isAlias ? 0 : 1,
-              entry,
+              entry: matcher.entry,
               source
             });
           }
@@ -561,12 +586,31 @@
     }
   }
 
-  function scheduleHighlight() {
+  function scheduleHighlight(root = document.body) {
+    if (root) {
+      pendingHighlightRoots.add(root);
+    }
+
     window.clearTimeout(highlightTimer);
     highlightTimer = window.setTimeout(() => {
-      highlightRoot(document.body);
+      const roots = drainPendingHighlightRoots();
+
+      for (const node of roots) {
+        highlightRoot(node);
+      }
+
       revealPopupUnderPointer();
     }, 80);
+  }
+
+  // Scan only the nodes that actually changed in this batch. Drop any node that
+  // left the DOM before the batched pass runs, and drop any node already covered
+  // by an ancestor in the same batch so no subtree is walked twice.
+  function drainPendingHighlightRoots() {
+    const roots = [...pendingHighlightRoots].filter((node) => node?.isConnected);
+    pendingHighlightRoots = new Set();
+
+    return roots.filter((node) => !roots.some((other) => other !== node && other.contains?.(node)));
   }
 
   function removeHighlights(root = document) {
@@ -1134,7 +1178,7 @@
     const nextEntries = currentEntries.concat(nextEntry).sort((a, b) => a.displayTerm.localeCompare(b.displayTerm));
 
     await persistEntries(nextEntries);
-    entries = nextEntries;
+    setEntries(nextEntries);
     refreshHighlights();
   }
 
@@ -1180,7 +1224,7 @@
       .sort((a, b) => a.displayTerm.localeCompare(b.displayTerm));
 
     await persistEntries(nextEntries);
-    entries = nextEntries;
+    setEntries(nextEntries);
     refreshHighlights();
   }
 
@@ -1194,7 +1238,7 @@
     const nextEntries = entries.filter((entry, index) => index !== targetIndex);
 
     await storage.set({ [ENTRIES_KEY]: nextEntries });
-    entries = nextEntries;
+    setEntries(nextEntries);
     refreshHighlights();
   }
 
@@ -1481,7 +1525,7 @@
       [EXCLUDED_SITES_KEY]: []
     });
 
-    entries = Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY].map(normalizeEntry) : [];
+    setEntries(Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY].map(normalizeEntry) : []);
     settings = normalizeSettings(result[SETTINGS_KEY] || {});
     excludedSites = await normalizeExcludedSitesToWholeSiteDomains(result[EXCLUDED_SITES_KEY]);
     currentSiteDomain = await window.GlowsaryDomains?.getWholeSiteDomainFromInput?.(window.location.hostname);
@@ -1510,7 +1554,7 @@
       }
 
       if (changes[ENTRIES_KEY]) {
-        entries = Array.isArray(changes[ENTRIES_KEY].newValue) ? changes[ENTRIES_KEY].newValue.map(normalizeEntry) : [];
+        setEntries(Array.isArray(changes[ENTRIES_KEY].newValue) ? changes[ENTRIES_KEY].newValue.map(normalizeEntry) : []);
       }
 
       if (changes[SETTINGS_KEY]) {

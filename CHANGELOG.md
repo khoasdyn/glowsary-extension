@@ -2,6 +2,7 @@
 
 - Embedded the API key tutorial video directly below the key field in Settings, as a full-width 16:9 native YouTube player loaded through youtube-nocookie.com. The old "here" link in the subtitle is removed and the subtitle now reads "Only Gemini is supported for now. Watch the tutorial below.".
 - Fixed the embedded tutorial video failing with "Error 153" inside the extension: a declarativeNetRequest rule now sets a valid Referer on that one embed's frame request, scoped to the tutorial video only, so YouTube allows it to play. This adds the declarativeNetRequestWithHostAccess permission, reusing the host access the extension already has.
+- Swapped the embedded API key tutorial to the new video and updated the referer rule to match it, so the new tutorial plays without the Error 153 fix breaking.
 - Removed the shared auto-generate key; auto-generate now runs only on the user's own Gemini key.
 - Renamed the "Custom API Key" settings section to "API Key" and removed its toggle, so the key field is always shown.
 - Clicking Generate with no key saved now shows a hint to add a Gemini API key in Settings.

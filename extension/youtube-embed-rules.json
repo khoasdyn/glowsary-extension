@@ -10,7 +10,7 @@
     },
     "condition": {
       "requestDomains": ["youtube.com", "youtube-nocookie.com"],
-      "urlFilter": "/embed/YMmi7SJO23I",
+      "urlFilter": "/embed/Lo7QzellQtk",
       "resourceTypes": ["sub_frame"]
     }
   }

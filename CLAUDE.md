@@ -59,7 +59,7 @@ These steps run once the user has pasted an approved plan back and Claude starts
 
 ## After building
 
-1. Update CHANGELOG.md: add a short entry under today's date, one readable line per change, in plain language. Say what changed; do not retell what PRD.md already covers. Add new entries on top. Do not rewrite past entries.
+1. Update CHANGELOG.md: add entries under today's date. The heading is the date only (for example "## 2026-06-23"), with no title or summary in parentheses, because several unrelated changes can ship the same day. Write one short, concise line per change that just tracks what changed, like "Adjusted the Add Site dialog so empty fields show no validation error until the user types an invalid site." Do not retell what PRD.md already covers; the CHANGELOG is a change log, not a second copy of the PRD. Add new entries on top. Do not rewrite past entries.
 2. Give a short commit message for the change (one line, present tense, for example "Add definition popup hover trigger").
 
 ## Working from Figma

@@ -1,103 +1,58 @@
-## 2026-06-23 (auto-generate uses your own API key only)
+## 2026-06-23
 
-- Auto-generate no longer ships a shared key inside the extension. It now runs only on your own Gemini API key, which fixes the recurring "The key was rejected." failures that came from a public, repeatedly blocked shared key.
-- The Settings section is renamed from "Custom API Key" to "API Key" and its on/off toggle is removed. The key field is always visible, with one subtitle: "Only Gemini is supported for now. See the video tutorial here." The "here" video link is unchanged.
-- Clicking Generate with no key saved now shows "Auto-generate isn't set up yet. Add your Gemini API key in Settings." instead of silently using a shared key. This guidance shows only for the no-key case; a saved key that fails keeps its own message, with no fallback.
-- On update, a key you had already saved keeps working and now always powers auto-generate. If you were relying on the old shared key, auto-generate is off until you add your own key.
+- Removed the shared auto-generate key; auto-generate now runs only on the user's own Gemini key.
+- Renamed the "Custom API Key" settings section to "API Key" and removed its toggle, so the key field is always shown.
+- Clicking Generate with no key saved now shows a hint to add a Gemini API key in Settings.
+- On update, an already-saved key keeps working; users who relied on the shared key must add their own.
 
-## 2026-06-20 (Reset button hidden when prompt is default)
+## 2026-06-20
 
 - In the Auto-generate Prompt section, the Reset button now appears only when your saved prompt differs from the default. When the prompt already equals the default (including right after a Reset), Reset is hidden, since there is nothing to reset. It still stays hidden while editing, where Cancel and Save take over.
-
-## 2026-06-20 (body font switched to Google Sans Flex)
-
 - The body font changes from Poppins to Google Sans Flex across the whole extension: the in-page UI, the toolbar popup, and the options view. Titles still use the Copse serif. Google Sans Flex was chosen because it covers Vietnamese fully, so definitions now show correct tone marks and đ/Đ.
 - Three new font files ship at the 24pt optical size: Google Sans Flex Regular, Medium, and SemiBold (about 390 KB total). The variable font and all other optical sizes are not included. All Poppins files and references are removed.
 - A new named text style, Word Definition, is added (body font, regular, text-sm size and line height) and applied to the definition sentence in the in-page popup and on the word card. It matches Body Text's values for now but is its own style so definition text can change later.
 - The in-page popup definition now renders at 14px to match the Figma Word Definition style; it was previously 12px. The word card definition is unchanged.
-
-## 2026-06-20 (default prompt character count fix)
-
 - The built-in Auto-generate Prompt now says "Keep it under 350 characters" everywhere. The earlier update had only changed it in the background service worker, so the options page still showed and used the old "300" wording. All copies now match the 350-character limit the rest of the app already uses.
-
-## 2026-06-20 (app language selector and auto-generate prompt)
-
 - The Settings tab now opens with a Language section that sets the language of Glowsary's own interface. English is the only option for now; the choice is saved and restored, but with only English available, picking it has no visible effect yet.
 - The old "Auto-generate Language" dropdown is replaced by an "Auto-generate Prompt" section: a single multi-line field holding the instruction sent with each word you generate. It controls the style, tone, and language of the result, so there is no separate language setting anymore.
 - The field is read-only by default, showing the current prompt with Reset and Edit buttons. Edit makes it editable and swaps the buttons to Cancel and Save (Reset hides while editing). Save stores the text and is blocked while the field is blank; Cancel throws away the unsaved change; Reset puts the default prompt back at once.
 - On update, everyone is reset to the default prompt and any earlier auto-generate language choice is dropped, so the auto-generate action now follows the stored prompt instead of a language code. The default prompt produces a short Vietnamese definition for an English learner; a generated definition still respects the 350-character limit no matter what the prompt asks for.
-
-## 2026-06-20 (image link in CSV backup)
-
 - The CSV backup now carries the color and image-link columns it was always meant to have, so it is five columns by position: term, definition, aliases, color, and image link. Color was previously dropped on export and ignored on import; it now survives a round trip.
 - A linked image is saved to the backup as its URL and comes back as a linked image on import. A locally imported picture is not included, so its word returns with no image after an export and import; the picture itself is untouched in the user's own browser.
 - Export now shows a short note that linked images are saved and imported pictures are not included, so the user knows what the file holds.
 - Import reads the image link without any network check, so it stays offline and fast; a link that no longer works simply shows the error placeholder when the entry is later viewed. Color and the image link are not part of duplicate detection, so re-importing a backup never doubles the list or changes an existing entry.
 - Older backups still import by position: a four-column file (no image link) comes in with no image, and a three-column file (no color and no image link) comes in with the default color and no image.
-
-## 2026-06-20 (image error placeholder)
-
 - A saved image that no longer loads now shows an error placeholder instead of disappearing: a centered warning icon above the muted text "Error loading this image.", filling the same image box. It appears in all three places an image shows: the definition popup, the word card, and the edit form.
 - In the edit form, the placeholder behaves like any set image: hovering it reveals the delete overlay, so the user can remove the broken image and add another. The popup and card placeholders stay display-only.
 - The add-time link check is unchanged: a link that fails when pasted still shows a message below the field and leaves it empty, never the placeholder.
 
-## 2026-06-18 (release 1.4.0)
+## 2026-06-18
 
 - Bumped the extension manifest version to 1.4.0 for the Chrome Web Store release.
 - Updated the store listing copy and README to promote the two new features in this release: AI auto-generate definitions (with an optional custom Gemini key) and adding an image to a saved word.
-
-## 2026-06-18 (auto-generate failure messages)
-
 - The auto-generate definition hint now names the real cause in plain words instead of one generic line: "The daily limit was reached.", "The key was rejected.", "Can't reach the service.", and so on. The user sees only the plain message; the internal cause code stays in the code for debugging.
-
-## 2026-06-18 (custom key tutorial link)
-
 - The "here" tutorial link in the Custom API Key section now opens the real tutorial video (https://youtu.be/YMmi7SJO23I) instead of the placeholder YouTube home page.
-
-## 2026-06-18 (add card height + custom key toggle reset)
-
 - Gave the "Add New Word" card a fixed 120px height so it never grows or shrinks with content, matching the Figma design.
 - The Custom API Key toggle now resets to off whenever it would otherwise be on with no validated key saved: on page load/refresh and when the user switches away from the Settings tab. A saved validated key is never affected.
-
-## 2026-06-18 (saved words grid fix)
-
 - Fixed the Saved Words grid collapsing after changing a setting on the Settings tab and returning to Home. The masonry layout no longer runs while the Home tab is hidden (where cards measure as zero height), and it is recomputed whenever the Home tab becomes visible again, so the grid is always intact on return.
-
-## 2026-06-18 (settings layout refinements)
-
 - Moved the "Add New" button in Excluded Sites from below the heading to the right side of the header row, vertically centered against the title and subtitle.
 - Moved the Auto-generate Language dropdown onto the same row as its heading, on the right side, instead of sitting below it.
 - Increased the spacing between settings sections from 32px to the `--section-gap` token (64px).
 - Updated the shared dropdown (Auto-generate Language and the Home "Sort" dropdown): fixed 200px width, 20px horizontal padding, chevron 20px from the right edge, and 16px Medium label text (was 14px).
 - On narrow screens both the "Add New" button and the language dropdown stack full width below their headings.
-
-## 2026-06-18 (custom API key follow-up)
-
 - Switched the Custom API Key toggle to the small size (39×20) to match the alias toggle.
 - Tightened the gap between the title and toggle from 16px to 12px.
 - Made the subtitle state-dependent: toggle off shows "You're using the default key. See how to add your own key here." and toggle on shows "Only Gemini is supported for now. See how to add your own key here." — "here" links to the tutorial in both states.
-
-## 2026-06-18 (custom API key)
-
 - Redesigned the Auto-generate Key area in Settings into a "Custom API Key" section driven by a single toggle, replacing the old shared/custom radio choice. Off (the default) uses the built-in shared key; on lets the user save their own Gemini key. The subtitle now reads "You can use your own API key. Only Gemini is supported now. See the video tutorial here.", where "here" links to youtube.com in a new tab as a placeholder.
 - The section shows four states: toggle off (title, toggle, subtitle only); toggle on with no key (input with the "Paste your Gemini API key" placeholder and a Save button that stays disabled until there is text); toggle on with a typed key that failed the check (the text is kept, Save stays active, a red error shows below); and toggle on with a validated key (a read-only grey field showing the full key, a Delete action, and a green "You are using this key for auto-generate feature." message).
 - Save now checks the key first and only stores it if it passes; while checking, the button reads "Checking…" and the field is locked. A failed or unchecked key is never stored. Delete clears the key at once with no confirm, returning to the empty input with the toggle still on. Turning the toggle off keeps the saved key and switches auto-generate back to the shared key; turning it on again restores the key with no re-check.
 - Added runtime fallback: when a validated custom key is active but the generate request fails because of that key, the request retries with the shared key so the definition still appears, and a short "Your key didn't work, so the shared key was used." note shows. When the toggle is on with no validated key, auto-generate silently uses the shared key. Note: this fallback note reuses the existing definition message slot, so it currently shows in the red error style even though the definition was filled.
 - Migration: on update every existing user is reset to the toggle off and any previously stored custom key is discarded, applied consistently in the options, popup, and content settings so the old field is never written back. No design token value was added or changed; the stale "no success token exists" note in the key styles was removed since `--text-success-primary` now exists and is used for the success message.
-
-## 2026-06-18 (button update)
-
 - Added `xs` size variant to the fill button: 32px tall, 16px horizontal padding, 16px icon — matching the Figma button component.
 - Fixed the disabled state: all button kinds now go to 50% opacity when disabled, instead of overriding to a gray background with white text.
-
-## 2026-06-18 (token sync)
-
 - Added `--text-success-primary` semantic color token (Green/700, #15803D) from the Figma Semantic Colors export.
 - Added `--card-gap` spacing token (16px) from the Figma Spacing export.
 - Renamed the `--label-field` spacing token to `--label-field-gap` to match the Figma Spacing export name.
-
-## 2026-06-18
-
 - Redesigned the Definition field's auto-generate action into a special gradient "Generate" button, in both the in-page Add/Edit form and the Management panel. It is renamed from "Auto-generate" to "Generate", shown as a fully-rounded pink-to-purple gradient pill with white text and the new `star-06` sparkle icon on its right. On hover (when active) the button lifts slightly, glows in soft pink/purple, the gradient shimmers, and the star rotates and grows — a catchy, premium feel. The accessible name stays "Generate definition". No generate behavior changed: it still unlocks at 3+ characters, sends only the word, shows "Generating…" while it runs, and falls back to manual typing on failure.
 - Added a new Gradient token category in `tokens/gradient-tokens.js` with `--gradient-generate` (linear-gradient from #fa71cd to #c471f5), taken from the Figma "Gradient/Linear/58" style (node 555:3337). The file is loaded everywhere the other token files are. Flagged: this is the first gradient token and a new design value introduced with this build; the hover glow uses a `color-mix` of the existing fuchsia and purple primitives, and the disabled (muted) and loading (spinning star) looks are build defaults since Figma shows only the active state. Listed `star-06.svg` as a web-accessible resource so the in-page form can load it.
 - Redesigned the image field in the Add/Edit form (in-page form and Management panel) and moved it directly below the Definition field, so the field order is now Word, Definition, Image, Alias, Color, with keyboard tabbing following the same order. The empty field shows a clean drop box (a photo icon and the "PNG, JPEG or WEBP, up to 5MB" hint only, with the old wording removed) above a paste-link row: a single-line input and a round dark submit button. The link now loads only when the submit button or Enter is pressed, never on every keystroke, and the button stays faded and inactive until the input has text. Drag, click-to-browse, and paste of a local file still work.

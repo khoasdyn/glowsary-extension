@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Glowsary: Build Your Vocabulary as You Read Online",
   "short_name": "Glowsary",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Highlight your saved vocabulary across the web and reveal your own definitions on demand.",
   "permissions": ["contextMenus", "storage", "tabs"],
   "host_permissions": ["<all_urls>"],

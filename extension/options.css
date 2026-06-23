@@ -406,10 +406,6 @@ button {
   gap: 12px;
 }
 
-.autogenerate-key-toggle {
-  flex: 0 0 auto;
-}
-
 .autogenerate-key-tutorial-link {
   color: inherit;
   text-decoration: underline;
@@ -419,10 +415,6 @@ button {
   display: grid;
   gap: var(--label-field-gap);
   margin-top: 16px;
-}
-
-.autogenerate-custom-key[hidden] {
-  display: none;
 }
 
 .autogenerate-key-row {

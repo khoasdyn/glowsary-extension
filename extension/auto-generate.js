@@ -19,13 +19,12 @@
     "http-404": "The AI model is unavailable.",
     "bad-response": "The reply couldn't be read.",
     empty: "No definition came back.",
-    "missing-key": "Auto-generate isn't set up yet.",
+    "missing-key": "Auto-generate isn't set up yet. Add your Gemini API key in Settings.",
     runtime: "Something went wrong."
   };
   // Shown for any 5xx status and for any code not in the map above.
   const SERVICE_ERROR_MESSAGE = "The service is having trouble.";
   const FAILURE_MESSAGE = "Couldn't generate a definition.";
-  const KEY_FAILED_MESSAGE = "Your key didn't work, so the shared key was used.";
   const GENERATE_LABEL = "Generate";
   const LOADING_LABEL = "Generating…";
 
@@ -121,12 +120,6 @@
       definitionInput.value = String(result.definition).slice(0, DEFINITION_MAX_LENGTH);
       definitionInput.dispatchEvent(new Event("input", { bubbles: true }));
       onFilled();
-
-      // The validated custom key failed at request time, so the shared key produced this
-      // definition; let the user know their key did not work (FR-46q).
-      if (result.customKeyFailed) {
-        setError(KEY_FAILED_MESSAGE);
-      }
     }
 
     button.addEventListener("click", (event) => {

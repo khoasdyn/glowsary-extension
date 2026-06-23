@@ -5,9 +5,8 @@ const SETTINGS_KEY = "glowsarySettings";
 const DEFAULT_SETTINGS = {
   highlightingEnabled: true,
   managementSort: "latest",
-  // Auto-generate key option (FR-46j to FR-46q). When the toggle is on and a validated
-  // key is stored, that key is used; in every other case the shared key is used.
-  autoGenerateCustomKeyEnabled: false,
+  // Auto-generate runs only on the user's own Gemini key (FR-46j). Empty until the user
+  // saves a key that passed the check (FR-46p); there is no shared key and no toggle.
   autoGenerateCustomKey: ""
 };
 const DEFINITION_MAX_LENGTH = 350;
@@ -128,7 +127,6 @@ function cleanDefinition(text) {
 }
 
 async function generateDefinition(word, promptText) {
-  const config = globalThis.GlowsaryAutoGenerateConfig || {};
   const cleanWord = String(word || "").trim();
 
   if (cleanWord.length < 3) {
@@ -136,43 +134,20 @@ async function generateDefinition(word, promptText) {
   }
 
   const settings = await getSettings();
-  const sharedKey = String(config.apiKey || "").trim();
-  const useCustomKey = settings.autoGenerateCustomKeyEnabled === true;
-  const customKey = useCustomKey ? String(settings.autoGenerateCustomKey || "").trim() : "";
+  const apiKey = String(settings.autoGenerateCustomKey || "").trim();
+
+  // No saved key means auto-generate is not set up; the caller shows the add-your-key
+  // hint and sends no request (FR-46m). There is no shared key to fall back to (FR-46q).
+  if (!apiKey) {
+    return { ok: false, error: "missing-key" };
+  }
 
   // The user's Auto-generate Prompt is the instruction (FR-46d); the word travels with it
   // (FR-46c). A missing or blank prompt falls back to the default so the action still works.
   const instruction = String(promptText || "").trim() || DEFAULT_PROMPT;
   const prompt = `${instruction}\n\nWord or phrase: "${cleanWord}"`;
 
-  // Try the validated custom key first; if it fails (revoked, quota, billing, offline),
-  // fall back to the shared key so the definition still generates, and tell the caller
-  // the key failed (FR-46q). With no validated custom key, use the shared key (FR-46m).
-  if (customKey) {
-    const customResult = await callGemini(customKey, prompt, 300);
-    const definition = customResult.ok ? cleanDefinition(customResult.text) : "";
-
-    if (definition) {
-      return { ok: true, definition };
-    }
-
-    if (sharedKey) {
-      const fallback = await callGemini(sharedKey, prompt, 300);
-      const fallbackDefinition = fallback.ok ? cleanDefinition(fallback.text) : "";
-
-      if (fallbackDefinition) {
-        return { ok: true, definition: fallbackDefinition, customKeyFailed: true };
-      }
-    }
-
-    return customResult.ok ? { ok: false, error: "empty" } : customResult;
-  }
-
-  if (!sharedKey) {
-    return { ok: false, error: "missing-key" };
-  }
-
-  const result = await callGemini(sharedKey, prompt, 300);
+  const result = await callGemini(apiKey, prompt, 300);
 
   if (!result.ok) {
     return result;

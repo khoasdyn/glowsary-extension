@@ -1,3 +1,10 @@
+## 2026-06-23 (auto-generate uses your own API key only)
+
+- Auto-generate no longer ships a shared key inside the extension. It now runs only on your own Gemini API key, which fixes the recurring "The key was rejected." failures that came from a public, repeatedly blocked shared key.
+- The Settings section is renamed from "Custom API Key" to "API Key" and its on/off toggle is removed. The key field is always visible, with one subtitle: "Only Gemini is supported for now. See the video tutorial here." The "here" video link is unchanged.
+- Clicking Generate with no key saved now shows "Auto-generate isn't set up yet. Add your Gemini API key in Settings." instead of silently using a shared key. This guidance shows only for the no-key case; a saved key that fails keeps its own message, with no fallback.
+- On update, a key you had already saved keeps working and now always powers auto-generate. If you were relying on the old shared key, auto-generate is off until you add your own key.
+
 ## 2026-06-20 (Reset button hidden when prompt is default)
 
 - In the Auto-generate Prompt section, the Reset button now appears only when your saved prompt differs from the default. When the prompt already equals the default (including right after a Reset), Reset is hidden, since there is nothing to reset. It still stays hidden while editing, where Cancel and Save take over.

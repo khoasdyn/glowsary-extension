@@ -1,5 +1,6 @@
 https://youtu.be/g3iSDvAM_Mo
 
+```
 Glowsary turns the web into your personal vocabulary notebook. 
 
 When you read in English and look up a word, you save it once with your own meaning, or let AI draft a short definition for you in a tap. You can also add a picture to help it stick. After that, Glowsary quietly underlines that word everywhere it appears as you browse, and shows your saved definition in a small popup when you hover over it. It works like Word Wise on a Kindle, except the words are the ones you chose, and the meaning stays hidden until you ask for it. 
@@ -20,3 +21,4 @@ What you can do:
 - Private by design. Everything is stored on your own device. No account, no sign-in, and your words never leave your computer.
 
 Glowsary is made for self-learners who read English online and want the effort of every lookup to stick.
+```

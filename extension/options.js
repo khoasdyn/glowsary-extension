@@ -12,9 +12,8 @@ const DEFAULT_SETTINGS = {
   appLanguage: "en",
   // The user's Auto-generate Prompt (FR-46h), defaulting to the built-in prompt.
   autoGeneratePrompt: DEFAULT_PROMPT,
-  // Whether auto-generate uses the user's own Gemini key (FR-46j). Off uses the shared
-  // key. autoGenerateCustomKey only ever holds a key that passed the check (FR-46p).
-  autoGenerateCustomKeyEnabled: false,
+  // The user's own Gemini key (FR-46j). Empty until they save a key that passed the check
+  // (FR-46p); there is no shared key and no toggle.
   autoGenerateCustomKey: ""
 };
 
@@ -69,9 +68,7 @@ const elements = {
   resetAutogeneratePrompt: document.querySelector("#reset-autogenerate-prompt"),
   cancelAutogeneratePrompt: document.querySelector("#cancel-autogenerate-prompt"),
   saveAutogeneratePrompt: document.querySelector("#save-autogenerate-prompt"),
-  autogenerateKeyToggle: document.querySelector("#autogenerate-key-toggle"),
   autogenerateKeySubtitle: document.querySelector("#autogenerate-key-subtitle"),
-  autogenerateCustomKey: document.querySelector("#autogenerate-custom-key"),
   autogenerateKeyInput: document.querySelector("#autogenerate-key-input"),
   saveAutogenerateKey: document.querySelector("#save-autogenerate-key"),
   deleteAutogenerateKey: document.querySelector("#delete-autogenerate-key"),
@@ -169,10 +166,9 @@ function normalizeSettings(rawSettings = {}) {
     // anyone whose prompt was blank) falls back to the default, so everyone starts from the
     // same default and any earlier auto-generate language choice is simply dropped.
     autoGeneratePrompt: typeof rawSettings.autoGeneratePrompt === "string" && rawSettings.autoGeneratePrompt.trim() ? rawSettings.autoGeneratePrompt : DEFAULT_PROMPT,
-    // FR-46s migration: settings carrying the old "autoGenerateKeyMode" predate the
-    // toggle. Reset such users to the toggle off and discard any key stored under the
-    // old flow, since the new model only keeps a key that passed the check (FR-46p).
-    autoGenerateCustomKeyEnabled: !isLegacyKeySchema && rawSettings.autoGenerateCustomKeyEnabled === true,
+    // FR-46s migration: a validated key from the old toggle flow is kept and now always
+    // powers auto-generate. Only the very old "autoGenerateKeyMode" schema, which predates
+    // the checked-key model, has its stored key discarded; the toggle flag is dropped.
     autoGenerateCustomKey: isLegacyKeySchema || typeof rawSettings.autoGenerateCustomKey !== "string" ? "" : rawSettings.autoGenerateCustomKey
   };
 }
@@ -438,15 +434,6 @@ function handleManagementTabChange(event) {
 
   if (nextTab !== activeManagementTab && currentPanel?.contains(document.activeElement)) {
     document.activeElement.blur();
-  }
-
-  // FR-46t: leaving the Settings tab with the toggle on but no validated key saved
-  // resets the toggle to off, so the section never lingers in a half-finished
-  // "on without a key" state when the user returns.
-  if (activeManagementTab === "settings" && nextTab !== "settings"
-    && settings.autoGenerateCustomKeyEnabled === true && !settings.autoGenerateCustomKey) {
-    keyCheckRequest += 1;
-    saveSettings({ ...settings, autoGenerateCustomKeyEnabled: false });
   }
 
   activeManagementTab = nextTab;
@@ -798,26 +785,17 @@ const KEY_SUCCESS_MESSAGE = "You are using this key for auto-generate feature.";
 const KEY_SAVE_LABEL = "Save";
 const KEY_CHECKING_LABEL = "Checking…";
 const TUTORIAL_LINK = `<a class="autogenerate-key-tutorial-link" href="https://youtu.be/YMmi7SJO23I" target="_blank" rel="noopener noreferrer">here</a>`;
-const KEY_SUBTITLE_OFF = `You're using the default key. See how to add your own key ${TUTORIAL_LINK}.`;
-const KEY_SUBTITLE_ON = `Only Gemini is supported for now. See how to add your own key ${TUTORIAL_LINK}.`;
+const KEY_SUBTITLE = `Only Gemini is supported for now. See the video tutorial ${TUTORIAL_LINK}.`;
 
-// Paint the Custom API Key section from settings (FR-46n). The validated key in settings
-// is the only persisted state; the typed-but-failed and loading states are transient and
-// set directly by the save flow, never from here.
+// Paint the API Key section from settings (FR-46n). The validated key in settings is the
+// only persisted state; the typed-but-failed and loading states are transient and set
+// directly by the save flow, never from here. The field is always visible (FR-46t).
 function renderAutoGenerateKey() {
-  const enabled = settings.autoGenerateCustomKeyEnabled === true;
-  elements.autogenerateKeyToggle.checked = enabled;
-  elements.autogenerateKeySubtitle.innerHTML = enabled ? KEY_SUBTITLE_ON : KEY_SUBTITLE_OFF;
-  elements.autogenerateCustomKey.hidden = !enabled;
-
-  if (!enabled) {
-    return;
-  }
+  elements.autogenerateKeySubtitle.innerHTML = KEY_SUBTITLE;
 
   const savedKey = settings.autoGenerateCustomKey || "";
   keyCheckRequest += 1;
   setKeySaveLabel(KEY_SAVE_LABEL);
-  elements.saveAutogenerateKey.disabled = false;
 
   if (savedKey) {
     elements.autogenerateKeyInput.value = savedKey;
@@ -899,7 +877,7 @@ async function saveAutoGenerateKey() {
 }
 
 // Remove the validated key at once, no confirm and no undo (FR-46o), returning the
-// section to the empty input state with the toggle still on.
+// section to the empty input state.
 async function deleteAutoGenerateKey() {
   keyCheckRequest += 1;
   await saveSettings({ ...settings, autoGenerateCustomKey: "" });
@@ -1277,13 +1255,6 @@ function bindEvents() {
 
     syncPromptSaveState();
   });
-  elements.autogenerateKeyToggle.addEventListener("change", () => {
-    keyCheckRequest += 1;
-    saveSettings({
-      ...settings,
-      autoGenerateCustomKeyEnabled: elements.autogenerateKeyToggle.checked
-    });
-  });
   elements.autogenerateKeyInput.addEventListener("input", () => {
     if (elements.autogenerateKeyInput.readOnly) {
       return;
@@ -1330,14 +1301,6 @@ async function loadState() {
   entries = Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY].map(normalizeEntry) : [];
   settings = normalizeSettings(result[SETTINGS_KEY] || {});
   excludedSites = await normalizeExcludedSitesToWholeSiteDomains(result[EXCLUDED_SITES_KEY]);
-
-  // FR-46t: the toggle never starts a session as on without a validated key saved, so
-  // a reload from that half-finished state lands with the toggle off. This runs only at
-  // load (not in normalizeSettings, which also runs on every save) so turning the toggle
-  // on to reveal the empty key input keeps working.
-  if (settings.autoGenerateCustomKeyEnabled && !settings.autoGenerateCustomKey) {
-    settings = { ...settings, autoGenerateCustomKeyEnabled: false };
-  }
 
   if (JSON.stringify(result[SETTINGS_KEY] || {}) !== JSON.stringify(settings)) {
     await storage.set({ [SETTINGS_KEY]: settings });

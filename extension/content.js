@@ -9,7 +9,6 @@
     managementSort: "latest",
     appLanguage: "en",
     autoGeneratePrompt: DEFAULT_PROMPT,
-    autoGenerateCustomKeyEnabled: false,
     autoGenerateCustomKey: ""
   };
   const HIGHLIGHT_CLASS = "glowsary-highlight";
@@ -296,7 +295,7 @@
   function normalizeSettings(rawSettings = {}) {
     // Keep this in step with the same function in options.js, including the FR-46s
     // migration, so this context never resurrects the old key fields or clobbers the
-    // toggle and validated key when it re-saves settings.
+    // validated key when it re-saves settings.
     const isLegacyKeySchema = "autoGenerateKeyMode" in rawSettings;
     return {
       highlightingEnabled: rawSettings.highlightingEnabled !== false,
@@ -306,7 +305,8 @@
       // anyone whose prompt was blank) falls back to the default, so everyone starts from
       // the same default and any earlier auto-generate language choice is simply dropped.
       autoGeneratePrompt: typeof rawSettings.autoGeneratePrompt === "string" && rawSettings.autoGeneratePrompt.trim() ? rawSettings.autoGeneratePrompt : DEFAULT_PROMPT,
-      autoGenerateCustomKeyEnabled: !isLegacyKeySchema && rawSettings.autoGenerateCustomKeyEnabled === true,
+      // FR-46s: keep a validated key from the old toggle flow; drop only the very old
+      // "autoGenerateKeyMode" schema's key. The toggle flag no longer exists.
       autoGenerateCustomKey: isLegacyKeySchema || typeof rawSettings.autoGenerateCustomKey !== "string" ? "" : rawSettings.autoGenerateCustomKey
     };
   }

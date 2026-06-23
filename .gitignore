@@ -6,3 +6,6 @@
 
 # Local video source files (ScreenStudio projects and raw recordings)
 videos/
+
+# Chrome-generated metadata when loading the unpacked extension
+extension/_metadata/

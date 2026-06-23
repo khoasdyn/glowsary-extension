@@ -784,14 +784,13 @@ async function resetPrompt() {
 const KEY_SUCCESS_MESSAGE = "You are using this key for auto-generate feature.";
 const KEY_SAVE_LABEL = "Save";
 const KEY_CHECKING_LABEL = "Checking…";
-const TUTORIAL_LINK = `<a class="autogenerate-key-tutorial-link" href="https://youtu.be/YMmi7SJO23I" target="_blank" rel="noopener noreferrer">here</a>`;
-const KEY_SUBTITLE = `Only Gemini is supported for now. See the video tutorial ${TUTORIAL_LINK}.`;
+const KEY_SUBTITLE = "Only Gemini is supported for now. Watch the tutorial below.";
 
 // Paint the API Key section from settings (FR-46n). The validated key in settings is the
 // only persisted state; the typed-but-failed and loading states are transient and set
 // directly by the save flow, never from here. The field is always visible (FR-46t).
 function renderAutoGenerateKey() {
-  elements.autogenerateKeySubtitle.innerHTML = KEY_SUBTITLE;
+  elements.autogenerateKeySubtitle.textContent = KEY_SUBTITLE;
 
   const savedKey = settings.autoGenerateCustomKey || "";
   keyCheckRequest += 1;

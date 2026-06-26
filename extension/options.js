@@ -205,124 +205,26 @@ function formatAliases(aliases = []) {
   return normalizeAliasList(aliases).map((alias) => alias.displayTerm).join(", ");
 }
 
-function quoteCsvField(value) {
-  const text = String(value ?? "");
+// The backup file format. The version lets a later app version read an older backup safely (FR-35).
+const BACKUP_FORMAT = "glowsary-words";
+const BACKUP_VERSION = 1;
 
-  if (/[",\r\n]/.test(text)) {
-    return `"${text.replace(/"/g, '""')}"`;
-  }
-
-  return text;
-}
-
-function serializeEntriesToCsv(savedEntries) {
-  return savedEntries.map((entry) => [
-    entry.displayTerm || entry.term || "",
-    entry.definition || "",
-    formatAliases(entry.aliases),
-    window.GlowsaryColorPicker?.normalizeColor?.(entry.color) || "purple",
-    // FR-45i: only a linked image travels in the backup, as its URL. A local image
-    // (or no image) exports as an empty cell, the same as a word with no image.
-    entry.image && entry.image.type === "link" ? entry.image.src || "" : ""
-  ].map(quoteCsvField).join(",")).join("\r\n");
-}
-
-function parseCsv(text) {
-  if (text.charCodeAt(0) === 0xfeff) {
-    text = text.slice(1);
-  }
-
-  const rows = [];
-  let row = [];
-  let field = "";
-  let inQuotes = false;
-  let afterQuote = false;
-  let fieldStarted = false;
-  let wroteRowContent = false;
-
-  function finishField() {
-    row.push(field);
-    field = "";
-    afterQuote = false;
-    fieldStarted = false;
-  }
-
-  function finishRow() {
-    finishField();
-    rows.push(row);
-    row = [];
-    wroteRowContent = false;
-  }
-
-  for (let index = 0; index < text.length; index += 1) {
-    const char = text[index];
-    const nextChar = text[index + 1];
-
-    if (inQuotes) {
-      if (char === '"') {
-        if (nextChar === '"') {
-          field += '"';
-          index += 1;
-        } else {
-          inQuotes = false;
-          afterQuote = true;
-        }
-      } else {
-        field += char;
-      }
-      continue;
-    }
-
-    if (afterQuote) {
-      if (char === ",") {
-        finishField();
-      } else if (char === "\n") {
-        finishRow();
-      } else if (char === "\r") {
-        if (nextChar === "\n") {
-          index += 1;
-        }
-        finishRow();
-      } else {
-        throw new Error("Malformed CSV.");
-      }
-      continue;
-    }
-
-    if (char === '"') {
-      if (fieldStarted || field) {
-        throw new Error("Malformed CSV.");
-      }
-      inQuotes = true;
-      fieldStarted = true;
-      wroteRowContent = true;
-    } else if (char === ",") {
-      finishField();
-      wroteRowContent = true;
-    } else if (char === "\n") {
-      finishRow();
-    } else if (char === "\r") {
-      if (nextChar === "\n") {
-        index += 1;
-      }
-      finishRow();
-    } else {
-      field += char;
-      fieldStarted = true;
-      wroteRowContent = true;
-    }
-  }
-
-  if (inQuotes) {
-    throw new Error("Malformed CSV.");
-  }
-
-  if (afterQuote || field || fieldStarted || row.length > 0 || wroteRowContent) {
-    finishField();
-    rows.push(row);
-  }
-
-  return rows;
+// Serialize the full list to a Glowsary JSON backup (FR-34, FR-35). Each entry carries its
+// display term, definition, alias display forms, color, image (a link URL or local picture
+// data), and original created time, so a restore loses nothing (FR-45i).
+function serializeEntriesToJson(savedEntries) {
+  return JSON.stringify({
+    format: BACKUP_FORMAT,
+    version: BACKUP_VERSION,
+    entries: savedEntries.map((entry) => ({
+      term: entry.displayTerm || entry.term || "",
+      definition: entry.definition || "",
+      aliases: normalizeAliasList(entry.aliases).map((alias) => alias.displayTerm),
+      color: window.GlowsaryColorPicker?.normalizeColor?.(entry.color) || "purple",
+      ...(entry.image ? { image: { type: entry.image.type, src: entry.image.src } } : {}),
+      createdAt: typeof entry.createdAt === "number" ? entry.createdAt : Date.now()
+    }))
+  }, null, 2);
 }
 
 function normalizeDefinitionForDuplicate(definition) {
@@ -624,24 +526,23 @@ async function deleteEntry(targetEntry) {
   }
 }
 
-function downloadCsv(csvText) {
+function downloadJson(jsonText) {
   const date = new Date().toISOString().slice(0, 10);
-  const blob = new Blob([csvText], { type: "text/csv;charset=utf-8" });
+  const blob = new Blob([jsonText], { type: "application/json;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `glowsary-words-${date}.csv`;
+  link.download = `glowsary-words-${date}.json`;
   document.body.append(link);
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
 }
 
-function exportEntriesToCsv() {
-  downloadCsv(serializeEntriesToCsv(entries));
-  // FR-34/FR-45i: tell the user what images the backup carries, regardless of whether
-  // they actually have any images, since the note describes export in general.
-  showToast(`Exported ${entries.length} ${entries.length === 1 ? "entry" : "entries"}. Linked images are saved; imported pictures are not included.`);
+function exportEntriesToJson() {
+  // The JSON backup carries every image in full (FR-45i), so there is no "pictures dropped" note.
+  downloadJson(serializeEntriesToJson(entries));
+  showToast(`Exported ${entries.length} ${entries.length === 1 ? "entry" : "entries"}.`);
 }
 
 function readFileAsText(file) {
@@ -654,12 +555,18 @@ function readFileAsText(file) {
 }
 
 async function importEntriesFromFile(file) {
-  let rows;
+  let parsed;
 
   try {
-    rows = parseCsv(await readFileAsText(file));
+    parsed = JSON.parse(await readFileAsText(file));
   } catch (error) {
-    showToast("Could not read that CSV file.", "error");
+    showToast("Could not read that JSON file.", "error");
+    return;
+  }
+
+  // A valid JSON file that is not a Glowsary backup (no entries list) is rejected (FR-36c).
+  if (!parsed || typeof parsed !== "object" || !Array.isArray(parsed.entries)) {
+    showToast("Could not read that JSON file.", "error");
     return;
   }
 
@@ -669,36 +576,35 @@ async function importEntriesFromFile(file) {
   let duplicateCount = 0;
   let invalidCount = 0;
 
-  for (const row of rows) {
-    // Read by position: term, definition, aliases, color, image link (FR-35, FR-36).
-    // Older backups still line up: a four-column row has no image link, and a
-    // three-column row has neither color nor image link. More than five columns is
-    // malformed and skipped (FR-36c).
-    if (row.length < 2 || row.length > 5) {
+  for (const raw of parsed.entries) {
+    if (!raw || typeof raw !== "object") {
       invalidCount += 1;
       continue;
     }
 
-    const validation = validateEntry(row[0], row[1], row[2] || "");
+    // Aliases arrive as a list of display forms; join them so the same parse, clean, and
+    // validate path as a hand-typed entry applies (FR-36a).
+    const aliasText = Array.isArray(raw.aliases) ? raw.aliases.join(", ") : "";
+    const validation = validateEntry(raw.term, raw.definition, aliasText);
 
     if (validation.error) {
       invalidCount += 1;
       continue;
     }
 
-    // FR-36: a missing or unknown color falls back to the default; a non-empty image
-    // link is restored as a linked image without any fetch or check, and an empty
-    // cell means no image (FR-45i). A link that no longer works shows the error
-    // placeholder only when the entry is later viewed (FR-45g).
-    const imageSrc = String(row[4] || "").trim();
+    // A linked image is restored as a link and a local image as its stored picture, with no
+    // fetch or check (FR-36, FR-45i); a malformed image is dropped to no image. A missing or
+    // unknown color falls back to the default (FR-36). Each entry keeps its original created
+    // time, falling back to import time when missing or unreadable (FR-36e).
+    const image = normalizeImage(raw.image);
     const nextEntry = {
       term: validation.normalizedTerm,
       displayTerm: validation.cleanTerm,
       definition: validation.cleanDefinition,
       aliases: validation.aliases,
-      color: window.GlowsaryColorPicker?.normalizeColor?.(row[3]) || "purple",
-      ...(imageSrc ? { image: { type: "link", src: imageSrc } } : {}),
-      createdAt: importTime
+      color: window.GlowsaryColorPicker?.normalizeColor?.(raw.color) || "purple",
+      ...(image ? { image } : {}),
+      createdAt: typeof raw.createdAt === "number" && isFinite(raw.createdAt) ? raw.createdAt : importTime
     };
     const duplicateKey = getDuplicateKey(nextEntry);
 
@@ -715,7 +621,7 @@ async function importEntriesFromFile(file) {
     await saveEntries(entries.concat(nextImportedEntries));
   }
 
-  showToast(`Import complete: ${nextImportedEntries.length} added, ${duplicateCount} duplicate ${duplicateCount === 1 ? "row" : "rows"} skipped, ${invalidCount} invalid ${invalidCount === 1 ? "row" : "rows"} skipped.`);
+  showToast(`Import complete: ${nextImportedEntries.length} added, ${duplicateCount} duplicate ${duplicateCount === 1 ? "entry" : "entries"} skipped, ${invalidCount} invalid ${invalidCount === 1 ? "entry" : "entries"} skipped.`);
 }
 
 function renderSettings() {
@@ -1200,7 +1106,7 @@ function renderExcludedSites() {
 }
 
 function bindEvents() {
-  elements.exportEntries.addEventListener("click", exportEntriesToCsv);
+  elements.exportEntries.addEventListener("click", exportEntriesToJson);
   elements.importEntries.addEventListener("click", () => elements.importFile.click());
   elements.importFile.addEventListener("change", () => {
     const [file] = elements.importFile.files;

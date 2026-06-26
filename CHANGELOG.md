@@ -1,5 +1,10 @@
 ## 2026-06-26
 
+- Replaced the CSV backup with a JSON backup in both directions; the file now carries every saved word with its definition, aliases, color, image, and original created time, so a restore loses nothing.
+- Local images now travel in the backup: export writes a local picture's stored data and import restores it intact, so a word with a local image survives an export and import (linked images still save as their URL).
+- Import now reads entries by named field instead of by CSV column position, keeps each entry's original created time (falling back to import time when missing), and rejects a file that is not valid JSON or not a Glowsary backup.
+- Updated the Backup Data text to say JSON (subtitle, both card titles and descriptions, the import error toast, and the summary toast now counts "entries" not "rows"); the export toast no longer claims imported pictures are dropped.
+- Removed the CSV reader and writer; the import picker now accepts .json. Older CSV backup files can no longer be imported.
 - Fixed the active-word fill snapping to square corners the instant the pointer left the word: the rounded corners now hold steady through the fade-out instead of changing mid-animation.
 - Made the on-page highlight underline render at full token strength instead of blending toward transparent, so saved words read a touch more clearly while staying subtle.
 - Added an active-word state (FR-9b): while a word's definition popup is open, the word gets a soft rounded background fill, a darker underline, and a forced dark text color so it stays readable on any site. The fill is tied to the open popup so it survives the pointer moving onto the popup, and fades out when the popup closes.

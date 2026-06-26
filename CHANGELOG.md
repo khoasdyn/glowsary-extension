@@ -1,3 +1,8 @@
+## 2026-06-26
+
+- Set the manifest version to 1.5.0 for re-submission to the Chrome Web Store.
+- Rewrote the privacy policy to disclose the optional AI "Generate" feature (word or phrase sent to Google's Gemini via the user's own key), the locally stored Gemini API key, web-linked images loaded from third-party sites, and the YouTube tutorial embed, with explicit collection, handling, storage, and sharing sections to meet Chrome Web Store user-data policy.
+
 ## 2026-06-23
 
 - Made on-page highlighting re-scan only the part of the page that changed instead of re-walking the whole document body on every DOM mutation, so dynamic sites stay responsive. Same highlights, just less work.

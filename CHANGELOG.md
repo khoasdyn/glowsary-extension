@@ -1,5 +1,7 @@
 ## 2026-06-26
 
+- Added an inline "Google AI Studio" link (to aistudio.google.com/apikey, opens in a new tab) in the API Key section subtitle, which now reads "Only Gemini is supported for now. Get a free key from Google AI Studio, or watch the tutorial below.".
+- Added a subtitle line "Import or export your saved words as a CSV file." under the Backup Data heading, matching the other Settings sections.
 - Set the manifest version to 1.5.0 for re-submission to the Chrome Web Store.
 - Rewrote the privacy policy to disclose the optional AI "Generate" feature (word or phrase sent to Google's Gemini via the user's own key), the locally stored Gemini API key, web-linked images loaded from third-party sites, and the YouTube tutorial embed, with explicit collection, handling, storage, and sharing sections to meet Chrome Web Store user-data policy.
 

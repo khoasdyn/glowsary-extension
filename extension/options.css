@@ -154,6 +154,15 @@ button {
   line-height: var(--line-height-text-md);
 }
 
+.autogenerate-key-subtitle__link {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.autogenerate-key-subtitle__link:hover {
+  text-decoration: none;
+}
+
 .editor-close-button__icon,
 .icon-button__icon--trash {
   display: block;

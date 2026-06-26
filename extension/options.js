@@ -784,13 +784,32 @@ async function resetPrompt() {
 const KEY_SUCCESS_MESSAGE = "You are using this key for auto-generate feature.";
 const KEY_SAVE_LABEL = "Save";
 const KEY_CHECKING_LABEL = "Checking…";
-const KEY_SUBTITLE = "Only Gemini is supported for now. Watch the tutorial below.";
+const KEY_SUBTITLE_PREFIX = "Only Gemini is supported for now. Get a free key from ";
+const KEY_SUBTITLE_LINK_TEXT = "Google AI Studio";
+const KEY_SUBTITLE_LINK_URL = "https://aistudio.google.com/apikey";
+const KEY_SUBTITLE_SUFFIX = ", or watch the tutorial below.";
+
+// Build the subtitle with an inline link to Google AI Studio (FR-46r), opening in a new tab.
+// Rebuilt each render so it never appends duplicate nodes.
+function renderKeySubtitle() {
+  const subtitle = elements.autogenerateKeySubtitle;
+  subtitle.textContent = "";
+
+  const link = document.createElement("a");
+  link.className = "autogenerate-key-subtitle__link";
+  link.href = KEY_SUBTITLE_LINK_URL;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.textContent = KEY_SUBTITLE_LINK_TEXT;
+
+  subtitle.append(KEY_SUBTITLE_PREFIX, link, KEY_SUBTITLE_SUFFIX);
+}
 
 // Paint the API Key section from settings (FR-46n). The validated key in settings is the
 // only persisted state; the typed-but-failed and loading states are transient and set
 // directly by the save flow, never from here. The field is always visible (FR-46t).
 function renderAutoGenerateKey() {
-  elements.autogenerateKeySubtitle.textContent = KEY_SUBTITLE;
+  renderKeySubtitle();
 
   const savedKey = settings.autoGenerateCustomKey || "";
   keyCheckRequest += 1;

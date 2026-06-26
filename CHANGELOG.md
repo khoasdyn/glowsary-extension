@@ -1,5 +1,6 @@
 ## 2026-06-26
 
+- Fixed the active-word fill snapping to square corners the instant the pointer left the word: the rounded corners now hold steady through the fade-out instead of changing mid-animation.
 - Made the on-page highlight underline render at full token strength instead of blending toward transparent, so saved words read a touch more clearly while staying subtle.
 - Added an active-word state (FR-9b): while a word's definition popup is open, the word gets a soft rounded background fill, a darker underline, and a forced dark text color so it stays readable on any site. The fill is tied to the open popup so it survives the pointer moving onto the popup, and fades out when the popup closes.
 - Added the new `--wc-underline-hover-fill` Word Card token (Purple/Yellow/Green/Blue at the 200 step; no fill for the gray Add New mode) for the active-word fill. Flag: the fill's horizontal padding uses a `0.12em` value with no spacing token yet, since the spacing scale holds only layout gaps.

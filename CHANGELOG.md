@@ -1,5 +1,10 @@
 ## 2026-06-26
 
+- Made the on-page highlight underline render at full token strength instead of blending toward transparent, so saved words read a touch more clearly while staying subtle.
+- Added an active-word state (FR-9b): while a word's definition popup is open, the word gets a soft rounded background fill, a darker underline, and a forced dark text color so it stays readable on any site. The fill is tied to the open popup so it survives the pointer moving onto the popup, and fades out when the popup closes.
+- Added the new `--wc-underline-hover-fill` Word Card token (Purple/Yellow/Green/Blue at the 200 step; no fill for the gray Add New mode) for the active-word fill. Flag: the fill's horizontal padding uses a `0.12em` value with no spacing token yet, since the spacing scale holds only layout gaps.
+- Renamed the `--wc-underline` token to `--wc-underline-default` across the tokens and content styles to match the Figma Word Card table.
+- Corrected DESIGN.md's Word Card token list, which had only listed five tokens and omitted the underline tokens; it now lists all eight.
 - Added an inline "Google AI Studio" link (to aistudio.google.com/apikey, opens in a new tab) in the API Key section subtitle, which now reads "Only Gemini is supported for now. Get a free key from Google AI Studio, or watch the tutorial below.".
 - Added a subtitle line "Import or export your saved words as a CSV file." under the Backup Data heading, matching the other Settings sections.
 - Set the manifest version to 1.5.0 for re-submission to the Chrome Web Store.

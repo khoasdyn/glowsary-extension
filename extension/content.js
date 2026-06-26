@@ -12,6 +12,7 @@
     autoGenerateCustomKey: ""
   };
   const HIGHLIGHT_CLASS = "glowsary-highlight";
+  const ACTIVE_HIGHLIGHT_CLASS = "glowsary-highlight--active";
   const POPUP_CLASS = "glowsary-popup";
   const BLOCKED_HIGHLIGHT_ANCESTORS = new Set(["A", "BUTTON", "NAV", "INPUT", "LABEL", "SELECT", "TEXTAREA"]);
   const SKIP_TAGS = new Set([
@@ -827,6 +828,8 @@
 
     ensureGlowsaryRoot().append(popup);
     activePopup = { element: popup, anchor, pages, pageIndex: 0, controls, keepOpenUntil: 0 };
+    // Mark the word as active so it shows its fill while this popup is open (FR-9b).
+    anchor.classList.add(ACTIVE_HIGHLIGHT_CLASS);
 
     soundButton.addEventListener("click", (event) => {
       event.preventDefault();
@@ -1105,6 +1108,7 @@
 
   function dismissPopup() {
     window.clearTimeout(popupCloseTimer);
+    activePopup?.anchor?.classList.remove(ACTIVE_HIGHLIGHT_CLASS);
     activePopup?.element.remove();
     activePopup = null;
   }

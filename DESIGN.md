@@ -64,12 +64,15 @@ Adoption note: the semantic layer exists, but the UI still uses primitives direc
 
 Word Card color modes: `semantic-color-tokens.js` also holds a Word Card token group alongside the base semantic tokens. This group is mode-switched: it has five modes — Add New, Purple, Yellow, Green, and Blue — so each word card can render with surfaces, borders, and text tinted to its assigned color. The Add New mode is the neutral gray default (matching existing gray primitives), used when no color has been assigned. The other four modes match the four color picker choices.
 
-The five Word Card tokens use the `--wc-` prefix to keep them separate from the base semantic tokens:
+The Word Card tokens use the `--wc-` prefix to keep them separate from the base semantic tokens. Five tint the card and popup surfaces, and three tint the on-page highlight on a saved word:
 - `--wc-bg-alias-chip`: background of the alias chip inside the card.
 - `--wc-bg-card`: card surface background.
 - `--wc-border`: card border color.
 - `--wc-subtext`: definition and secondary text color.
-- `--wc-word-text`: word title text color.
+- `--wc-word-text`: word title text color, also the word's text color while its highlight is active (FR-9b).
+- `--wc-underline-default`: the on-page highlight's dashed underline color at rest (FR-9).
+- `--wc-underline-hover`: the underline color while the word's highlight is active (FR-9b).
+- `--wc-underline-hover-fill`: the soft background fill painted behind the word while its highlight is active (FR-9b). Defined for the four color modes only; the Add New gray mode has no fill, since saved entries always carry one of the four colors.
 
 When a word card renders, it scopes these tokens to the card element using the mode that matches the entry's color value. The base semantic tokens (Text, Foreground, Background, Border) are the same across all five modes; only the Word Card group changes per mode.
 

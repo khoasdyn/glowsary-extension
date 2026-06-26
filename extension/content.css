@@ -5,14 +5,25 @@
   cursor: help !important;
   text-decoration-line: underline !important;
   text-decoration-style: dashed !important;
-  text-decoration-color: color-mix(in srgb, var(--wc-underline) 68%, var(--color-base-transparent)) !important;
+  text-decoration-color: var(--wc-underline-default) !important;
   text-decoration-thickness: 0.08em !important;
   text-underline-offset: 0.18em !important;
   border-radius: 0 !important;
+  /* 0.12em horizontal pad has no spacing token yet (the scale holds only layout gaps); flagged in CHANGELOG. */
+  padding: 0 0.12em !important;
+  margin: 0 -0.12em !important;
+  -webkit-box-decoration-break: clone !important;
+  box-decoration-break: clone !important;
+  transition: background-color 120ms ease, color 120ms ease, text-decoration-color 120ms ease !important;
 }
 
-.glowsary-highlight:hover {
-  text-decoration-color: color-mix(in srgb, var(--wc-underline-hover) 96%, var(--color-base-transparent)) !important;
+/* Active state: driven by the word's open popup, not :hover, so the fill survives the
+   pointer moving onto the popup. The class is added/removed in content.js. */
+.glowsary-highlight--active {
+  background: var(--wc-underline-hover-fill) !important;
+  color: var(--wc-word-text) !important;
+  text-decoration-color: var(--wc-underline-hover) !important;
+  border-radius: var(--card-sm) !important;
 }
 
 .glowsary-popup {

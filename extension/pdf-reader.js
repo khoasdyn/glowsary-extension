@@ -275,42 +275,12 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
     return Boolean(parent.closest(`.${HIGHLIGHT_CLASS}, .${POPUP_CLASS}`));
   }
 
-  function highlightTextNode(node) {
-    if (shouldSkipTextNode(node)) {
-      return;
-    }
-
-    const text = node.nodeValue;
-    const matches = findMatches(text);
-
-    if (!matches.length) {
-      return;
-    }
-
-    const fragment = document.createDocumentFragment();
-    let cursor = 0;
-
-    for (const match of matches) {
-      if (match.start > cursor) {
-        fragment.appendChild(document.createTextNode(text.slice(cursor, match.start)));
-      }
-
-      const span = document.createElement("span");
-      span.className = HIGHLIGHT_CLASS;
-      span.glowsaryPages = match.pages;
-      span.textContent = text.slice(match.start, match.end);
-      window.GlowsarySemanticColorTokens?.applyWordCardMode?.(span, match.pages[0]?.entry?.color);
-      fragment.appendChild(span);
-      cursor = match.end;
-    }
-
-    if (cursor < text.length) {
-      fragment.appendChild(document.createTextNode(text.slice(cursor)));
-    }
-
-    node.replaceWith(fragment);
-  }
-
+  // Match across the whole text layer, not one piece at a time, so a saved phrase
+  // still highlights when the PDF splits it across separate pieces (FR-47e, FR-6a).
+  // pdf.js renders each text run as its own absolutely positioned piece, often one
+  // word each, so scanning a single piece can never see a multi-word phrase. Here we
+  // join every piece into one string in reading order, match on that, then wrap the
+  // matched slice back inside each piece it covers.
   function highlightRoot(root) {
     if (!entries.length || !root) {
       return;
@@ -327,8 +297,95 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
       textNodes.push(walker.currentNode);
     }
 
+    if (!textNodes.length) {
+      return;
+    }
+
+    // Build one combined string across all pieces. Each piece records its offset
+    // range in that string. When two pieces meet with no whitespace on either side,
+    // a single space is inserted between them, so words the PDF split across pieces
+    // or wrapped across a line still read as whitespace-separated (FR-6a). The space
+    // is virtual: it belongs to no piece, so it is never wrapped. A hyphen left by
+    // hyphenation stays a real character, so "draw-" + "ing" still does not match.
+    let combined = "";
+    const segments = [];
+
     for (const node of textNodes) {
-      highlightTextNode(node);
+      const value = node.nodeValue;
+      if (combined && !/\s$/.test(combined) && !/^\s/.test(value)) {
+        combined += " ";
+      }
+      const start = combined.length;
+      combined += value;
+      segments.push({ node, start, end: combined.length });
+    }
+
+    const matches = findMatches(combined);
+
+    if (!matches.length) {
+      return;
+    }
+
+    // Map each match onto the pieces it overlaps. A match may span several pieces;
+    // all of its pieces share one group so the phrase behaves as a single highlight
+    // (one active fill and one popup across the whole phrase, FR-9b, FR-13a).
+    const piecesByNode = new Map();
+
+    for (const match of matches) {
+      const group = [];
+
+      for (const segment of segments) {
+        const overlapStart = Math.max(match.start, segment.start);
+        const overlapEnd = Math.min(match.end, segment.end);
+        if (overlapStart >= overlapEnd) {
+          continue;
+        }
+
+        const piece = {
+          localStart: overlapStart - segment.start,
+          localEnd: overlapEnd - segment.start,
+          pages: match.pages,
+          group
+        };
+        let list = piecesByNode.get(segment.node);
+        if (!list) {
+          list = [];
+          piecesByNode.set(segment.node, list);
+        }
+        list.push(piece);
+      }
+    }
+
+    for (const [node, pieces] of piecesByNode) {
+      pieces.sort((a, b) => a.localStart - b.localStart);
+      const text = node.nodeValue;
+      const fragment = document.createDocumentFragment();
+      let cursor = 0;
+
+      for (const piece of pieces) {
+        if (piece.localStart < cursor) {
+          continue;
+        }
+        if (piece.localStart > cursor) {
+          fragment.appendChild(document.createTextNode(text.slice(cursor, piece.localStart)));
+        }
+
+        const span = document.createElement("span");
+        span.className = HIGHLIGHT_CLASS;
+        span.glowsaryPages = piece.pages;
+        span.glowsaryGroup = piece.group;
+        span.textContent = text.slice(piece.localStart, piece.localEnd);
+        window.GlowsarySemanticColorTokens?.applyWordCardMode?.(span, piece.pages[0]?.entry?.color);
+        piece.group.push(span);
+        fragment.appendChild(span);
+        cursor = piece.localEnd;
+      }
+
+      if (cursor < text.length) {
+        fragment.appendChild(document.createTextNode(text.slice(cursor)));
+      }
+
+      node.replaceWith(fragment);
     }
   }
 
@@ -464,6 +521,27 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
     return target?.nodeType === Node.ELEMENT_NODE ? target.closest?.(`.${HIGHLIGHT_CLASS}`) : null;
   }
 
+  // A phrase the PDF split across pieces becomes several highlight spans that share
+  // one group array. These helpers let the active fill and the sticky-popup checks
+  // treat all of a phrase's pieces as one highlight (FR-9b, FR-13).
+  function getHighlightGroup(element) {
+    const group = element?.glowsaryGroup;
+    if (Array.isArray(group) && group.length) {
+      return group.filter((member) => member.isConnected);
+    }
+    return element ? [element] : [];
+  }
+
+  function sharesHighlightGroup(a, b) {
+    return Boolean(a && b && a.glowsaryGroup && a.glowsaryGroup === b.glowsaryGroup);
+  }
+
+  function setGroupActive(element, isActive) {
+    for (const member of getHighlightGroup(element)) {
+      member.classList.toggle(ACTIVE_HIGHLIGHT_CLASS, isActive);
+    }
+  }
+
   function resolveHighlightPages(element) {
     if (Array.isArray(element.glowsaryPages) && element.glowsaryPages.length) {
       return element.glowsaryPages;
@@ -589,7 +667,7 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
 
     ensureGlowsaryRoot().append(popup);
     activePopup = { element: popup, anchor, pages, pageIndex: 0, controls, keepOpenUntil: 0 };
-    anchor.classList.add(ACTIVE_HIGHLIGHT_CLASS);
+    setGroupActive(anchor, true);
 
     soundButton.addEventListener("click", (event) => {
       event.preventDefault();
@@ -772,6 +850,10 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
       if (highlight === activePopup.anchor) {
         return true;
       }
+      // Another piece of the same split phrase still counts as being on the word.
+      if (sharesHighlightGroup(highlight, activePopup.anchor)) {
+        return true;
+      }
       if (highlight.textContent === activePopup.anchor.textContent) {
         activePopup.anchor = highlight;
         return true;
@@ -801,7 +883,9 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
 
   function dismissPopup() {
     window.clearTimeout(popupCloseTimer);
-    activePopup?.anchor?.classList.remove(ACTIVE_HIGHLIGHT_CLASS);
+    if (activePopup?.anchor) {
+      setGroupActive(activePopup.anchor, false);
+    }
     activePopup?.element.remove();
     activePopup = null;
   }
@@ -827,7 +911,7 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
     if (!highlight) {
       return;
     }
-    if (activePopup && activePopup.anchor === highlight) {
+    if (activePopup && (activePopup.anchor === highlight || sharesHighlightGroup(activePopup.anchor, highlight))) {
       window.clearTimeout(popupCloseTimer);
       return;
     }

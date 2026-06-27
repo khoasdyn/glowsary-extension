@@ -1,3 +1,8 @@
+## 2026-06-27
+
+- Fixed multi-word phrases not highlighting inside a PDF: the reader now matches across the whole text layer instead of one piece at a time, so a saved phrase like "get in" highlights even when the PDF splits it one word per piece (FR-47e, FR-6a). Single-word matching is unchanged. A phrase that wraps across a line break still matches when only whitespace separates its words; a word broken by hyphenation across a line is still not matched.
+- A phrase the PDF split across pieces now behaves as one highlight: hovering any part shows the same Definition Popup and the active-word fill lights up the whole phrase together, not just the hovered word.
+
 ## 2026-06-26
 
 - Added a PDF reading feature (FR-47): a new "PDF" tab sits between Home and Settings in the management view. The tab has an Upload PDF action and a masonry grid of uploaded PDFs shown as first-page cover thumbnails, matching the saved-words grid.

@@ -5,6 +5,8 @@
 - A phrase the PDF split across pieces now behaves as one highlight: hovering any part shows the same Definition Popup and the active-word fill lights up the whole phrase together, not just the hovered word.
 - Fixed the PDF highlight underline and fill landing on the wrong text: pdf.js's absolute positioning was leaking onto the injected highlight spans and snapping them to the left edge of their text piece, so a word in the middle of a piece had its highlight drawn over earlier words. The highlight now flows inline and lines up with the matched word.
 - Fixed the in-page "Add word" form so a selection longer than 50 characters is cut to the first 50 when pre-filling the Word field, instead of placing the whole selection past the cap (FR-2, FR-3d).
+- Fixed the PDF reader "Add word" form so a selection longer than 50 characters is cut to the first 50 when pre-filling the Word field, matching the in-page form (FR-2, FR-3d).
+- Moved the surface-agnostic entry helpers (text cleanup, term and alias normalization, alias parsing, entry validation, image normalization) into one shared file, replacing the identical copies that were duplicated across the in-page form, the PDF reader, and the Management panel. No behavior change; this prevents fixes from landing on one surface and missing another.
 
 ## 2026-06-26
 

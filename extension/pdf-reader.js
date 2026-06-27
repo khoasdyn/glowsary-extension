@@ -59,44 +59,21 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
     }
   };
 
-  // ----- Text helpers (ported from content.js) -----
-
-  function collapseSpaces(value) {
-    return String(value || "").trim().replace(/\s+/g, " ");
-  }
-
-  function normalizeTerm(value) {
-    return collapseSpaces(value).toLowerCase();
-  }
+  // ----- Text helpers -----
+  // The surface-agnostic helpers live in entry-utils.js, shared with content.js and
+  // options.js so one fix covers every surface (FR-2, FR-3a–FR-3d).
+  const {
+    collapseSpaces,
+    normalizeTerm,
+    normalizeAliasList,
+    formatAliases,
+    normalizeImage,
+    parseAliases,
+    validateEntry
+  } = window.GlowsaryEntryUtils;
 
   function normalizeColor(value) {
     return window.GlowsaryColorPicker?.normalizeColor?.(value) || "purple";
-  }
-
-  function normalizeAliasList(aliases = []) {
-    return aliases.map((alias) => ({
-      term: normalizeTerm(alias.term || alias.displayTerm || alias),
-      displayTerm: collapseSpaces(alias.displayTerm || alias.term || alias)
-    })).filter((alias) => alias.term && alias.displayTerm);
-  }
-
-  function formatAliases(aliases = []) {
-    return normalizeAliasList(aliases).map((alias) => alias.displayTerm).join(", ");
-  }
-
-  function normalizeImage(image) {
-    if (!image || typeof image !== "object") {
-      return undefined;
-    }
-
-    const type = image.type === "link" ? "link" : image.type === "local" ? "local" : null;
-    const src = typeof image.src === "string" ? image.src.trim() : "";
-
-    if (!type || !src) {
-      return undefined;
-    }
-
-    return { type, src };
   }
 
   function normalizeEntry(entry) {
@@ -109,34 +86,6 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
       aliases: normalizeAliasList(entry.aliases),
       ...(image ? { image } : {})
     };
-  }
-
-  function parseAliases(value, normalizedTerm) {
-    const aliases = [];
-    const seen = new Set();
-
-    for (const rawAlias of String(value || "").split(",")) {
-      const displayTerm = collapseSpaces(rawAlias);
-
-      if (!displayTerm) {
-        continue;
-      }
-
-      if (displayTerm.length < 3) {
-        return { error: `Alias "${displayTerm}" must be at least 3 characters.` };
-      }
-
-      const term = normalizeTerm(displayTerm);
-
-      if (term === normalizedTerm || seen.has(term)) {
-        continue;
-      }
-
-      seen.add(term);
-      aliases.push({ term, displayTerm });
-    }
-
-    return { aliases };
   }
 
   function escapeRegExp(value) {
@@ -933,29 +882,6 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
 
   // ----- Saving (ported from content.js) -----
 
-  function validateEntry(displayTerm, definition, aliasText = "", aliasEnabled = true) {
-    const cleanTerm = collapseSpaces(displayTerm);
-    const cleanDefinition = String(definition || "").trim();
-
-    if (!cleanTerm) {
-      return { error: "Word is required." };
-    }
-    if (cleanTerm.length < 3) {
-      return { error: "Word must be at least 3 characters." };
-    }
-    if (!cleanDefinition) {
-      return { error: "Definition is required." };
-    }
-
-    const normalizedTerm = normalizeTerm(cleanTerm);
-    const aliasResult = aliasEnabled ? parseAliases(aliasText, normalizedTerm) : { aliases: [] };
-    if (aliasResult.error) {
-      return aliasResult;
-    }
-
-    return { cleanTerm, cleanDefinition, normalizedTerm, aliases: aliasResult.aliases };
-  }
-
   async function getEntries() {
     const result = await storage.get({ [ENTRIES_KEY]: [] });
     return Array.isArray(result[ENTRIES_KEY]) ? result[ENTRIES_KEY].map(normalizeEntry) : [];
@@ -1105,7 +1031,7 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
       includeDelete: isEditMode,
       aliasEnabled: isEditMode ? Boolean(formattedAliases) : false,
       values: {
-        term: isEditMode ? entry.displayTerm : collapseSpaces(rawTerm),
+        term: isEditMode ? entry.displayTerm : collapseSpaces(rawTerm).slice(0, 50),
         definition: isEditMode ? entry.definition : "",
         aliases: formattedAliases,
         color: isEditMode ? entry.color : undefined

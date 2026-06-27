@@ -80,6 +80,7 @@
         "entry-form.js",
         "auto-generate.js",
         "image-field.js",
+        "entry-utils.js",
         "content.js"
       ],
       "css": ["switch.css", "content.css"],

@@ -1,5 +1,9 @@
 ## 2026-06-27
 
+- Fixed text selection in the PDF reader: the highlight is now a translucent blue (Blue-500 at 30%) instead of neutral gray, with the words on the page still readable through it; the stray vertical bar that appeared in the left margin during a multi-line selection is gone (the per-line break markers no longer paint their own selection); and dragging the cursor into the empty space between lines or into the margins no longer jumps the selection to cover the whole page.
+
+
+
 - Sharpened PDF reader text: the page canvas now renders at the full display pixel ratio (up to 2x) instead of being capped at 1.5x, so text no longer looks blurry on Retina screens.
 - Fixed multi-word phrases not highlighting inside a PDF: the reader now matches across the whole text layer instead of one piece at a time, so a saved phrase like "get in" highlights even when the PDF splits it one word per piece (FR-47e, FR-6a). Single-word matching is unchanged. A phrase that wraps across a line break still matches when only whitespace separates its words; a word broken by hyphenation across a line is still not matched.
 - A phrase the PDF split across pieces now behaves as one highlight: hovering any part shows the same Definition Popup and the active-word fill lights up the whole phrase together, not just the hovered word.

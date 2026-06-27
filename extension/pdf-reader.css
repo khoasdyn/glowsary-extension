@@ -314,6 +314,11 @@
   forced-color-adjust: none;
   transform-origin: 0 0;
   z-index: 1;
+  /* The empty gaps between lines and the page margins are this layer's own
+     background. Making the layer unselectable stops a drag into that empty space
+     from jumping the selection to the whole page; the spans and line-break markers
+     below opt back in, so the user can still drag across the real text. */
+  user-select: none;
 }
 
 .textLayer span,
@@ -323,10 +328,22 @@
   white-space: pre;
   cursor: text;
   transform-origin: 0% 0%;
+  user-select: text;
 }
 
+/* A translucent blue gives the familiar browser-style selection: the words on the
+   canvas underneath stay readable through the tint, and overlapping pieces composite
+   evenly instead of stacking into darker patches. */
 .textLayer ::selection {
-  background: color-mix(in srgb, var(--bg-primary-solid), transparent 75%);
+  background: color-mix(in srgb, var(--color-blue-500) 30%, transparent);
+}
+
+/* pdf.js places a zero-width line-break marker at the left edge of every line.
+   Without this, a multi-line selection paints those markers as a stray vertical bar
+   in the left margin. The markers stay selectable so copied text keeps its line
+   breaks, but their selection paints nothing. */
+.textLayer br::selection {
+  background: transparent;
 }
 
 /* Keep the matched word's text transparent so only the crisp canvas glyph shows;

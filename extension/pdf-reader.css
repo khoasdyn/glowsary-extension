@@ -1,0 +1,388 @@
+/* PDF reading feature (FR-47). The reader lives in the management view's PDF tab.
+   The saved-word highlight and Definition Popup reuse content.css; this file only
+   styles the PDF grid, the upload affordance, and the full-screen reader. */
+
+/* ---- PDF grid (mirrors the saved-words masonry grid, FR-42, FR-47a) ---- */
+
+.pdf-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 16px;
+  row-gap: 0;
+  grid-auto-rows: 1px;
+  align-items: start;
+}
+
+.pdf-grid--empty .pdf-card--upload {
+  grid-column: 1 / -1;
+}
+
+/* The upload card is always the first item in the grid (FR-47a), styled like the
+   "Add New Word" card. */
+.pdf-card--upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 200px;
+  padding: 16px;
+  color: var(--wc-subtext);
+  background: var(--wc-bg-card);
+  border: 2px dashed var(--wc-border);
+  border-radius: var(--card-md);
+  appearance: none;
+  cursor: pointer;
+}
+
+.pdf-card--upload:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--bg-primary-solid) 20%, var(--color-base-transparent));
+  outline-offset: 2px;
+}
+
+.pdf-card-upload-icon {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  background: var(--wc-subtext);
+  mask: url("assets/upload-01.svg") center / contain no-repeat;
+  -webkit-mask: url("assets/upload-01.svg") center / contain no-repeat;
+}
+
+.pdf-card-upload-label {
+  font-family: var(--text-style-card-title-font-family);
+  font-size: var(--text-style-card-title-font-size);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--text-style-card-title-line-height);
+}
+
+/* A saved PDF card: cover thumbnail on top, file name below. */
+.pdf-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--card-md);
+  overflow: hidden;
+  appearance: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pdf-card:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--bg-primary-solid) 20%, var(--color-base-transparent));
+  outline-offset: 2px;
+}
+
+.pdf-card-cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.pdf-card-cover--placeholder {
+  aspect-ratio: 3 / 4;
+}
+
+.pdf-card-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  padding: 12px;
+  color: var(--text-primary);
+  font-family: var(--text-style-body-text-font-family);
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-text-sm);
+  word-break: break-word;
+}
+
+/* Delete button on the card, revealed on hover/focus (FR-47c). */
+.pdf-card-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: color-mix(in srgb, var(--color-base-white) 86%, var(--color-base-transparent));
+  border: 1px solid var(--border-primary);
+  border-radius: var(--card-sm);
+  box-shadow: var(--shadow-xs);
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 120ms ease;
+}
+
+.pdf-card:hover .pdf-card-delete,
+.pdf-card:focus-within .pdf-card-delete,
+.pdf-card-delete:focus-visible {
+  opacity: 1;
+}
+
+.pdf-card-delete-icon {
+  width: 18px;
+  height: 18px;
+  background: var(--fg-error-primary);
+  mask: url("assets/trash-03.svg") center / contain no-repeat;
+  -webkit-mask: url("assets/trash-03.svg") center / contain no-repeat;
+}
+
+/* ---- Full-screen reader (FR-47d) ---- */
+
+.glowsary-pdf-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-quaternary);
+}
+
+.glowsary-pdf-viewer[hidden] {
+  display: none;
+}
+
+.glowsary-pdf-viewer__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 0 0 auto;
+  height: 56px;
+  padding: 0 16px;
+  background: var(--color-gray-900);
+  color: var(--color-base-white);
+}
+
+.glowsary-pdf-viewer__title {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-base-white);
+  font-family: var(--text-style-body-text-font-family);
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-text-sm);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.glowsary-pdf-viewer__controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.glowsary-pdf-viewer__readout {
+  min-width: 64px;
+  padding: 0 4px;
+  text-align: center;
+  color: var(--color-base-white);
+  font-family: var(--text-style-body-text-font-family);
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-text-sm);
+  white-space: nowrap;
+}
+
+.glowsary-pdf-viewer__divider {
+  width: 1px;
+  height: 24px;
+  margin: 0 6px;
+  background: color-mix(in srgb, var(--color-base-white) 24%, transparent);
+}
+
+.glowsary-pdf-viewer__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: var(--color-base-transparent);
+  border: 0;
+  border-radius: var(--card-sm);
+  cursor: pointer;
+  appearance: none;
+}
+
+.glowsary-pdf-viewer__button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-base-white) 16%, transparent);
+}
+
+.glowsary-pdf-viewer__button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-base-white) 70%, transparent);
+  outline-offset: 1px;
+}
+
+.glowsary-pdf-viewer__button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.glowsary-pdf-viewer__button-icon {
+  width: 22px;
+  height: 22px;
+  background: var(--color-base-white);
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+}
+
+.glowsary-pdf-viewer__button-icon--zoom-in {
+  mask-image: url("assets/plus.svg");
+  -webkit-mask-image: url("assets/plus.svg");
+}
+
+.glowsary-pdf-viewer__button-icon--zoom-out {
+  mask-image: url("assets/minus.svg");
+  -webkit-mask-image: url("assets/minus.svg");
+}
+
+.glowsary-pdf-viewer__button-icon--prev {
+  mask-image: url("assets/chevron-left.svg");
+  -webkit-mask-image: url("assets/chevron-left.svg");
+}
+
+.glowsary-pdf-viewer__button-icon--next {
+  mask-image: url("assets/chevron-right.svg");
+  -webkit-mask-image: url("assets/chevron-right.svg");
+}
+
+/* White close (X) button, called out in the request (FR-47d). */
+.glowsary-pdf-viewer__close .glowsary-pdf-viewer__button-icon {
+  mask-image: url("assets/x-close.svg");
+  -webkit-mask-image: url("assets/x-close.svg");
+}
+
+.glowsary-pdf-viewer__pages {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 24px 0 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.glowsary-pdf-page {
+  position: relative;
+  flex: 0 0 auto;
+  background: var(--color-base-white);
+  box-shadow: var(--shadow-xs);
+}
+
+.glowsary-pdf-page__canvas {
+  display: block;
+}
+
+.glowsary-pdf-viewer__status {
+  margin-top: 48px;
+  color: var(--text-tertiary);
+  font-family: var(--text-style-body-text-font-family);
+  font-size: var(--font-size-text-sm);
+  line-height: var(--line-height-text-sm);
+}
+
+/* ---- pdf.js text layer (vendored from pdf_viewer.css) ---- */
+
+.textLayer {
+  position: absolute;
+  text-align: initial;
+  inset: 0;
+  overflow: clip;
+  opacity: 1;
+  line-height: 1;
+  -webkit-text-size-adjust: none;
+  -moz-text-size-adjust: none;
+  text-size-adjust: none;
+  forced-color-adjust: none;
+  transform-origin: 0 0;
+  z-index: 1;
+}
+
+.textLayer span,
+.textLayer br {
+  color: transparent;
+  position: absolute;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+}
+
+.textLayer ::selection {
+  background: color-mix(in srgb, var(--bg-primary-solid), transparent 75%);
+}
+
+/* Keep the matched word's text transparent so only the crisp canvas glyph shows;
+   content.css still paints the dashed underline (its own color) and the active
+   fill over the glyph, matching the on-page reading experience (FR-47e). */
+.glowsary-pdf-page .textLayer .glowsary-highlight,
+.glowsary-pdf-page .textLayer .glowsary-highlight--active {
+  color: transparent !important;
+  cursor: help !important;
+}
+
+/* The active word's fill sits on the text layer, above the canvas glyph it is meant
+   to tint. A solid fill would hide the word, and a blend mode does not reach the
+   canvas (the text layer is its own stacking context). A translucent fill composites
+   over the canvas so the word stays readable through its tint (FR-9b, FR-47e). */
+.glowsary-pdf-page .textLayer .glowsary-highlight--active {
+  background: color-mix(in srgb, var(--wc-underline-hover-fill) 55%, transparent) !important;
+}
+
+/* The reader covers the whole window, so lock the management view behind it. */
+body.glowsary-pdf-open {
+  overflow: hidden;
+}
+
+/* ---- Right-click "Add word" menu inside the reader (FR-47f) ---- */
+
+.glowsary-pdf-menu {
+  position: fixed;
+  z-index: 1001;
+  min-width: 160px;
+  padding: 6px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--card-sm);
+  box-shadow: var(--shadow-xs-skeuomorphic);
+}
+
+.glowsary-pdf-menu__item {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  color: var(--text-primary);
+  background: var(--color-base-transparent);
+  border: 0;
+  border-radius: var(--card-sm);
+  font-family: var(--text-style-body-text-font-family);
+  font-size: var(--font-size-text-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-text-sm);
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+}
+
+.glowsary-pdf-menu__item:hover,
+.glowsary-pdf-menu__item:focus-visible {
+  background: var(--bg-secondary);
+  outline: none;
+}

@@ -19,7 +19,9 @@
     <link rel="stylesheet" href="switch.css" />
     <link rel="stylesheet" href="color-picker.css" />
     <link rel="stylesheet" href="entry-form.css" />
+    <link rel="stylesheet" href="content.css" />
     <link rel="stylesheet" href="options.css" />
+    <link rel="stylesheet" href="pdf-reader.css" />
   </head>
   <body>
     <main class="shell">
@@ -32,6 +34,10 @@
         <button class="tab-nav__item is-active" id="management-tab-home" type="button" role="tab" aria-selected="true" aria-controls="management-panel-home" data-tab-value="home">
           <span class="tab-nav__icon tab-nav__icon--home" aria-hidden="true"></span>
           <span class="tab-nav__label">Home</span>
+        </button>
+        <button class="tab-nav__item" id="management-tab-pdf" type="button" role="tab" aria-selected="false" aria-controls="management-panel-pdf" data-tab-value="pdf" tabindex="-1">
+          <span class="tab-nav__icon tab-nav__icon--pdf" aria-hidden="true"></span>
+          <span class="tab-nav__label">PDF</span>
         </button>
         <button class="tab-nav__item" id="management-tab-settings" type="button" role="tab" aria-selected="false" aria-controls="management-panel-settings" data-tab-value="settings" tabindex="-1">
           <span class="tab-nav__icon tab-nav__icon--settings" aria-hidden="true"></span>
@@ -65,6 +71,22 @@
           <div class="entry-list" id="entry-list"></div>
           <div class="empty-state grid-empty-state" id="empty-state" hidden>No matching words.</div>
         </section>
+      </section>
+
+      <section class="management-tab-panel" id="management-panel-pdf" role="tabpanel" aria-labelledby="management-tab-pdf" data-tab-panel="pdf" hidden>
+        <section class="pdf-section" aria-labelledby="pdf-heading">
+          <header class="home-header">
+            <div class="home-title-group">
+              <div class="home-title-row">
+                <h2 id="pdf-heading">PDFs (<span id="pdf-count">0</span>)</h2>
+              </div>
+              <p>Read your PDFs inside Glowsary with your saved words highlighted, just like on the web.</p>
+            </div>
+          </header>
+          <div class="pdf-grid" id="pdf-grid"></div>
+          <div class="empty-state grid-empty-state" id="pdf-empty-state" hidden>No PDFs yet. Upload one to start reading.</div>
+        </section>
+        <input id="pdf-file-input" type="file" accept="application/pdf,.pdf" hidden />
       </section>
 
       <section class="management-tab-panel" id="management-panel-settings" role="tabpanel" aria-labelledby="management-tab-settings" data-tab-panel="settings" hidden>
@@ -235,5 +257,6 @@
     <script src="auto-generate.js"></script>
     <script src="image-field.js"></script>
     <script src="options.js"></script>
+    <script type="module" src="pdf-reader.js"></script>
   </body>
 </html>

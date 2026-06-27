@@ -56,6 +56,11 @@
   -webkit-mask-image: url("assets/home-smile.svg");
 }
 
+.tab-nav__icon--pdf {
+  mask-image: url("assets/file-04.svg");
+  -webkit-mask-image: url("assets/file-04.svg");
+}
+
 .tab-nav__icon--settings {
   mask-image: url("assets/settings-02.svg");
   -webkit-mask-image: url("assets/settings-02.svg");

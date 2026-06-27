@@ -1,5 +1,6 @@
 ## 2026-06-27
 
+- Stopped keys typed in the in-page Add/Edit panel from reaching the host page, so single-key site shortcuts (like GitHub's "t", "s", "/") no longer fire while typing; modifier shortcuts (copy, paste, browser keys) still pass through, Escape closes the panel, Enter in single-line fields no longer submits, and the hover popup is unaffected (FR-2b).
 - Fixed the in-page "Add word" form so a selection longer than 50 characters is cut to the first 50 when pre-filling the Word field, instead of placing the whole selection past the cap (FR-2, FR-3d).
 
 ## 2026-06-26

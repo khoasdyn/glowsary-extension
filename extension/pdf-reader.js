@@ -27,10 +27,12 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
   const ZOOM_MAX = 3;
   const ZOOM_STEP = 0.2;
   const MASONRY_ROW_GAP = 16;
-  // Cap the canvas backing resolution. A page rendered at the full device pixel
-  // ratio (often 2x) costs 4x the memory; 1.5x stays crisp while keeping a long
-  // PDF affordable, since pages are now rendered lazily as they scroll into view.
-  const MAX_OUTPUT_SCALE = 1.5;
+  // Cap the canvas backing resolution at the display's device pixel ratio (2x on
+  // Retina) so text renders as sharp as native viewers. A lower cap would force
+  // the browser to upscale the canvas and soften the text. 2x stays affordable
+  // because pages are rendered lazily as they scroll into view, so only a few are
+  // ever in memory at once.
+  const MAX_OUTPUT_SCALE = 2;
 
   let entries = [];
   let compiledMatchers = [];

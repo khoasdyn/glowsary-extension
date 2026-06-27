@@ -336,6 +336,12 @@
 .glowsary-pdf-page .textLayer .glowsary-highlight--active {
   color: transparent !important;
   cursor: help !important;
+  /* pdf.js's `.textLayer span` rule makes every piece absolutely positioned. That
+     rule also matches our injected highlight spans, which would snap their fill and
+     underline to the left edge of the piece instead of tracking the matched glyphs.
+     Force them back to inline flow so the highlight lines up with the real word. */
+  position: static !important;
+  display: inline !important;
 }
 
 /* The active word's fill sits on the text layer, above the canvas glyph it is meant

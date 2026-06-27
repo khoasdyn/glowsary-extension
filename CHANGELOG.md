@@ -1,3 +1,7 @@
+## 2026-06-27
+
+- Fixed the in-page "Add word" form so a selection longer than 50 characters is cut to the first 50 when pre-filling the Word field, instead of placing the whole selection past the cap (FR-2, FR-3d).
+
 ## 2026-06-26
 
 - Replaced the CSV backup with a JSON backup in both directions; the file now carries every saved word with its definition, aliases, color, image, and original created time, so a restore loses nothing.

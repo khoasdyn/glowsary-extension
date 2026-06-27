@@ -1304,7 +1304,7 @@
       includeDelete: isEditMode,
       aliasEnabled: isEditMode ? Boolean(formattedAliases) : false,
       values: {
-        term: isEditMode ? entry.displayTerm : collapseSpaces(rawTerm),
+        term: isEditMode ? entry.displayTerm : collapseSpaces(rawTerm).slice(0, 50),
         definition: isEditMode ? entry.definition : "",
         aliases: formattedAliases,
         color: isEditMode ? entry.color : undefined

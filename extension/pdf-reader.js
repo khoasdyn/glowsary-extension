@@ -1797,10 +1797,73 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
     contextMenu = null;
   }
 
+  // Word characters: any letter or number, plus apostrophes/hyphens that sit
+  // inside a word (so "don't" and "non-PP" stay whole). Surrounding punctuation
+  // is trimmed off afterwards so "PowerPoint," yields "PowerPoint".
+  const WORD_CHAR = /[\p{L}\p{N}'’-]/u;
+
+  function pointInSelection(selection, x, y) {
+    if (!selection || selection.isCollapsed || !selection.rangeCount) {
+      return false;
+    }
+    const rects = selection.getRangeAt(0).getClientRects();
+    for (const rect of rects) {
+      if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Selects the single word under the pointer and returns its text, or "" when
+  // the pointer is not over a word (blank space, margin, between words).
+  function selectWordAtPoint(x, y) {
+    const caret = document.caretRangeFromPoint?.(x, y);
+    const node = caret?.startContainer;
+    if (!caret || !node || node.nodeType !== Node.TEXT_NODE) {
+      return "";
+    }
+    const text = node.textContent || "";
+    let start = caret.startOffset;
+    let end = caret.startOffset;
+    while (start > 0 && WORD_CHAR.test(text[start - 1])) {
+      start -= 1;
+    }
+    while (end < text.length && WORD_CHAR.test(text[end])) {
+      end += 1;
+    }
+    // Drop leading/trailing connectors so a bare "-" or "'" never sticks.
+    while (start < end && /['’-]/.test(text[start])) {
+      start += 1;
+    }
+    while (end > start && /['’-]/.test(text[end - 1])) {
+      end -= 1;
+    }
+    if (start >= end) {
+      return "";
+    }
+    const range = document.createRange();
+    range.setStart(node, start);
+    range.setEnd(node, end);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+    return text.slice(start, end);
+  }
+
   function handleViewerContextMenu(event) {
-    const selection = collapseSpaces(window.getSelection?.()?.toString() || "");
     event.preventDefault();
     dismissContextMenu();
+
+    // Keep an existing selection when the click lands inside it; otherwise
+    // auto-select the word under the pointer (empty over blank space).
+    const currentSelection = window.getSelection?.();
+    let selection = "";
+    if (pointInSelection(currentSelection, event.clientX, event.clientY)) {
+      selection = collapseSpaces(currentSelection.toString());
+    } else {
+      selection = collapseSpaces(selectWordAtPoint(event.clientX, event.clientY));
+    }
 
     const menu = document.createElement("div");
     menu.className = "glowsary-pdf-menu";

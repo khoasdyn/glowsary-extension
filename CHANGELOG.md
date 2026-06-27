@@ -1,5 +1,6 @@
 ## 2026-06-27
 
+- Right-clicking a word in the PDF reader now auto-selects that word (with the normal selection highlight) and pre-fills it in "Add word", like Preview and the browser; the word token is taken without surrounding punctuation. An existing selection the click lands inside is kept as-is, and right-clicking blank space still opens "Add word" with an empty term (FR-47f).
 - Fixed text selection in the PDF reader: the highlight is now a translucent blue (Blue-500 at 30%) instead of neutral gray, with the words on the page still readable through it; the stray vertical bar that appeared in the left margin during a multi-line selection is gone (the per-line break markers no longer paint their own selection); and dragging the cursor into the empty space between lines or into the margins no longer jumps the selection to cover the whole page.
 
 

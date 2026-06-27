@@ -206,9 +206,42 @@
 
     glowsaryRoot = host.attachShadow({ mode: "open" });
     loadShadowStyles(glowsaryRoot);
+    shieldHostShortcuts(glowsaryRoot);
     (document.documentElement || document.body).append(host);
 
     return glowsaryRoot;
+  }
+
+  // FR-2b: while the Add/Edit panel is open, keys typed into it must not reach the
+  // host page, so single-key site shortcuts (GitHub's "t", "s", "/") never fire while
+  // the user is filling in the form. The panel lives in this shadow root, so a keydown
+  // typed inside it bubbles to the root before it can cross into the page's document or
+  // window listeners. Stopping it here keeps the key inside the surface. The hover popup
+  // also lives in the root, so the shield is gated on activeDialog and never affects it.
+  function shieldHostShortcuts(root) {
+    root.addEventListener("keydown", (event) => {
+      if (!activeDialog) {
+        return;
+      }
+
+      // A real modifier marks a genuine shortcut (copy, paste, undo, browser/OS keys):
+      // let those pass untouched. Shift is not a modifier here — it is normal typing for
+      // capitals and symbols like "?", so Shift+key stays inside the surface.
+      if (event.ctrlKey || event.metaKey || event.altKey) {
+        return;
+      }
+
+      if (event.key === "Escape") {
+        closeDialog();
+      } else if (event.key === "Enter" && event.target?.tagName === "INPUT" && !event.defaultPrevented) {
+        // Enter in a single-line field does nothing and never submits; Save is button-only.
+        // The image-link input handles its own Enter first (FR-45e), so it is skipped here,
+        // and the Definition textarea keeps Enter as a native line break.
+        event.preventDefault();
+      }
+
+      event.stopPropagation();
+    });
   }
 
   function normalizeColor(value) {

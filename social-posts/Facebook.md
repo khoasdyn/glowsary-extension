@@ -1,5 +1,7 @@
 ## Version 1
 
+(Date 23 June 2026)
+
 ```
 Mình vừa cập nhật phiên bản mới cho Glowsary, một extension nhỏ mình tự làm giúp lưu từ vựng và highlight nó ở mọi trang web.
 
@@ -27,6 +29,8 @@ Xài thử rồi cho mình xin ít feedback với!
 ```
 
 ## Version 2
+
+(Date 23 June 2026)
 
 ```
 Có bạn nào học tiếng Anh bằng cách đọc báo, blog, các bài viết giống mình hông?

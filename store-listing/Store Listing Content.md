@@ -46,8 +46,63 @@ Glowsary is made for self-learners who read English online and want the effort o
 Education
 ```
 
-## Screenshots
+## Single purpose
+
+An extension must have a single purpose that is narrow and easy-to-understand. [Learn more](https://developer.chrome.com/webstore/program_policies#extensions)
+
 
 ```
-You want five Chrome Web Store screenshots (1280x800 PNG), each built around one of your real asset images, each promoting a single feature, with image one acting as a cover. The job right now is to decide what images two through five should show and how they should look, and to catch anything that could go wrong before you hand the prompts to an image AI.
+Glowsary lets a reader save words and phrases with their own definitions while reading on the web. It then highlights those saved words on the pages the user visits and shows the saved definition in a small popup on hover or click. Its single purpose is to help readers recognize and recall the vocabulary they have looked up.
 ```
+
+## Permission justification
+
+A [permission](https://developer.chrome.com/extensions/declare_permissions) is either one of a list of known strings, such as "activeTab", or a [match pattern](https://developer.chrome.com/extensions/match_patterns) giving access to one or more hosts.  
+Remove any permission that is not needed to fulfill the single purpose of your extension. Requesting an unnecessary permission will result in this version being rejected.
+
+**contextMenus justification**
+
+```
+Glowsary adds an "Add word" item to the right-click menu so the user can save the text they have selected on a page as a vocabulary entry. This context menu item is the main way a user saves a word while reading.
+```
+
+**storage justification**
+
+```
+Glowsary uses local storage to save the user's vocabulary entries (words, definitions, aliases, colors, and images), their settings (highlighting on or off, the hover or click trigger, and the auto-generate language and prompt), their excluded sites list, and — only if the user chooses to set it up — their own Google Gemini API key for the optional AI definition feature. All of this is stored only on the user's own device. The single word or phrase the user sends to Google's Gemini service when they click the optional "Generate" button (using their own key) is the only data that ever leaves the device.
+```
+
+**tabs justification**
+
+```
+Glowsary uses the tabs permission to apply setting changes live across all open tabs, for example turning highlighting on or off, and to focus an already-open management tab instead of opening a duplicate when the user opens settings. It does not read or track browsing history.
+```
+
+**declarativeNetRequestWithHostAccess justification**
+
+```
+Glowsary uses declarativeNetRequestWithHostAccess for a single static rule that sets a Referer header on the embedded tutorial video's frame request, so the YouTube player loads correctly inside the extension's Settings page (without it, the embed fails with "Error 153"). The rule is tightly scoped: it matches only the one tutorial video's embed URL on youtube.com and youtube-nocookie.com and applies only to that sub-frame request. It does not block, redirect, or read any other network traffic, and it does not observe the user's browsing.
+```
+
+**Host permission justification**
+
+```
+Glowsary's core purpose is to highlight the user's saved words on the pages they read. Because a user may read English on any website, the content script must run on the sites the user visits to find and underline saved words and show their definitions. Page text scanned for highlighting is processed only locally and is never collected or transmitted. Host access is also used to load an image the user added by web link, and — for the optional AI feature — to send the single chosen word or phrase to Google's Gemini service using the user's own key.
+```
+
+**Are you using remote code?**
+
+[✓] No, I am not using Remote code
+[] Yes, I am using Remote code
+
+## Data usage
+
+The content of this form will be displayed publicly on the item detail page. By publishing your item, you are certifying that these disclosures reflect the most up-to-date content of your privacy policy.
+
+![[CleanShot 2026-06-30 at 09.34.49@2x.png]]
+
+## Privacy policy
+
+An extension must have a privacy policy if it collects user data. [Learn more](https://developer.chrome.com/docs/webstore/program-policies/privacy/)
+
+https://github.com/khoasdyn/glowsary-extension-privacy/blob/main/PRIVACY.md

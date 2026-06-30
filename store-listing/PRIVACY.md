@@ -1,6 +1,6 @@
 # Glowsary Privacy Policy
 
-Last updated: June 26, 2026
+Last updated: June 30, 2026
 
 Glowsary is a browser extension that lets you save words and phrases with your own definitions while you read on the web, highlights those saved words on the pages you visit, and shows your saved definition in a small popup when you hover or click. It also has two optional features that connect to the internet when you choose to use them: an AI helper that can draft a definition for you, and support for adding an image to a word by pasting a web link. This policy explains what data Glowsary handles, how it is handled, where it is stored, and when any of it is shared.
 
@@ -55,7 +55,7 @@ The Settings page embeds a short tutorial video using YouTube's privacy-enhanced
 
 ## Export and import
 
-Glowsary lets you export your saved words to a file and import them back. This is started by you, and the file is saved to your own computer. Glowsary does not upload these files anywhere. Exported files include image links but do not include pictures you uploaded from your computer.
+Glowsary lets you export your saved words to a file and import them back. This is started by you, and the file is saved to your own computer. Glowsary does not upload these files anywhere. The backup file is a JSON file that includes your saved words with their definitions, aliases, colors, and images: a pasted image link is saved as the link, and a picture you uploaded from your computer is included in full so it restores intact.
 
 ## Selling and sharing of data
 

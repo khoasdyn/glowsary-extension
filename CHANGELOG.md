@@ -1,3 +1,9 @@
+## 2026-06-30
+
+- Set the manifest version to 1.6.0 for re-submission to the Chrome Web Store.
+- Updated the store listing Description to say the list exports and imports as a JSON backup, not CSV, matching the JSON backup switch.
+- Corrected the privacy policy's Export and import section: the backup is now a JSON file that includes uploaded pictures in full (not just image links), and refreshed the "Last updated" date. Note: the live policy in the separate privacy repo still needs the same fix.
+
 ## 2026-06-27
 
 - Stopped keys typed in the in-page Add/Edit panel from reaching the host page, so single-key site shortcuts (like GitHub's "t", "s", "/") no longer fire while typing; modifier shortcuts (copy, paste, browser keys) still pass through, Escape closes the panel, Enter in single-line fields no longer submits, and the hover popup is unaffected (FR-2b).

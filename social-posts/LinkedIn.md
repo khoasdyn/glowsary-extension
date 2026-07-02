@@ -1,3 +1,33 @@
+(Date 30 June 2026)
+
+```
+Glowsary just got an update I'm really excited about.
+
+It's a Chrome extension I keep building on the side that helps you remember vocabulary while you read in another language online. You save a word with your own meaning, or let AI draft one in a tap, and it gets a subtle underline on every site, with the meaning showing only when you hover.
+
+The big change in this version is custom prompts.
+
+In the video below you'll see me writing a prompt for Vietnamese definitions, but that's just my example. Vietnamese is not built in. The app follows whatever prompt you write, so you could just as easily be learning Spanish, Chinese, or any other language.
+
+You tell the AI exactly how your definitions should read: short or with an example, casual or formal, and in any language you want. The prompt is yours, and every word you generate follows it.
+
+It all runs on your device, no account needed, with your own free Gemini key for the AI part.
+
+Live on the Chrome Web Store now. Link in the comments 👇
+
+#LanguageLearning #ChromeExtension #BuildInPublic #SideProject #IndieHacker #AI #ProductivityTools #VocabularyBuilding
+```
+
+```
+Here's the link if you want to try it 👉 https://chromewebstore.google.com/detail/glowsary-build-your-vocab/bfnlhjdjkblhenfhnmdoghfomekcekmj
+
+I'm building Glowsary in the open, so follow me for the next updates. Happy to hear what you'd want it to do next.
+```
+
+## Archived Posts
+
+(Date 23 June 2026)
+
 ```
 I just shipped a new version of Glowsary, a small side project I keep building on.
 

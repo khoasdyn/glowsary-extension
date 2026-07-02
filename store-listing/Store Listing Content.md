@@ -34,7 +34,7 @@ What you can do:
 - Color your words. Tag each saved word with one of four colors to group and tell them apart at a glance.
 - Add alternate forms with aliases, so “version” and “versions” share one definition.
 - Stay in control. Turn highlighting on or off anytime, and exclude any site where you do not want it.
-- Manage everything in one place. Search, sort, edit, and delete your words, add words by hand, and export or import your list as a CSV backup.
+- Manage everything in one place. Search, sort, edit, and delete your words, add words by hand, and export or import your list as a JSON backup.
 - Private by design. Everything is stored on your own device. No account, no sign-in, and your words never leave your computer.
 
 Glowsary is made for self-learners who read English online and want the effort of every lookup to stick.

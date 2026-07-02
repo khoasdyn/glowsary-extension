@@ -3,6 +3,12 @@
 - Fixed double-click and triple-click selection in the PDF reader getting stuck inside one text piece: double-click now selects the whole word even when the PDF stores it as several pieces (a small-caps opener like the "G" in "Gerstner's", a ligature like the "ffi" in "office"), and triple-click selects the whole visual line, including styled runs. A margin note sitting beside a body line is not swallowed into the line, drag selection and right-click auto-select are untouched, and what copies matches what is highlighted (FR-47d).
 - Fixed the PDF reader selection tint skipping styled glyphs (small caps, drop caps, ligatures) and the gaps between words in some books: pdf.js leaves one-character text pieces unstretched, so their painted width did not match the canvas glyph; the reader now stretches those pieces to cover their glyph and the small kerning gap up to the next piece on the same line. What is selected and what copies are unchanged (FR-47d).
 
+## 2026-06-30
+
+- Set the manifest version to 1.6.0 for re-submission to the Chrome Web Store.
+- Updated the store listing Description to say the list exports and imports as a JSON backup, not CSV, matching the JSON backup switch.
+- Corrected the privacy policy's Export and import section: the backup is now a JSON file that includes uploaded pictures in full (not just image links), and refreshed the "Last updated" date. Note: the live policy in the separate privacy repo still needs the same fix.
+
 ## 2026-06-27
 
 - Right-clicking a word in the PDF reader now auto-selects that word (with the normal selection highlight) and pre-fills it in "Add word", like Preview and the browser; the word token is taken without surrounding punctuation. An existing selection the click lands inside is kept as-is, and right-clicking blank space still opens "Add word" with an empty term (FR-47f).

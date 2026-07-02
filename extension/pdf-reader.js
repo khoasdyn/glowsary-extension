@@ -1549,6 +1549,64 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
     }
   }
 
+  // pdf.js stretches each text-layer piece so its invisible text spans the same
+  // width as the glyphs drawn on the canvas, but it skips one-character pieces
+  // (standalone spaces between words, small-cap openers, ligature glyphs). Those
+  // keep the fallback font's natural width, usually narrower than the canvas
+  // glyph, so the blue selection tint paints only part of them and a selection
+  // shows holes at styled characters (FR-47d). Give those pieces the same
+  // stretch pdf.js applies to longer runs: out to the next piece on the same
+  // line when only a small kerning gap separates them (the gap belongs to no
+  // glyph, and an unstretched piece leaves it as a hole in the tint), and to
+  // the piece's own advance width otherwise.
+  function stretchSingleGlyphPieces(textLayerDiv, textContent, scale) {
+    const spans = textLayerDiv.querySelectorAll(":scope > span");
+    const items = textContent.items.filter((item) => item.str !== "");
+    if (items.length !== spans.length) {
+      return; // unexpected text-layer shape; leave the selection paint as is
+    }
+    const context = document.createElement("canvas").getContext("2d");
+    for (let i = 0; i < items.length; i += 1) {
+      const span = spans[i];
+      const item = items[i];
+      if (span.textContent !== item.str || span.style.transform.includes("scaleX")) {
+        continue;
+      }
+      const rotated = Math.abs(item.transform[1]) > 1e-6 || Math.abs(item.transform[2]) > 1e-6;
+      // Whitespace items report height 0, so take the font size from the
+      // item's transform for the "small gap" bound instead.
+      const fontUnits = Math.abs(item.transform[3]) || Math.abs(item.transform[0]);
+      let targetUnits = item.width;
+      const next = items[i + 1];
+      if (!rotated && next
+          && Math.abs(next.transform[1]) < 1e-6 && Math.abs(next.transform[2]) < 1e-6
+          && Math.abs(next.transform[5] - item.transform[5]) < 1) {
+        const gap = next.transform[4] - (item.transform[4] + item.width);
+        if (gap > 0 && gap <= fontUnits) {
+          targetUnits = next.transform[4] - item.transform[4];
+        }
+      }
+      const expected = targetUnits * scale;
+      if (!(expected > 0)) {
+        continue;
+      }
+      const calcSize = span.style.fontSize.match(/calc\(var\(--scale-factor\)\s*\*\s*([\d.]+)px\)/);
+      const fontSize = calcSize ? parseFloat(calcSize[1]) * scale : parseFloat(span.style.fontSize);
+      context.font = `${fontSize}px ${span.style.fontFamily}`;
+      const measured = context.measureText(span.textContent).width;
+      if (!(measured > 0)) {
+        continue;
+      }
+      const ratio = expected / measured;
+      if (Math.abs(ratio - 1) < 0.02) {
+        continue;
+      }
+      // Append so a rotated piece keeps its rotation first, matching the
+      // "rotate() scaleX()" order pdf.js writes on the pieces it stretches.
+      span.style.transform = `${span.style.transform} scaleX(${ratio})`.trim();
+    }
+  }
+
   async function renderPage(view) {
     if (!viewer || view.rendered || view.rendering) {
       return;
@@ -1591,8 +1649,11 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
         return;
       }
 
+      // The stretch pass below needs the text items' widths and positions, so
+      // fetch the text content up front instead of streaming it into the layer.
+      const textContent = await page.getTextContent();
       const textLayer = new pdfjsLib.TextLayer({
-        textContentSource: page.streamTextContent(),
+        textContentSource: textContent,
         container: textLayerDiv,
         viewport
       });
@@ -1601,6 +1662,7 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
         view.rendering = false;
         return;
       }
+      stretchSingleGlyphPieces(textLayerDiv, textContent, scale);
 
       view.el.textContent = "";
       view.el.append(canvas, textLayerDiv);
@@ -1782,6 +1844,10 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
       });
     });
     pagesContainer.addEventListener("contextmenu", handleViewerContextMenu);
+    // Native double/triple-click selection cannot cross the text layer's
+    // absolutely positioned pieces, so rebuild those selections here (FR-47d).
+    pagesContainer.addEventListener("mousedown", trackViewerMultiClick);
+    pagesContainer.addEventListener("mouseup", handleViewerMultiClick);
 
     root.hidden = false;
     document.body.classList.add("glowsary-pdf-open");
@@ -1884,6 +1950,180 @@ import * as pdfjsLib from "./vendor/pdfjs/pdf.min.mjs";
     const top = Math.min(event.clientY, window.innerHeight - menuRect.height - 8);
     menu.style.left = `${Math.max(8, left)}px`;
     menu.style.top = `${Math.max(8, top)}px`;
+  }
+
+  // ----- Double- and triple-click selection across text pieces (FR-47d) -----
+
+  // The text layer holds each PDF text run as its own absolutely positioned
+  // piece, which the browser treats as a separate block, and native
+  // double-click (word) and triple-click (line) selection never expands past
+  // a block boundary. It gets stuck inside one piece: double-clicking
+  // "Gerstner's" grabs only "erstner's" when the small-cap "G" is its own
+  // piece, and triple-clicking a line grabs one piece of it. Rebuild those
+  // selections here so they cover what the eye reads as the word or the line.
+
+  const WORD_JOIN_GAP_EM = 0.3; // pieces this close (in ems) can continue a word
+  const LINE_JOIN_GAP_EM = 2.5; // wider gaps split a visual line (margin notes)
+
+  let multiClickStart = null;
+
+  function trackViewerMultiClick(event) {
+    multiClickStart = event.button === 0 && event.detail >= 2
+      ? { x: event.clientX, y: event.clientY, detail: event.detail }
+      : null;
+  }
+
+  // The piece is the text-layer span the node lives in; saved-word highlight
+  // spans nest inside pieces, so walk up to the layer's direct child.
+  function pieceOf(node) {
+    let el = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+    while (el && !el.parentElement?.classList.contains("textLayer")) {
+      el = el.parentElement;
+    }
+    return el?.tagName === "SPAN" ? el : null;
+  }
+
+  function onSameLine(a, b) {
+    const ra = a.getBoundingClientRect();
+    const rb = b.getBoundingClientRect();
+    const overlap = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
+    return overlap >= Math.min(ra.height, rb.height) / 2;
+  }
+
+  function pieceChars(piece) {
+    const chars = [];
+    const walker = document.createTreeWalker(piece, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const text = node.textContent || "";
+      for (let i = 0; i < text.length; i += 1) {
+        chars.push({ node, offset: i, ch: text[i] });
+      }
+    }
+    return chars;
+  }
+
+  // Every character of the visual line containing `piece`, in reading order.
+  // The walk stops at the line-break markers pdf.js places between lines and
+  // at pieces that sit on a different baseline. A kerning gap wider than
+  // WORD_JOIN_GAP_EM adds a word break (two words the PDF lays apart without
+  // a space character must not join), and a gap wider than LINE_JOIN_GAP_EM
+  // adds a line break (a margin note beside the body text is not the line).
+  function lineChars(piece) {
+    const pieces = [piece];
+    for (let el = piece.previousElementSibling; el?.tagName === "SPAN" && onSameLine(el, pieces[0]); el = el.previousElementSibling) {
+      pieces.unshift(el);
+    }
+    for (let el = piece.nextElementSibling; el?.tagName === "SPAN" && onSameLine(el, pieces[pieces.length - 1]); el = el.nextElementSibling) {
+      pieces.push(el);
+    }
+    const em = parseFloat(window.getComputedStyle(piece).fontSize) || 10;
+    const chars = [];
+    let previous = null;
+    for (const el of pieces) {
+      if (previous) {
+        const gap = el.getBoundingClientRect().left - previous.getBoundingClientRect().right;
+        if (gap > em * LINE_JOIN_GAP_EM) {
+          chars.push({ lineBreak: true });
+        } else if (gap > em * WORD_JOIN_GAP_EM) {
+          chars.push({ wordBreak: true });
+        }
+      }
+      chars.push(...pieceChars(el));
+      previous = el;
+    }
+    return chars;
+  }
+
+  function caretIndexIn(chars, node, offset) {
+    for (let i = 0; i < chars.length; i += 1) {
+      if (chars[i].node === node && chars[i].offset === offset) {
+        return i;
+      }
+    }
+    // The caret can sit just past a node's last character; use that character.
+    for (let i = chars.length - 1; i >= 0; i -= 1) {
+      if (chars[i].node === node && chars[i].offset === offset - 1) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  // Word bounds around the clicked character, mirroring selectWordAtPoint's
+  // rules (WORD_CHAR, edge connectors trimmed) but across piece boundaries.
+  function multiClickWordBounds(chars, index) {
+    const isWordChar = (c) => c && c.node && WORD_CHAR.test(c.ch);
+    if (!isWordChar(chars[index])) {
+      return null; // clicked whitespace or punctuation; keep the native selection
+    }
+    let start = index;
+    let end = index;
+    while (start > 0 && isWordChar(chars[start - 1])) {
+      start -= 1;
+    }
+    while (end < chars.length - 1 && isWordChar(chars[end + 1])) {
+      end += 1;
+    }
+    while (start < end && /['’-]/.test(chars[start].ch)) {
+      start += 1;
+    }
+    while (end > start && /['’-]/.test(chars[end].ch)) {
+      end -= 1;
+    }
+    return [chars[start], chars[end]];
+  }
+
+  function multiClickLineBounds(chars, index) {
+    let start = index;
+    let end = index;
+    while (start > 0 && !chars[start - 1].lineBreak) {
+      start -= 1;
+    }
+    while (end < chars.length - 1 && !chars[end + 1].lineBreak) {
+      end += 1;
+    }
+    while (start < end && !chars[start].node) {
+      start += 1;
+    }
+    while (end > start && !chars[end].node) {
+      end -= 1;
+    }
+    return chars[start].node ? [chars[start], chars[end]] : null;
+  }
+
+  function handleViewerMultiClick(event) {
+    const start = multiClickStart;
+    multiClickStart = null;
+    if (!start || event.detail !== start.detail
+        || Math.abs(event.clientX - start.x) > 3 || Math.abs(event.clientY - start.y) > 3) {
+      return; // a word-by-word drag or an unrelated release; keep the native selection
+    }
+    const caret = document.caretRangeFromPoint?.(event.clientX, event.clientY);
+    const node = caret?.startContainer;
+    if (!node || node.nodeType !== Node.TEXT_NODE) {
+      return;
+    }
+    const piece = pieceOf(node);
+    if (!piece) {
+      return;
+    }
+    const chars = lineChars(piece);
+    const index = caretIndexIn(chars, node, caret.startOffset);
+    if (index < 0) {
+      return;
+    }
+    const bounds = start.detail === 2
+      ? multiClickWordBounds(chars, index)
+      : multiClickLineBounds(chars, index);
+    if (!bounds) {
+      return;
+    }
+    const range = document.createRange();
+    range.setStart(bounds[0].node, bounds[0].offset);
+    range.setEnd(bounds[1].node, bounds[1].offset + 1);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
   }
 
   document.addEventListener("mousedown", (event) => {
